@@ -1,0 +1,5 @@
+[cmd_duration]
+disabled=true
+
+[directory]
+truncation_length=5

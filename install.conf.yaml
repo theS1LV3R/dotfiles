@@ -1,6 +1,18 @@
 - clean: ['~']
 
+- shell:
+  - 
+    command: chmod +x install-starship.sh && ./install-starship.sh 
+    description: Install starship shell
+    stdin: true
+    stdout: true
+    stderr: true
+    
+
 - link:
+    ~/.config/starship.toml:
+        path: starship.toml
+        create: true
     ~/.profile: profile
     ~/.bashrc: bashrc
     ~/.bash_logout: bash_logout

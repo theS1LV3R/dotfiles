@@ -10,4 +10,4 @@
         create: true
     ~/.zshrc: zshrc
     ~/.vimrc: vimrc
-
+    ~/.oh-my-zsh: ohmyzsh

@@ -17,9 +17,6 @@
     ~/.bashrc: bashrc
     ~/.bash_logout: bash_logout
     ~/.gitconfig: gitconfig
-    ~/.ssh/config:
-        path: ssh/config
-        create: true
     ~/.zshrc: zshrc
     ~/.vimrc: vimrc
     ~/.oh-my-zsh: ohmyzsh

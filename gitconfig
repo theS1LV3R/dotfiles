@@ -7,3 +7,5 @@
 	signingkey = 2299EE28E8BA06D06DB8F591C26ED252D8F7E3C1
 [commit]
 	gpgsign = true
+[gpg]
+	program = gpg2

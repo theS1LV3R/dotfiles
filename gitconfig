@@ -4,7 +4,7 @@
 [user]
 	name = S1LV3R
 	email = s1lv3r@corax.team
-	signingkey = 2299EE28E8BA06D06DB8F591C26ED252D8F7E3C1
+	signingkey = 85FA2FC2D8035859AE77FF6E636660BB3A5C2F87
 [commit]
 	gpgsign = true
 [gpg]

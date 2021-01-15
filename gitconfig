@@ -1,6 +1,7 @@
 [core]
 	autocrlf = false
 	eol = lf
+	editor = vim
 [user]
 	name = S1LV3R
 	email = s1lv3r@corax.team

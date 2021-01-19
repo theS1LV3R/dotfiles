@@ -198,9 +198,16 @@ if [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#999'
 fi
 
+# Enable nvm
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # nvm bash completion
 
 export PATH=$PATH:~/.yarn/bin
 export PATH=$PATH:./node_modules/.bin
+
+# Disable dotnet telemetry
+export DOTNET_CLI_TELEMETRY_OPTOUT=true
+
+# Alias for cloudflared, because its easier to type
+alias cfd='cloudflared'

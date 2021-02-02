@@ -205,6 +205,7 @@ export NVM_DIR="$HOME/.nvm"
 
 export PATH=$PATH:~/.yarn/bin
 export PATH=$PATH:./node_modules/.bin
+export PATH=$PATH:~/.local/bin
 
 # Disable dotnet telemetry
 export DOTNET_CLI_TELEMETRY_OPTOUT=true

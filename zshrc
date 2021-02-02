@@ -212,3 +212,6 @@ export DOTNET_CLI_TELEMETRY_OPTOUT=true
 
 # Alias for cloudflared, because its easier to type
 alias cfd='cloudflared'
+
+# LFS variable
+# export LFS=/mnt/lfs

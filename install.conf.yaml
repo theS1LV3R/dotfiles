@@ -5,3 +5,4 @@
     ~/.gitconfig: gitconfig
     ~/.zshrc: zshrc
     ~/.vimrc: vimrc
+    ~/.ssh/config: ssh/config

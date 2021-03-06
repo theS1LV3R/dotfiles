@@ -12,3 +12,5 @@
 	program = gpg2
 [pull]
 	rebase = false
+[color]
+	ui = auto

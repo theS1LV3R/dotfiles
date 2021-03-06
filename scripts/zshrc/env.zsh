@@ -14,3 +14,5 @@ export NVM_DIR="$HOME/.nvm"
 if [[ -f $SCRIPTS_DIR/zshrc/env.local.zsh && -r $SCRIPTS_DIR/zshrc/env.local.zsh ]]; then
   source $SCRIPTS_DIR/zshrc/env.local.zsh
 fi
+
+export EDITOR=vim

@@ -19,4 +19,6 @@ if [[ -f $SCRIPTS_DIR/zshrc/env.local.zsh && -r $SCRIPTS_DIR/zshrc/env.local.zsh
   source $SCRIPTS_DIR/zshrc/env.local.zsh
 fi
 
+[[ -s ~/.gvm/scripts/gvm ]] && source ~/.gvm/scripts/gvm
+
 export EDITOR=vim

@@ -6,10 +6,14 @@ These are the dotfiles i chose to keep between my linux installs. Nothing really
 
 ```bash
 # Clone the repo
-git clone git@github.com:theS1LV3R/dotfiles.git .dotfiles
+# ssh
+git clone git@github.com:theS1LV3R/dotfiles.git ~/.dotfiles
+
+# https
+git clone https://github.com:theS1LV3R/dotfiles.git ~/.dotfiles
 
 # Enter into the repo
-cd .dotfiles
+cd ~/.dotfiles
 
 # Install dotfiles using dotbot
 chmod +x install && ./install

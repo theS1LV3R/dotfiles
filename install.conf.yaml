@@ -4,4 +4,5 @@
     ~/.bashrc: bashrc
     ~/.gitconfig: gitconfig
     ~/.zshrc: zshrc
+    ~/.zprofile: zprofile
     ~/.vimrc: vimrc

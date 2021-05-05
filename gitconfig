@@ -16,3 +16,6 @@
 	ui = auto
 [init]
 	defaultBranch = master
+
+[include]
+        path = ~/.gitconfig_local

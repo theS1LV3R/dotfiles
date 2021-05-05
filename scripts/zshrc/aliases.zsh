@@ -8,3 +8,6 @@ alias open='xdg-open'
 
 # Alias for cloudflared, because its easier to type
 alias cfd='cloudflared'
+
+# Termbin
+alias tb='nc termbin.com 9999'

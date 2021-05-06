@@ -2,6 +2,14 @@
 
 These are the dotfiles i chose to keep between my linux installs. Nothing really special about them.
 
+## Requirements
+
+The dotfiles themselves don't have any requirements other than to have their
+respective programs installed. For example `vim` for [`vimrc`](./vimrc).
+
+For automatic installation with the install script (see below) Python 3 or
+above is required.
+
 ## Cloning and installing
 
 ```bash

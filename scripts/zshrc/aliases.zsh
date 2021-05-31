@@ -29,7 +29,7 @@ alias disable="sudo systemctl disable "
 alias mask="sudo systemctl mask "
 alias unmask="sudo systemctl unmask "
 alias status="sudo systemctl status "
-alias reload="sydo systemctl reload "
+alias reload="sudo systemctl reload "
 
 wttr() {
     curl "https://wttr.in/$1?0FmM&lang=en"

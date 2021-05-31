@@ -6,3 +6,5 @@
     ~/.zshrc: zshrc
     ~/.zprofile: zprofile
     ~/.vimrc: vimrc
+    ~/.config/nvim:
+      path: config/nvim

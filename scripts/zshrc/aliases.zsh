@@ -38,3 +38,5 @@ wttr() {
 cheat() {
     curl "https://cheat.sh/$1"
 }
+
+alias path="echo $PATH | sed 's/:/\n/g'"

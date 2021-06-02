@@ -6,5 +6,7 @@
     ~/.zshrc: zshrc
     ~/.zprofile: zprofile
     ~/.vimrc: vimrc
-    ~/.config/nvim:
-      path: config/nvim
+    ~/.config/:
+      glob: true
+      path: config/*
+

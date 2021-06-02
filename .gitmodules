@@ -5,3 +5,6 @@
 [submodule "ohmyzsh"]
 	path = ohmyzsh
 	url = https://github.com/ohmyzsh/ohmyzsh/
+[submodule "scripts/zshrc/plugins/zsh-autocomplete"]
+	path = scripts/zshrc/plugins/zsh-autocomplete
+	url = https://github.com/marlonrichert/zsh-autocomplete.git

@@ -1,4 +1,4 @@
 env.local.zsh
 
 # Contains private keys
-config/gh/hosts.yml
+*/gh/hosts.yml

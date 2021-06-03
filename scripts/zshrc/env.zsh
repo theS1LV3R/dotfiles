@@ -15,8 +15,8 @@ if [[ -f /usr/share/nvm/init-nvm.sh ]]; then
 fi
 
 # Load a local env file if it exists, for example secrets and stuff
-if [[ -f $SCRIPTS_DIR/zshrc/env.local.zsh && -r $SCRIPTS_DIR/zshrc/env.local.zsh ]]; then
-  source $SCRIPTS_DIR/zshrc/env.local.zsh
+if [[ -f $ZSH_SCRIPTS/env.local.zsh && -r $ZSH_SCRIPTS/env.local.zsh ]]; then
+  source $ZSH_SCRIPTS/env.local.zsh
 fi
 
 [[ -s ~/.gvm/scripts/gvm ]] && source ~/.gvm/scripts/gvm

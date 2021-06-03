@@ -64,7 +64,7 @@ zstyle ':autocomplete:*' add-space \
     executables aliases functions builtins reserved-words commands
 
 
-source $SCRIPTS_DIR/zshrc/plugins/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+source $ZSH_SCRIPTS/plugins/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 #
 # NOTE: All settings below should come AFTER sourcing zsh-autocomplete!
 #

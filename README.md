@@ -2,31 +2,30 @@
 
 These are the dotfiles i chose to keep between my linux installs. Nothing really special about them.
 
+## Screenshot
+
+![screenshot of desktop](./screenshot.png)
+
 ## Requirements
 
 The dotfiles themselves don't have any requirements other than to have their
 respective programs installed. For example `vim` for [`vimrc`](./vimrc).
 
-For automatic installation with the install script (see below) Python 3 or
-above is required.
+Uses chezmoi for dotfile management.
 
 ## Cloning and installing
 
 ```bash
-# Clone the repo
-# ssh
-git clone git@github.com:theS1LV3R/dotfiles.git ~/.dotfiles
+# If you already have chezmoi installed
+# NOTE: May overwrite already existing dotfiles
+chezmoi init --apply theS1LV3R
 
-# https
-git clone https://github.com:theS1LV3R/dotfiles.git ~/.dotfiles
-
-# Enter into the repo
-cd ~/.dotfiles
-
-# Install dotfiles using dotbot
-chmod +x install && ./install
+# If chezmoi is not installed
+# NOTE: May overwrite already existing dotfiles
+# NOTE: May install itself to $HOME/.local/bin/chezmoi
+sh -c "$(curl -fsLS git.io/chezmoi)" -- init --apply theS1LV3R
 ```
 
-## Screenshot
+## License
 
-![screenshot of desktop](./screenshot.png)
+MIT license. See [`./LICENSE`](./LICENSE)

@@ -26,6 +26,10 @@ chezmoi init --apply theS1LV3R
 sh -c "$(curl -fsLS git.io/chezmoi)" -- init --apply theS1LV3R
 ```
 
+## See also
+
+Much of this repo was inspired by [tapayne88/dotfiles](https://github.com/tapayne88/dotfiles)
+
 ## License
 
 MIT license. See [`./LICENSE`](./LICENSE)

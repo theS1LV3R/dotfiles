@@ -7,3 +7,5 @@ zshrc.old
 scripts
 antigen
 dotbot
+completions
+

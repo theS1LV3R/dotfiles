@@ -12,9 +12,17 @@ source $SCRIPTS_DIR/p10k.init.zsh
 # Everything else zsh related
 source $SCRIPTS_DIR/zsh.init.zsh
 
+# Load custom completions
+antigen bundle $DOTFILES_DIR/completions
+
+# P10K theme
 antigen theme romkatv/powerlevel10k
+
+# Various other stuff
 antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-autosuggestions
+antigen bundle zsh-users/zsh-completions
 
 antigen apply
 unset SCRIPTS_DIR
+unset DOTFILES_DIR

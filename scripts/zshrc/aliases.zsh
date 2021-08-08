@@ -39,4 +39,5 @@ cheat() {
     curl "https://cheat.sh/$1"
 }
 
-alias path="echo $PATH | sed 's/:/\n/g'"
+alias  path="echo  $PATH | sed 's/:/\n/g'"
+alias fpath="echo $FPATH | sed 's/:/\n/g'"

@@ -13,6 +13,9 @@ alias open='xdg-open'
 # Alias for cloudflared, because its easier to type
 alias cfd='cloudflared'
 
+# Nvim alias for vim
+if (( $+commands[nvim] )); then alias vim='nvim'; fi;
+
 # Termbin
 alias tb='nc termbin.com 9999'
 

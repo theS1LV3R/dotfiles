@@ -15,6 +15,7 @@ alias cfd='cloudflared'
 
 # Nvim alias for vim
 if (( $+commands[nvim] )); then alias vim='nvim'; fi;
+if (( $+commands[bat]  )); then alias cat='bat' ; fi;
 
 # Termbin
 alias tb='nc termbin.com 9999'

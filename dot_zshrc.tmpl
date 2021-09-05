@@ -6,6 +6,8 @@ export SCRIPTS_DIR=$DOTFILES_DIR/scripts
 # Load antigen (Plugin manager)
 source $DOTFILES_DIR/antigen/antigen.zsh
 
+export GPG_TTY=$(tty)
+
 # p10k (Prompt)
 source $SCRIPTS_DIR/p10k.init.zsh
 

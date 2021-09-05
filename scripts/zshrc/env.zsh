@@ -14,15 +14,15 @@ if [[ -f /usr/share/nvm/init-nvm.sh ]]; then
   source /usr/share/nvm/init-nvm.sh
 fi
 
-# Load a local env file if it exists, for example secrets and stuff
-if [[ -f $ZSH_SCRIPTS/env.local.zsh && -r $ZSH_SCRIPTS/env.local.zsh ]]; then
-  source $ZSH_SCRIPTS/env.local.zsh
-fi
-
 [[ -s ~/.gvm/scripts/gvm ]] && source ~/.gvm/scripts/gvm
 
 export EDITOR=vim
 
-if [[ -n "$SSH_CONNECTION" ]] ;then
-    export PINENTRY_USER_DATA="USE_CURSES=1"
+if [[ -n "$SSH_CONNECTION" ]]; then
+  export PINENTRY_USER_DATA="USE_CURSES=1"
+fi
+
+# Load a local env file if it exists, for example secrets and stuff
+if [[ -f $ZSH_SCRIPTS/env.local.zsh && -r $ZSH_SCRIPTS/env.local.zsh ]]; then
+  source $ZSH_SCRIPTS/env.local.zsh
 fi

@@ -6,13 +6,7 @@ export PATH=$PATH:~/.local/bin
 export DOTNET_CLI_TELEMETRY_OPTOUT=true
 
 # Enable nvm
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # nvm bash completion
-
-if [[ -f /usr/share/nvm/init-nvm.sh ]]; then
-  source /usr/share/nvm/init-nvm.sh
-fi
+source $ZSH_SCRIPTS/nvm.zsh
 
 [[ -s ~/.gvm/scripts/gvm ]] && source ~/.gvm/scripts/gvm
 

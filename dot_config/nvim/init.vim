@@ -9,6 +9,11 @@ Plug 'tpope/vim-sensible'
 Plug 'arcticicestudio/nord-vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'editorconfig/editorconfig-vim'
+Plug 'mattn/emmet-vim'
+Plug 'pechorin/any-jump.vim'
+Plug 'sheerun/vim-polyglot'
 
 call plug#end()
 

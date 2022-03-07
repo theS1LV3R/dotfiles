@@ -2,8 +2,9 @@
 # Everything is sourced in the order it was in the original dotfile
 
 setopt autocd # change directory just by typing its name
-#setopt correct            # auto correct mistakes
+setopt correct            # auto correct mistakes
 setopt interactivecomments # allow comments in interactive mode
+setopt share_history
 
 #! GENERATES ERRORS - DO NOT USE
 # setopt ksharrays           # arrays start at 0
@@ -36,6 +37,8 @@ alias history="history 0"
 
 # Disabled due to consistent errors i weren't able to fix
 # source $SCRIPTS_DIR/autocomplete-colors.zsh
+
+precmd () { print -Pn "\e]2;%n@%M:%~\a" } # title bar prompt
 
 source $ZSH_SCRIPTS/env.zsh
 source $ZSH_SCRIPTS/colors.zsh

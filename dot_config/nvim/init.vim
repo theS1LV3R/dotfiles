@@ -14,6 +14,7 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'mattn/emmet-vim'
 Plug 'pechorin/any-jump.vim'
 Plug 'sheerun/vim-polyglot'
+Plug 'skanehira/docker-compose.vim'
 
 call plug#end()
 
@@ -48,3 +49,5 @@ set backspace=indent,eol,start
 
 filetype plugin on
 syntax on
+
+au VimLeave * set guicursor=a:block-blinkon0

@@ -1,6 +1,7 @@
 export PATH=$PATH:~/.yarn/bin
 export PATH=$PATH:./node_modules/.bin
 export PATH=$PATH:~/.local/bin
+export PATH=$PATH:$GOPATH/bin
 
 # Disable dotnet telemetry
 export DOTNET_CLI_TELEMETRY_OPTOUT=true
@@ -20,3 +21,4 @@ fi
 if [[ -f $ZSH_SCRIPTS/env.local.zsh && -r $ZSH_SCRIPTS/env.local.zsh ]]; then
   source $ZSH_SCRIPTS/env.local.zsh
 fi
+

@@ -45,3 +45,21 @@ cheat() {
 
 alias  path="echo  $PATH | sed 's/:/\n/g'"
 alias fpath="echo $FPATH | sed 's/:/\n/g'"
+
+secret() {
+    bytes="64"
+
+    if [ $# -ne 0 ]; then bytes="$*"; fi
+    
+    openssl rand -hex $bytes
+}
+
+alias jwt="jq -R 'split(\".\") | select(length > 0) | .[0],.[1] | @base64d | fromjson'"
+
+fix_wsl2_interop() {
+    for i in $(pstree -np -s $$ | grep -o -E '[0-9]+'); do
+        if [[ -e "/run/WSL/${i}_interop" ]]; then
+            export WSL_INTEROP=/run/WSL/${i}_interop
+        fi
+    done
+}

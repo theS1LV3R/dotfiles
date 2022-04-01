@@ -2,10 +2,6 @@
 
 These are the dotfiles i chose to keep between my linux installs. Nothing really special about them.
 
-## Screenshot
-
-![screenshot of desktop](./screenshot.png)
-
 ## Requirements
 
 The dotfiles themselves don't have any requirements other than to have their

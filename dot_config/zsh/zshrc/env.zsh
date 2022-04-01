@@ -6,11 +6,6 @@ export PATH=$PATH:$GOPATH/bin
 # Disable dotnet telemetry
 export DOTNET_CLI_TELEMETRY_OPTOUT=true
 
-# Enable nvm
-source $ZSH_SCRIPTS/nvm.zsh
-
-[[ -s ~/.gvm/scripts/gvm ]] && source ~/.gvm/scripts/gvm
-
 export EDITOR=vim
 
 if [[ -n "$SSH_CONNECTION" ]]; then
@@ -21,4 +16,3 @@ fi
 if [[ -f $ZSH_SCRIPTS/env.local.zsh && -r $ZSH_SCRIPTS/env.local.zsh ]]; then
   source $ZSH_SCRIPTS/env.local.zsh
 fi
-

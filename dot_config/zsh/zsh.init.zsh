@@ -1,8 +1,8 @@
 # Originally sourced from zshrc file
 # Everything is sourced in the order it was in the original dotfile
 
-setopt autocd # change directory just by typing its name
-setopt correct            # auto correct mistakes
+setopt autocd              # change directory just by typing its name
+setopt correct             # auto correct mistakes
 setopt interactivecomments # allow comments in interactive mode
 setopt share_history
 
@@ -29,16 +29,7 @@ source $ZSH_SCRIPTS/history.zsh
 # force zsh to show the complete history
 alias history="history 0"
 
-# make less more friendly for non-text input files, see lesspipe(1)
-#[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
-# Disabled due to using p10k for the prompt
-# source $ZSH_SCRIPTS/prompt.zsh
-
-# Disabled due to consistent errors i weren't able to fix
-# source $SCRIPTS_DIR/autocomplete-colors.zsh
-
-precmd () { print -Pn "\e]2;%n@%M:%~\a" } # title bar prompt
+precmd() { print -Pn "\e]2;%n@%M:%~\a"; } # title bar prompt
 
 source $ZSH_SCRIPTS/env.zsh
 source $ZSH_SCRIPTS/colors.zsh

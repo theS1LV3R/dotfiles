@@ -1,20 +1,15 @@
 #zmodload zsh/zprof
 
-{{ if (eq .chezmoi.os "linux") }}
-{{   if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+{{- if eq "wsl" .ostype }}
 # WSL spesifics
 export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}'):0.0 #GWSL
 export PULSE_SERVER=tcp:$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}') #GWSL
 export LIBGL_ALWAYS_INDIRECT=1 #GWSL
-
-{{   end }}
-{{ end }}
+{{- end }}
 
 
-# For easier folder management in scripts. Will be fixed eventually
-# so it loads dynamically from where the dotfiles are located
 export DOTFILES_DIR={{ .chezmoi.sourceDir }}
-export SCRIPTS_DIR=$DOTFILES_DIR/scripts
+export SCRIPTS_DIR="$HOME/.config/zsh"
 
 # Load antigen (Plugin manager)
 source $DOTFILES_DIR/antigen/antigen.zsh
@@ -39,5 +34,3 @@ antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle zsh-users/zsh-completions
 
 antigen apply
-unset SCRIPTS_DIR
-unset DOTFILES_DIR

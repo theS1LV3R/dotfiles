@@ -5,7 +5,12 @@ sourceDir = "{{ .chezmoi.sourceDir }}"
   name = "S1LV3R"
   codespaces = {{ $codespaces }}
 {{- if $codespaces }}{{/* Codespaces dotfiles setup is non-interactive, so set an email address */}}
-  email = "s1lv3r@corax.team"
+  email = {{ env "GIT_COMMITTER_EMAIL" }}
 {{- else }}{{/* Interactive setup, so prompt for an email address */}}
   email = "{{ promptString "email" }}"
+{{- end }}
+{{- if (and (eq .chezmoi.os "linux") (.chezmoi.kernel.osrelease | lower | contains "microsoft")) }}
+  ostype = "wsl"
+{{- else }}
+  ostype = "{{ .chezmoi.os }}"
 {{- end }}

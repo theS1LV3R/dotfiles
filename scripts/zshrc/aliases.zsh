@@ -63,3 +63,5 @@ fix_wsl2_interop() {
         fi
     done
 }
+
+[[ -f /opt/asdf-vm/asdf.sh ]] && . /opt/asdf-vm/asdf.sh

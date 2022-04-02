@@ -30,7 +30,11 @@ alias reload="sudo systemctl reload "
 alias  path="echo  $PATH | sed 's/:/\n/g'"
 alias fpath="echo $FPATH | sed 's/:/\n/g'"
 
-[[ -f /opt/asdf-vm/asdf.sh ]] && . /opt/asdf-vm/asdf.sh
+if [[ -f /opt/asdf-vm/asdf.sh ]]; then
+    . /opt/asdf-vm/asdf.sh
+else
+    . $HOME/.asdf/asdf.sh
+fi
 
 
 alias jwt="jq -R 'split(\".\") | select(length > 0) | .[0],.[1] | @base64d | fromjson'"

@@ -66,7 +66,10 @@ $chezmoi init theS1LV3R --apply
 
 echo "Installing asdf..."
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.9.0
+
+set +euo pipefail
 . $HOME/.asdf/asdf.sh
+set -euo pipefail
 
 plugins=$(awk '{print $1;}' tool-versions-actual | tr '\n' ' ')
 

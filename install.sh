@@ -65,6 +65,9 @@ fi
 $chezmoi init theS1LV3R --apply
 
 echo "Installing asdf..."
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.9.0
+. $HOME/.asdf/asdf.sh
+
 plugins=$(awk '{print $1;}' tool-versions-actual | tr '\n' ' ')
 
 for plugin in $plugins; do

@@ -10,7 +10,6 @@ setopt nonomatch           # hide error message if there is no match for the pat
 setopt notify              # report the status of background jobs immediately
 setopt numericglobsort     # sort filenames numerically when it makes sense
 setopt promptsubst         # enable command substitution in prompt
-setopt shwordsplit         # split words on shell metacharacters
 setopt no_beep             # don't beep on errors
 
 #! GENERATES ERRORS - DO NOT USE

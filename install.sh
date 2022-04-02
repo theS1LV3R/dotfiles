@@ -65,7 +65,7 @@ fi
 $chezmoi init theS1LV3R --apply
 
 echo "Installing asdf..."
-if [[ -d $HOME/.asdf ]]; then
+if [[ ! -d $HOME/.asdf ]]; then
   echo "asdf not installed, installing to $HOME/.asdf"
   git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.9.0
 fi

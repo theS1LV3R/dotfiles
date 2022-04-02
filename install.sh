@@ -30,7 +30,7 @@ fi
 # Install dotfiles
 echo "Installing dotfiles..."
 
-apt_packages="libssl-dev zlib1g-dev zsh"
+apt_packages="libssl-dev zlib1g-dev zsh neovim"
 arch_packages="chezmoi lsd neovim tmux asdf-vm zsh"
 
 echo "Installing packages..."

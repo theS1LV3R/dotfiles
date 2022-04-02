@@ -6,6 +6,7 @@ on:
 
 jobs:
   clone-and-install:
+    if: "false"
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/vscode/devcontainers/base:ubuntu

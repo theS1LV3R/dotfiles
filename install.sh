@@ -65,7 +65,10 @@ fi
 $chezmoi init theS1LV3R --apply
 
 echo "Installing asdf..."
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.9.0
+if [[ -d $HOME/.asdf ]]; then
+  echo "asdf not installed, installing to $HOME/.asdf"
+  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.9.0
+fi
 
 set +euo pipefail
 . $HOME/.asdf/asdf.sh

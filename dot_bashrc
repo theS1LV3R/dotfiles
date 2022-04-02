@@ -121,6 +121,8 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
+export PATH=$PATH:/home/s1lv3r/.local/bin
+
 export LIBGL_ALWAYS_INDIRECT=1 #GWSL
 export GDK_SCALE=2 #GWSL
 export QT_SCALE_FACTOR=2 #GWSL

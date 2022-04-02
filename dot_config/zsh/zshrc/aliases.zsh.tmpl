@@ -36,6 +36,14 @@ else
     . $HOME/.asdf/asdf.sh
 fi
 
+if (( $+commands[ptpwd] )); then
+    alias pwd='ptpwd'
+fi
+
+if (( $+commands[ptcp] )); then
+    alias cp='ptcp'
+fi
+
 
 alias jwt="jq -R 'split(\".\") | select(length > 0) | .[0],.[1] | @base64d | fromjson'"
 alias grep='grep --color'

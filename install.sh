@@ -30,8 +30,8 @@ fi
 # Install dotfiles
 echo "Installing dotfiles..."
 
-apt_packages="libssl-dev zlib1g-dev zsh neovim"
-arch_packages="chezmoi lsd neovim tmux asdf-vm zsh"
+apt_packages="libssl-dev zlib1g-dev zsh neovim unzip"
+arch_packages="chezmoi lsd neovim tmux asdf-vm zsh unzip"
 
 echo "Installing packages..."
 if [ "$(command -v yay)" ]; then
@@ -86,11 +86,10 @@ echo "Installing zsh..."
 chsh -s "/bin/zsh"
 
 echo "Installing ptsh"
-ptsh_version=0.3.2-beta
-ptsh_url= <<EOF
-https://github.com/jszczerbinsky/ptSh/releases/download/v${ptsh_version}/\
-ptSh_v${ptsh_version}_linux_x86_64.zip
-EOF
+dir=$(mktemp -d)
+cd $dir
 
-# Download to /tmp using wget, extract to .local
-wget -qO- "$ptsh_url" | tar -xz -C /tmp
+git clone https://github.com/jszczerbinsky/ptSh .
+
+make
+sudo make install

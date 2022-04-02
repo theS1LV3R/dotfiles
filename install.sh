@@ -2,10 +2,6 @@
 
 set -euo pipefail
 
-echo "NOTE: This _will_ overwrite existing dotfiles. Make sure you have a backup."
-echo "Press enter to continue or ctrl-c to abort."
-read -r
-
 # Parse arguments
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -25,26 +21,14 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# Install dotfiles
-echo "Installing dotfiles..."
-
-# Create symlinks
-for file in $(find . -maxdepth 1 -name '.*' -not -name '.*.swp' -not -name 'install.sh' -not -name 'README.md' -not -name 'LICENSE'); do
-  if [[ -f "$HOME/$file" ]]; then
-    echo "WARNING: File already exists: $HOME/$file"
-    echo "Press enter to overwrite or ctrl-c to abort."
-    read -r
-  fi
-  ln -sf "$PWD/$file" "$HOME/$file"
-done
-
-# Install codespaces
-if $codespaces; then
-  echo "Installing codespaces..."
-  curl -sL https://codespaces.io/install.sh | bash
+if [[ -z "${CODESPACES:-}" ]]; then
+  echo "NOTE: This _will_ overwrite existing dotfiles. Make sure you have a backup."
+  echo "Press enter to continue or ctrl-c to abort."
+  read -r
 fi
 
-echo "Done."
+# Install dotfiles
+echo "Installing dotfiles..."
 
 apt_packages="libssl-dev zlib1g-dev zsh"
 arch_packages="chezmoi lsd neovim tmux asdf-vm zsh"

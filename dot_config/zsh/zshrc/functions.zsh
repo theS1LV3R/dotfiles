@@ -1,17 +1,48 @@
 #!/bin/zsh
 
-function ssh() {
+ssh() {
     emulate -L zsh
 
     TERM=xterm-256color command ssh "$@"
 }
 
 wttr() {
-    curl "https://wttr.in/$1?0FmM&lang=en"
+    url="https://v2n.wttr.in/$1?0FmM&lang=en"
+
+    echo "Opening $url"
+    page=$(curl -s "$url")
+
+    if test $(echo $page | wc -l) -gt $(tput lines); then
+        echo $page | less -R
+        echo $page
+    else
+        echo -e $page
+    fi
 }
 
 cheat() {
-    curl "https://cheat.sh/$1"
+    url="https://cheat.sh/$@"
+
+    echo "Opening $url"
+    page=$(curl -s "$url")
+
+    if test $(echo $page | wc -l) -gt $(tput lines); then
+        echo $page | less -R
+        echo $page
+    else
+        echo -e $page
+    fi
+}
+
+dict() {
+    page=$(command dict "$@")
+
+    if test $(echo $page | wc -l) -gt $(tput lines); then
+        echo $page | less -R
+        echo $page
+    else
+        echo -e $page
+    fi
 }
 
 fix_wsl2_interop() {
@@ -30,7 +61,7 @@ secret() {
     openssl rand -hex $bytes
 }
 
-sys_update() {
+update() {
     # Check for apt systems
     if [ "$(command -v apt)" ]; then
         sudo apt update
@@ -44,9 +75,9 @@ sys_update() {
 
     # Check for yay or paru systems
     if [ "$(command -v yay)" ]; then
-        yay -Syu
+        yay -Syu --noconfirm
     elif [ "$(command -v paru)" ]; then
-        paru -Syu
+        paru -Syu --noconfirm
     fi
 
     # Check for yum systems

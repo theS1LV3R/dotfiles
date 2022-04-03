@@ -10,3 +10,5 @@ dotbot
 completions
 .gitmodules
 tool-versions-actual
+misc
+public

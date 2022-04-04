@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "coc-git": ">=2.4.9",
+    "coc-prettier": ">=9.2.3",
+    "coc-tsserver": ">=1.9.15",
+    "coc-vue": ">=0.7.4"
+  }
+}

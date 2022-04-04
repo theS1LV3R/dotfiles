@@ -123,6 +123,7 @@ export NVM_DIR="$HOME/.nvm"
 
 export PATH=$PATH:/home/s1lv3r/.local/bin
 
+alias vim=nvim
 export LIBGL_ALWAYS_INDIRECT=1 #GWSL
 export GDK_SCALE=2 #GWSL
 export QT_SCALE_FACTOR=2 #GWSL

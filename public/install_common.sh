@@ -34,6 +34,24 @@ install_ptsh() {
   cd "$orig_dir"
 }
 
+install_tty-clock() {
+  orig_dir=$PWD
+
+  dir=$(mktemp -d)
+
+  cp -r ../misc/patches/tty-clock "$dir"
+
+  cd "$dir"
+
+  git clone https://github.com/xorg62/tty-clock
+
+  patch -p1 <tty-clock/*.patch
+
+  make
+
+  PREFIX=~/.local make install
+}
+
 pwfeedback() {
   sudo cp ../misc/01-pwfeedback /etc/sudoers.d/
 }
@@ -43,6 +61,7 @@ if [[ -z "${YES:-}" ]]; then
   change_shell
   install_ptsh
   pwfeedback
+  install_tty-clock
 else
 
   read -r -p "Set zsh as default shell? [y/N] " response
@@ -58,6 +77,11 @@ else
   read -r -p "Install pwfeedback to sudo? [y/N] " response
   if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
     pwfeedback
+  fi
+
+  read -r -p "Install tty-clock? [y/N] " response
+  if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
+    install_tty-clock
   fi
 
 fi

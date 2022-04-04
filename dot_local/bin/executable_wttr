@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# Usage: wttr [options] [location]
+set -euo pipefail
+IFS=$'\n\t'
+
+LESS=true
+CITY="bergen"
+
+# Parse flags
+# -h, --help
+# -n, --no-less
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+    -h | --help)
+        cat <<EOF
+Usage: wttr [options] [location]
+Options:
+  -h, --help    Show this help message and exit.
+  -n, --no-less Do not use less to display the weather.
+EOF
+        exit 0
+        ;;
+    -n | --no-less)
+        LESS=false
+        shift
+        ;;
+    *)
+        CITY="$1"
+        shift
+        ;;
+    esac
+done
+
+url="https://v2.wttr.in/$CITY?0FM&lang=en"
+
+echo "Opening $url"
+
+page=$(curl -s "$url")
+
+if test "$(echo -e "$page" | wc -l)" -gt "$(tput lines)"; then
+    if $LESS; then
+        echo -e "$page" | less -R
+    fi
+
+    echo "$page"
+else
+    echo "$page"
+fi

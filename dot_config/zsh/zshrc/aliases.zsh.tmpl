@@ -48,6 +48,8 @@ fi
 alias jwt="jq -R 'split(\".\") | select(length > 0) | .[0],.[1] | @base64d | fromjson'"
 alias grep='grep --color'
 alias c=clear
+alias define=dict
+alias clock="tty-clock -sScbn"
 
 {{- if eq "wsl" .ostype }}
 alias open="explorer.exe"

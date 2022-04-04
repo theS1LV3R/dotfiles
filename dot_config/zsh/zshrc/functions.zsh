@@ -6,20 +6,6 @@ ssh() {
     TERM=xterm-256color command ssh "$@"
 }
 
-wttr() {
-    url="https://v2n.wttr.in/$1?0FmM&lang=en"
-
-    echo "Opening $url"
-    page=$(curl -s "$url")
-
-    if test $(echo $page | wc -l) -gt $(tput lines); then
-        echo $page | less -R
-        echo $page
-    else
-        echo -e $page
-    fi
-}
-
 cheat() {
     url="https://cheat.sh/$@"
 

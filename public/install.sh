@@ -5,10 +5,16 @@ IFS=$'\n\t'
 
 _REPO="https://github.com/theS1LV3R/dotfiles.git"
 
-IS_GIT_REPO=$(git rev-parse --is-inside-work-tree 2>/dev/null && echo true || echo false)
-
 is_arch=$(test -f /etc/arch-release && echo true || echo false)
 is_debian=$(test -f /etc/debian_version && echo true || echo false)
+export common_packages="neovim unzip zsh tmux"
+
+# If neither --codespaces nor --yes is set, ask the user for confirmation
+if [[ -z "${CODESPACES:-}" ]] && [[ -z "${YES:-}" ]] && [[ -z "${SUB:-}" ]]; then
+  echo "NOTE: This _will_ overwrite existing dotfiles. Make sure you have a backup."
+  echo "Press enter to continue or ctrl-c to abort."
+  read -r
+fi
 
 if [[ $is_debian = "true" ]]; then
   sudo apt install git
@@ -19,18 +25,7 @@ else
   exit 1
 fi
 
-if [[ "$IS_GIT_REPO" != "true" ]]; then
-  echo "Not in git repo, cloning to temp dir"
-  TEMP_DIR=$(mktemp -d)
-
-  cd "$TEMP_DIR"
-
-  git clone --depth 1 $_REPO repo
-
-  cd repo/public
-
-  exec "$0" "$@"
-fi
+is_git_repo=$(git rev-parse --is-inside-work-tree 2>/dev/null && echo true || echo false)
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -43,6 +38,10 @@ while [[ $# -gt 0 ]]; do
     export YES=true
     shift
     ;;
+  --sub | -s)
+    export SUB=true
+    shift
+    ;;
   *)
     echo "Unknown argument: $1"
     exit 1
@@ -50,14 +49,19 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# If neither --codespaces nor --yes is set, ask the user for confirmation
-if [[ -z "${CODESPACES:-}" ]] && [[ -z "${YES:-}" ]]; then
-  echo "NOTE: This _will_ overwrite existing dotfiles. Make sure you have a backup."
-  echo "Press enter to continue or ctrl-c to abort."
-  read -r
-fi
+if [[ "$is_git_repo" != "true" ]]; then
+  echo "Not in git repo, cloning to temp dir"
+  TEMP_DIR=$(mktemp -d)
 
-export common_packages="neovim unzip zsh tmux"
+  cd "$TEMP_DIR"
+
+  git clone --depth 1 $_REPO repo
+
+  cd repo/public
+
+  ./install -s "$@"
+  exit
+fi
 
 echo "Collecting information..."
 

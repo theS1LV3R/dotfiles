@@ -10,6 +10,7 @@ packages+=(
     asdf-vm
     zlib
     base-devel
+    archlinux-keyring
 )
 
 if [ "$(command -v yay)" ] && [ "$(command -v paru)" ]; then

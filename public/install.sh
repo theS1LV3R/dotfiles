@@ -12,7 +12,7 @@ export CODESPACES=false
 echo ">>> Collecting information..."
 is_arch=$(test -f /etc/arch-release && echo true || echo false)
 is_debian=$(test -f /etc/debian_version && echo true || echo false)
-export common_packages="neovim unzip zsh tmux gcc neofetch"
+export common_packages="neovim unzip zsh tmux gcc neofetch curl net-tools"
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -70,7 +70,6 @@ if [[ "$is_git_repo" == "false" ]] && [[ "$SUB" == "false" ]]; then
   cd "$TEMP_DIR"/public
 
   bash "./install.sh" -s "$@"
-  exit
 fi
 
 _install() {

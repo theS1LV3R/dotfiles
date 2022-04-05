@@ -12,7 +12,7 @@ export CODESPACES=false
 echo ">>> Collecting information..."
 is_arch=$(test -f /etc/arch-release && echo true || echo false)
 is_debian=$(test -f /etc/debian_version && echo true || echo false)
-export common_packages="neovim unzip zsh tmux gcc"
+export common_packages="neovim unzip zsh tmux gcc neofetch"
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do

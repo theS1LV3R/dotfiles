@@ -35,7 +35,7 @@ else
     chezmoi=$(which chezmoi)
 fi
 
-$chezmoi init theS1LV3R --apply
+$chezmoi init theS1LV3R --apply --force
 
 if [[ ! -d $HOME/.asdf ]] && [[ ! $(command -v asdf) ]]; then
     echo "asdf not installed, installing to $HOME/.asdf"
@@ -46,3 +46,5 @@ set +euo pipefail
 # shellcheck source=/dev/null
 . "$HOME/.asdf/asdf.sh"
 set -euo pipefail
+
+sudo update-alternatives --set editor /usr/bin/vim.basic

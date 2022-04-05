@@ -14,7 +14,7 @@ packages+=(
 )
 
 if [ "$(command -v yay)" ] && [ "$(command -v paru)" ]; then
-    read -r -p "Found yay and paru, select which one to use: [Y/p] " yay_or_paru < /dev/tty
+    read -r -p "Found yay and paru, select which one to use: [Y/p] " yay_or_paru </dev/tty
     if [[ "${yay_or_paru}" =~ ^[Pp] ]]; then
         echo "Using paru"
         paru -Sy --noconfirm --needed "${packages[@]}"
@@ -23,7 +23,7 @@ if [ "$(command -v yay)" ] && [ "$(command -v paru)" ]; then
         yay -Sy --noconfirm --needed "${packages[@]}"
     fi
 else
-    read -r -p "Yay or paru not found, select one to install: [Y/p]" yay_or_paru < /dev/tty
+    read -r -p "Yay or paru not found, select one to install: [Y/p]" yay_or_paru </dev/tty
     if [[ "${yay_or_paru}" =~ ^[Pp] ]]; then
         echo "Installing paru"
         orig_dir=$(pwd)

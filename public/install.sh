@@ -71,7 +71,7 @@ if [[ ! $(command -v git) ]]; then
   if [[ $is_debian = "true" ]]; then
     sudo apt install git
   elif [[ $is_arch = "true" ]]; then
-    sudo pacman -S git
+    sudo pacman -Sy git
   else
     log_warn "Unsupported OS"
     exit 1

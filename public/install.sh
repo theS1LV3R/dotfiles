@@ -3,12 +3,35 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+
 _REPO="https://github.com/theS1LV3R/dotfiles.git"
 export SUB=false
 export YES=false
 export CODESPACES=false
 
-echo ">>> Collecting information..."
+log_info() {
+  echo -e "${GREEN}[INFO]>>>${NC} $1"
+}
+
+log_warn() {
+  echo -e "${RED}[WARN]!!!${NC} $1"
+}
+
+log_ask() {
+  echo -e "${YELLOW}[ASK] ???${NC} $1"
+}
+
+log_verbose() {
+  echo -e "${BLUE}[VERB]---${NC} $1"
+}
+
+log_info "Collecting information..."
 is_arch=$(test -f /etc/arch-release && echo true || echo false)
 is_debian=$(test -f /etc/debian_version && echo true || echo false)
 export common_packages="neovim unzip zsh tmux gcc neofetch curl net-tools vim"
@@ -29,7 +52,7 @@ while [[ $# -gt 0 ]]; do
     shift
     ;;
   *)
-    echo "!!! Unknown argument: $1"
+    log_warn "Unknown argument: $1"
     exit 1
     ;;
   esac
@@ -38,30 +61,27 @@ done
 if [[ "$CODESPACES" == "false" ]] &&
   [[ "$YES" == "false" ]] &&
   [[ "${SUB}" == "false" ]]; then
-  echo ">>> NOTE: This _will_ overwrite existing dotfiles. Make sure you have a backup."
-  echo ">>> Press enter to continue or ctrl-c to abort."
+  log_info "NOTE: This _will_ overwrite existing dotfiles. Make sure you have a backup."
+  log_info "Press enter to continue or ctrl-c to abort."
   read -r </dev/tty
 fi
 
 if [[ ! $(command -v git) ]]; then
-  echo ">>> Installing git..."
+  log_info "Installing git..."
   if [[ $is_debian = "true" ]]; then
     sudo apt install git
   elif [[ $is_arch = "true" ]]; then
     sudo pacman -S git
   else
-    echo "!!! Unsupported OS"
+    log_warn "Unsupported OS"
     exit 1
   fi
 fi
 
 is_git_repo=$(git rev-parse --is-inside-work-tree 2>/dev/null && echo true || echo false)
 
-echo $#
-echo "$@"
-
 if [[ "$is_git_repo" == "false" ]] && [[ "$SUB" == "false" ]]; then
-  echo ">>> Not in git repo, cloning to temp dir"
+  log_info "Not in git repo, cloning to temp dir"
   TEMP_DIR=$(mktemp -d)
 
   git clone --depth 1 $_REPO "$TEMP_DIR"
@@ -76,19 +96,19 @@ _install() {
 
   shift
 
-  echo ">>> Running ./$filename"
+  log_info "Running ./$filename"
   # shellcheck disable=SC1090
   . "./$filename" "$@"
 }
 
 if [[ "${is_arch}" == "true" ]]; then
-  echo ">>> Detected Arch Linux"
+  log_info "Detected Arch Linux"
   _install arch "$common_packages"
 elif [[ "${is_debian}" == "true" ]]; then
-  echo ">>> Detected Debian"
+  log_info "Detected Debian"
   _install deb "$common_packages"
 else
-  echo "!!! Unsupported distribution"
+  log_warn "Unsupported distribution"
   exit 1
 fi
 
@@ -104,7 +124,7 @@ asdf install
 
 change_shell() {
   if [ "$(command -v zsh)" ]; then
-    echo "Changing shell to zsh"
+    log_verbose "Changing shell to zsh"
 
     command -v zsh | sudo tee -a /etc/shells
     user=$USER
@@ -118,10 +138,13 @@ install_ptsh() {
   dir=$(mktemp -d)
   cd "$dir"
 
+  log_verbose "Cloning ptSh"
   git clone https://github.com/jszczerbinsky/ptSh .
 
+  log_verbose "Making and installing ptSh"
   make
   sudo make install
+
   cd "$orig_dir"
 }
 
@@ -130,23 +153,27 @@ install_tty-clock() {
 
   dir=$(mktemp -d)
 
+  log_verbose "Cloning tty-clock and patches"
   git clone https://github.com/xorg62/tty-clock "$dir"
   cp -r ../misc/patches/tty-clock "$dir"/patches
 
   cd "$dir"
 
+  log_verbose "Applying patches"
   patch -p1 <patches/*.patch
 
+  log_verbose "Making and installing tty-clock"
   make
-
   PREFIX=~/.local make install
 }
 
 pwfeedback() {
+  log_verbose "Installing pwfeedback"
   sudo cp ../misc/01-pwfeedback /etc/sudoers.d/
 }
 
-read -r -p ">>> Install all or ask manually? [A/m] " response </dev/tty
+log_ask "Install all or ask manually?"
+read -r -p "[A/m] " response </dev/tty
 if [[ ! $response =~ ^([mM])$ ]] || [[ $YES == "true" ]]; then
   change_shell
   install_ptsh
@@ -154,22 +181,28 @@ if [[ ! $response =~ ^([mM])$ ]] || [[ $YES == "true" ]]; then
   install_tty-clock
 else
 
-  read -r -p "Set zsh as default shell? [y/N] " response </dev/tty
+  log_info "Installing manually"
+
+  log_ask "Set zsh as default shell?"
+  read -r -p "[y/N] " response </dev/tty
   if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
     change_shell
   fi
 
-  read -r -p "Install ptsh? [y/N] " response </dev/tty
+  log_ask "Install ptSh?"
+  read -r -p "[y/N] " response </dev/tty
   if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
     install_ptsh
   fi
 
-  read -r -p "Install pwfeedback to sudo? [y/N] " response </dev/tty
+  log_ask "Configure sudo pwfeedback?"
+  read -r -p "[y/N] " response </dev/tty
   if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
     pwfeedback
   fi
 
-  read -r -p "Install tty-clock? [y/N] " response </dev/tty
+  log_ask "Install tty-clock?"
+  read -r -p "[y/N] " response </dev/tty
   if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
     install_tty-clock
   fi

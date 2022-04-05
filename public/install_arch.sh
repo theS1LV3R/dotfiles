@@ -2,22 +2,27 @@
 
 set -euo pipefail
 
-# From install.sh
-declare common_packages
+IFS=' ' read -r -a packages <<<"$*"
 
-packages="$common_packages chezmoi lsd asdf-vm zlib"
+packages+=(
+    chezmoi
+    lsd
+    asdf-vm
+    zlib
+    base-devel
+)
 
 if [ "$(command -v yay)" ] && [ "$(command -v paru)" ]; then
-    read -r -p "Found yay and paru, select which one to use: [Y/p] " yay_or_paru
+    read -r -p "Found yay and paru, select which one to use: [Y/p] " yay_or_paru < /dev/tty
     if [[ "${yay_or_paru}" =~ ^[Pp] ]]; then
         echo "Using paru"
-        paru -Sy --noconfirm --needed $packages
+        paru -Sy --noconfirm --needed "${packages[@]}"
     else
         echo "Using yay"
-        yay -Sy --noconfirm --needed $packages
+        yay -Sy --noconfirm --needed "${packages[@]}"
     fi
 else
-    read -r -p "Yay or paru not found, select one to install: [Y/p]" yay_or_paru
+    read -r -p "Yay or paru not found, select one to install: [Y/p]" yay_or_paru < /dev/tty
     if [[ "${yay_or_paru}" =~ ^[Pp] ]]; then
         echo "Installing paru"
         orig_dir=$(pwd)

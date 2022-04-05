@@ -2,13 +2,20 @@
 
 set -euo pipefail
 
-# From install.sh
-declare common_packages
+IFS=' ' read -r -a packages <<<"$*"
 
-packages="$common_packages libssl-dev zlib1g-dev"
+packages+=(
+    libssl-dev
+    zlib1g-dev
+    make
+    make-doc
+    libcurl4-openssl-dev
+    libncurses6
+    libncurses-dev
+)
 
 sudo apt update
-sudo apt install -y $packages
+sudo apt install -y "${packages[@]}"
 
 if [ ! "$(command -v chezmoi)" ]; then
     bin_dir="$HOME/.local/bin"

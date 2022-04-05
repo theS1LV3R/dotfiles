@@ -5,7 +5,9 @@ IFS=$'\n\t'
 
 plugins=$(awk '{print $1;}' "$HOME/.tool-versions" | tr '\n' ' ')
 
-for plugin in $plugins; do
+IFS=' ' read -r -a plugins <<<"$plugins"
+
+for plugin in "${plugins[@]}"; do
   asdf plugin add "$plugin" 2>/dev/null || true
 done
 
@@ -39,13 +41,12 @@ install_tty-clock() {
 
   dir=$(mktemp -d)
 
-  cp -r ../misc/patches/tty-clock "$dir"
+  git clone https://github.com/xorg62/tty-clock "$dir"
+  cp -r ../misc/patches/tty-clock "$dir"/patches
 
   cd "$dir"
 
-  git clone https://github.com/xorg62/tty-clock
-
-  patch -p1 <tty-clock/*.patch
+  patch -p1 <patches/*.patch
 
   make
 
@@ -57,29 +58,30 @@ pwfeedback() {
 }
 
 # if YES=true, then assume yes to all prompts
-if [[ -z "${YES:-}" ]]; then
+read -r -p ">>> Install all or ask manually? [A/m] " response </dev/tty
+if [[ ! $response =~ ^([mM])$ ]]; then
   change_shell
   install_ptsh
   pwfeedback
   install_tty-clock
 else
 
-  read -r -p "Set zsh as default shell? [y/N] " response
+  read -r -p "Set zsh as default shell? [y/N] " response </dev/tty
   if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
     change_shell
   fi
 
-  read -r -p "Install ptsh? [y/N] " response
+  read -r -p "Install ptsh? [y/N] " response </dev/tty
   if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
     install_ptsh
   fi
 
-  read -r -p "Install pwfeedback to sudo? [y/N] " response
+  read -r -p "Install pwfeedback to sudo? [y/N] " response </dev/tty
   if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
     pwfeedback
   fi
 
-  read -r -p "Install tty-clock? [y/N] " response
+  read -r -p "Install tty-clock? [y/N] " response </dev/tty
   if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
     install_tty-clock
   fi

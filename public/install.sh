@@ -3,6 +3,21 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+IS_GIT_REPO=$(git rev-parse --is-inside-work-tree 2>/dev/null)
+
+if [[ "$IS_GIT_REPO" != "true" ]]; then
+  echo "Not in git repo, cloning to temp dir"
+  TEMP_DIR=$(mktemp -d)
+
+  cd "$TEMP_DIR"
+
+  git clone --depth 1 repo
+
+  cd repo/public
+
+  exec "$0" "$@"
+fi
+
 # Parse arguments
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -11,7 +26,7 @@ while [[ $# -gt 0 ]]; do
     shift
     ;;
   --yes | -y)
-    YES=true
+    export YES=true
     shift
     ;;
   *)
@@ -21,6 +36,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+# If neither --codespaces nor --yes is set, ask the user for confirmation
 if [[ -z "${CODESPACES:-}" ]] && [[ -z "${YES:-}" ]]; then
   echo "NOTE: This _will_ overwrite existing dotfiles. Make sure you have a backup."
   echo "Press enter to continue or ctrl-c to abort."
@@ -33,42 +49,31 @@ echo "Collecting information..."
 is_arch=$(test -f /etc/arch-release && echo true || echo false)
 is_debian=$(test -f /etc/debian_version && echo true || echo false)
 
-install_arch() {
-  if test -f ./install_arch.sh; then
-    echo "Running ./install_arch.sh"
-    ./install_arch.sh
-  else
-    echo "No ./install_arch.sh found, downloading..."
-    wget https://raw.githubusercontent.com/theS1LV3R/dotfiles/master/public/install_arch.sh
-  fi
-}
+_install() {
+  filename="install_$1.sh"
 
-install_deb() {
-  if test -f ./install_deb.sh; then
-    echo "Running ./install_deb.sh"
-    ./install_deb.sh
+  if test -f "./$filename"; then
+    echo "Running ./$filename"
+    # shellcheck disable=SC1090
+    . "./$filename"
   else
-    echo "No ./install_deb.sh found, downloading..."
-    wget https://raw.githubusercontent.com/theS1LV3R/dotfiles/master/public/install_deb.sh
-  fi
-}
-
-install_common() {
-  if test -f ./install_common.sh; then
-    echo "Running ./install_common.sh"
-    ./install_common.sh
-  else
-    echo "No ./install_common.sh found, downloading..."
-    wget https://raw.githubusercontent.com/theS1LV3R/dotfiles/master/public/install_common.sh
+    echo "No ./$filename found, downloading..."
+    wget https://raw.githubusercontent.com/theS1LV3R/dotfiles/master/public/$filename
+    chmod +x "./$filename"
+    # shellcheck disable=SC1090
+    . "./$filename"
   fi
 }
 
 if [[ "${is_arch}" == "true" ]]; then
   echo "Detected Arch Linux"
-  install_arch
+  _install arch
 elif [[ "${is_debian}" == "true" ]]; then
   echo "Detected Debian"
-  install_deb
+  _install deb
+else
+  echo "Unsupported distribution"
+  exit 1
 fi
 
-install_common
+_install common

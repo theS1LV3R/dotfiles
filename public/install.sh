@@ -56,14 +56,12 @@ if [[ "$is_git_repo" != "true" ]]; then
   echo ">>> Not in git repo, cloning to temp dir"
   TEMP_DIR=$(mktemp -d)
 
-  git clone --depth 1 $_REPO "$TEMP_DIR/repo"
-
-  cd "$TEMP_DIR/repo/public"
+  git clone --depth 1 $_REPO "$TEMP_DIR"
 
   pwd
   ls -la
 
-  ./install.sh -s "$@"
+  bash "$TEMP_DIR/install.sh" -s "$@"
   exit
 fi
 

@@ -3,7 +3,21 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-IS_GIT_REPO=$(git rev-parse --is-inside-work-tree 2>/dev/null)
+_REPO="https://github.com/theS1LV3R/dotfiles.git"
+
+IS_GIT_REPO=$(git rev-parse --is-inside-work-tree 2>/dev/null && echo true || echo false)
+
+is_arch=$(test -f /etc/arch-release && echo true || echo false)
+is_debian=$(test -f /etc/debian_version && echo true || echo false)
+
+if [[ $is_debian = "true" ]]; then
+  sudo apt install git
+elif [[ $is_arch = "true" ]]; then
+  sudo pacman -S git
+else
+  echo "Unsupported OS"
+  exit 1
+fi
 
 if [[ "$IS_GIT_REPO" != "true" ]]; then
   echo "Not in git repo, cloning to temp dir"
@@ -11,7 +25,7 @@ if [[ "$IS_GIT_REPO" != "true" ]]; then
 
   cd "$TEMP_DIR"
 
-  git clone --depth 1 repo
+  git clone --depth 1 $_REPO repo
 
   cd repo/public
 
@@ -46,8 +60,6 @@ fi
 export common_packages="neovim unzip zsh tmux"
 
 echo "Collecting information..."
-is_arch=$(test -f /etc/arch-release && echo true || echo false)
-is_debian=$(test -f /etc/debian_version && echo true || echo false)
 
 _install() {
   filename="install_$1.sh"

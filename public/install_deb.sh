@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
+IFS=$'\n\t'
+
+source ./util.sh
 
 IFS=' ' read -r -a packages <<<"$*"
 
@@ -21,14 +24,14 @@ if [ ! "$(command -v chezmoi)" ]; then
     bin_dir="$HOME/.local/bin"
     chezmoi="$bin_dir/chezmoi"
 
-    echo "Chezmoi not installed, installing to $chezmoi"
+    log_info "Chezmoi not installed, installing to $chezmoi"
 
     if [ "$(command -v curl)" ]; then
         sh -c "$(curl -fsSL https://git.io/chezmoi)" -- -b "$bin_dir"
     elif [ "$(command -v wget)" ]; then
         sh -c "$(wget -qO- https://git.io/chezmoi)" -- -b "$bin_dir"
     else
-        echo "To install chezmoi, you must have curl or wget installed." >&2
+        log_warn "To install chezmoi, you must have curl or wget installed." >&2
         exit 1
     fi
 else
@@ -38,7 +41,7 @@ fi
 $chezmoi init theS1LV3R --apply --force
 
 if [[ ! -d $HOME/.asdf ]] && [[ ! $(command -v asdf) ]]; then
-    echo "asdf not installed, installing to $HOME/.asdf"
+    log_info "asdf not installed, installing to $HOME/.asdf"
     git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.9.0
 fi
 

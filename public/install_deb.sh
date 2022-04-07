@@ -69,5 +69,3 @@ set +euo pipefail
 # shellcheck source=/dev/null
 . "$HOME/.asdf/asdf.sh"
 set -euo pipefail
-
-sudo update-alternatives --set editor /usr/bin/vim.basic

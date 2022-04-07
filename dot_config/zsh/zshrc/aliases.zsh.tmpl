@@ -1,4 +1,4 @@
-if [[ -f /usr/bin/lsd ]] then;
+if (( $+command[lsd] )) then
     alias ls='lsd --color=auto'
 fi;
 
@@ -25,12 +25,6 @@ alias mask="sudo systemctl mask "
 alias unmask="sudo systemctl unmask "
 alias status="sudo systemctl status "
 alias reload="sudo systemctl reload "
-
-if [[ -f /opt/asdf-vm/asdf.sh ]]; then
-    . /opt/asdf-vm/asdf.sh
-else
-    . $HOME/.asdf/asdf.sh
-fi
 
 # if (( $+commands[ptpwd] )); then
     # alias pwd='ptpwd'

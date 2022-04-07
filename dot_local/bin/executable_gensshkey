@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+file_name="$1"
+target="${2:-}"
+_type="${3:-ed25519}"
+
+if [ -z "$file_name" ]; then
+    cat <<EOF
+Usage: $0 <file_name> [target] [type]
+Example: $0 ~/.ssh/some_key github.com ed25519
+
+Target is added to the comment of the key in the format USER@HOST [-> target]
+EOF
+    exit 1
+fi
+
+ssh-keygen \
+    -t "$_type" \
+    -f "$file_name" \
+    -C "$USER@$HOSTNAME $target"

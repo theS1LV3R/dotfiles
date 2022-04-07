@@ -6,16 +6,33 @@ export PATH=$PATH:$GOPATH/bin
 # Disable dotnet telemetry
 export DOTNET_CLI_TELEMETRY_OPTOUT=true
 
-export EDITOR=vim
+export EDITOR=nvim
 
 if [[ -n "$SSH_CONNECTION" ]]; then
   export PINENTRY_USER_DATA="USE_CURSES=1"
 fi
 
-# rust_dir=$(asdf where rust)
-rust_dir="$HOME/.asdf/installs/rust/1.59.0"
-if [[ -n "$rust_dir" ]]; then
-  source $rust_dir/env
+ASDF=false
+
+export ASDF_CONFIG_FILE=${XDG_CONFIG_HOME}/asdf/asdfrc
+
+export ASDF_PYTHON_DEFAULT_PACKAGES_FILE=${XDG_CONFIG_HOME}/asdf/default-python-packages
+export ASDF_NPM_DEFAULT_PACKAGES_FILE=${XDG_CONFIG_HOME}/asdf/default-npm-packages
+export ASDF_GEM_DEFAULT_PACKAGES_FILE=${XDG_CONFIG_HOME}/asdf/default-gems
+
+if [[ -f /opt/asdf-vm/asdf.sh ]]; then
+  . /opt/asdf-vm/asdf.sh
+  ASDF=true
+elif [[ -f $HOME/.asdf/asdf.sh ]]; then
+  . $HOME/.asdf/asdf.sh
+  ASDF=true
+fi
+
+if [[ "$ASDF" == true ]]; then
+  rust_dir=$(asdf where rust)
+  if [[ -n "$rust_dir" ]]; then
+    source $rust_dir/env
+  fi
 fi
 
 # Load a local env file if it exists, for example secrets and stuff

@@ -1,0 +1,10 @@
+serve
+license
+@nestjs/cli
+@vue/cli
+@nuxt/cli
+create-react-app
+create-nuxt-app
+neovim
+netlify-cli
+wscat

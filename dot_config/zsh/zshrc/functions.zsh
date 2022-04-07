@@ -6,20 +6,6 @@ ssh() {
     TERM=xterm-256color command ssh "$@"
 }
 
-cheat() {
-    url="https://cheat.sh/$@"
-
-    echo "Opening $url"
-    page=$(curl -s "$url")
-
-    if test $(echo $page | wc -l) -gt $(tput lines); then
-        echo $page | less -R
-        echo $page
-    else
-        echo -e $page
-    fi
-}
-
 dict() {
     page=$(command dict "$@")
 
@@ -76,4 +62,11 @@ update() {
         brew update
         brew upgrade
     fi
+}
+
+path () {
+    echo  ${PATH//:/\\n} | sed '=' | sed 'N;s/\n/\t/'
+}
+fpath() {
+    echo ${FPATH//:/\\n} | sed '=' | sed 'N;s/\n/\t/'
 }

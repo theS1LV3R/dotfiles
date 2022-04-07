@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+cachedir="$HOME/.cache/cheat.sh/"
+url="https://cheat.sh/$*"
+
+mkdir -p "$cachedir"
+
+ping -c 1 -w 1 cheat.sh >/dev/null 2>&1
+exitstatus=$?
+
+if [[ $exitstatus -ne 0 ]]; then
+    echo "Unable to connect to cheat.sh, please check your internet connection."
+
+    if [ -f "$cachedir/$*" ]; then
+        echo "Using cached version. Last updated: $(stat -c %y "$cachedir/$*")"
+        cat "$cachedir/$*"
+        exit 0
+    fi
+
+    echo "Page requested not in cache."
+    exit 1
+fi
+
+echo "Opening $url"
+page=$(curl -s "$url")
+
+if ! echo "$page" | grep -ivq "Unknown topic."; then
+    echo "$page"
+    exit 1
+fi
+
+echo "$page" >"$cachedir/$*"
+
+if test "$(echo "$page" | wc -l)" -gt "$(tput lines)"; then
+    echo "$page" | less -R
+    echo "$page"
+else
+    echo -e "$page"
+fi

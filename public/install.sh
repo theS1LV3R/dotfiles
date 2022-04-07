@@ -3,7 +3,27 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-source ./util.sh
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+
+log_info() {
+  echo -e "${GREEN}[INFO]>>>${NC} $1"
+}
+
+log_warn() {
+  echo -e "${RED}[WARN]!!!${NC} $1"
+}
+
+log_ask() {
+  echo -e "${YELLOW}[ASK] ???${NC} $1"
+}
+
+log_verbose() {
+  echo -e "${BLUE}[VERB]---${NC} $1"
+}
 
 _REPO="https://github.com/theS1LV3R/dotfiles.git"
 export SUB=false
@@ -115,13 +135,19 @@ install_ptsh() {
   orig_dir=$PWD
 
   dir=$(mktemp -d)
-  cd "$dir"
 
   log_verbose "Cloning ptSh"
-  git clone https://github.com/jszczerbinsky/ptSh .
+  git clone https://github.com/jszczerbinsky/ptSh "$dir"
+  cp -r ../misc/patches/ptSh/* "$dir"/patches
+
+  cd "$dir"
+
+  log_verbose "Applying patches"
+  patch -p1 <patches/*.patch
 
   log_verbose "Making and installing ptSh"
   make
+  strip -s build/bin/*
   sudo make install
 
   cd "$orig_dir"
@@ -143,6 +169,7 @@ install_tty-clock() {
 
   log_verbose "Making and installing tty-clock"
   make
+  strip -s tty-clock
   PREFIX=~/.local make install
 }
 

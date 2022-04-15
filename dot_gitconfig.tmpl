@@ -1,0 +1,46 @@
+[core]
+    autocrlf = false
+    eol = lf
+    editor = nvim
+
+[user]
+    name = {{ .name }}
+    email = {{ .email }}
+    signingkey = 85FA2FC2D8035859AE77FF6E636660BB3A5C2F87
+
+[commit]
+    gpgsign = true
+
+[gpg]
+{{- if eq .chezmoi.os "windows" }}
+    program = gpg
+{{- else }}
+    program = gpg2
+{{- end }}
+
+[pull]
+    rebase = false
+
+[color]
+    ui = auto
+
+[init]
+    defaultBranch = master
+
+[feature]
+    manyFiles = true
+
+[include]
+    path = ~/.gitconfig_local
+
+[includeIf "gitdir:~/kode/machina/"]
+    path = ~/kode/machina/.gitconfig
+
+[alias]
+    lg = log --color --graph --pretty=format:'%Cred%h%Creset %Cgreen(%cr) %C(bold blue)<%an>%Creset -%C(yellow)%d%Creset %s' --abbrev-commit
+
+[filter "lfs"]
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true

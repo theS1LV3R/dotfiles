@@ -10,12 +10,14 @@ print_info() {
     info "Uptime" uptime
     info "Packages" packages
     info "Shell" shell
+{{ if ne .ostype "wsl" }}
     info "Resolution" resolution
     info "DE" de
     info "WM" wm
     info "WM Theme" wm_theme
     info "Theme" theme
     info "Icons" icons
+{{- end }}
     info "Terminal" term
     info "Terminal Font" term_font
     info "CPU" cpu
@@ -25,11 +27,12 @@ print_info() {
     # info "GPU Driver" gpu_driver  # Linux/macOS only
     # info "CPU Usage" cpu_usage
     info "Disk" disk
-    info "Disk" disk_home
     # info "Battery" battery
     # info "Font" font
+{{ if ne .ostype "wsl" }}
     info "Song" song
-    # [[ "$player" ]] && prin "Music Player" "$player"
+{{- end }}
+    [[ "$player" ]] && prin "Music Player" "$player"
     info "Local IP" local_ip
     # info "Public IP" public_ip
     # info "Users" users
@@ -299,8 +302,11 @@ gpu_type="all"
 # Example:
 # on:  '1920x1080 @ 60Hz'
 # off: '1920x1080'
+{{- if eq "wsl" .ostype }}
 refresh_rate="off"
-
+{{- else }}
+refresh_rate="on"
+{{- end }}
 
 # Gtk Theme / Icons / Font
 
@@ -388,7 +394,11 @@ de_version="on"
 # disk_show=('/'):
 #      'Disk (/): 74G / 118G (66%)'
 #
+{{- if eq "wsl" .ostype }}
+disk_show=('/' '/mnt/c')
+{{- else }}
 disk_show=('/' '/home')
+{{- end }}
 
 # Disk subtitle.
 # What to append to the Disk subtitle.

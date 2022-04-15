@@ -39,3 +39,7 @@ fi
 if [[ -f $ZSH_SCRIPTS/env.local.zsh && -r $ZSH_SCRIPTS/env.local.zsh ]]; then
   source $ZSH_SCRIPTS/env.local.zsh
 fi
+
+if [[ -f $HOME/.config/tabtab/zsh/__tabtab.zsh ]]; then
+  source $HOME/.config/tabtab/zsh/__tabtab.zsh || true
+fi

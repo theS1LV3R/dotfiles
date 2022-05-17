@@ -1,16 +1,13 @@
-if (( $+command[lsd] )) then
-    alias ls='lsd --color=auto'
-fi;
+(( $+commands[nvim] )) && alias vim='nvim'
+(( $+commands[bat]  )) && alias cat='bat'
+(( $+commands[ls] ))   && alias ls='lsd --color=auto'
+(( $+commands[bat] ))  && alias pcat='bat --paging=never -p'
 
 # ls aliases
 alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -F'
 alias lah='ls -lah'
-
-# Nvim alias for vim
-if (( $+commands[nvim] )); then alias vim='nvim'; fi;
-if (( $+commands[bat]  )); then alias cat='bat' ; fi;
 
 alias dir='dir --color=auto'
 alias vdir='vdir --color=auto'
@@ -30,25 +27,27 @@ alias restart="sudo systemctl restart "
 alias stop="sudo systemctl stop "
 alias enable="sudo systemctl enable "
 alias disable="sudo systemctl disable "
-alias mask="sudo systemctl mask "
-alias unmask="sudo systemctl unmask "
 alias status="sudo systemctl status "
 alias reload="sudo systemctl reload "
 
-# if (( $+commands[ptpwd] )); then
-    # alias pwd='ptpwd'
-# fi
+# (( $+commands[ptpwd] )) && alias pwd='ptpwd'
+# (( $+commands[ptcp] )) && alias cp='ptcp'
 
-if (( $+commands[ptcp] )); then
-    alias cp='ptcp'
+if (( $+commands[paru] )) && (( ! $+commands[yay] )); then
+  alias yay=paru
+else if (( ! $+commands[paru] )) && (( $+commands[yay] ))
+  alias paru=yay
 fi
-
 
 alias jwt="jq -R 'split(\".\") | select(length > 0) | .[0],.[1] | @base64d | fromjson'"
 alias grep='grep --color'
-alias c=clear
+alias c="clear -x"
 alias define=dict
 alias clock="tty-clock -sScbn"
+alias serial="sudo mintty"
+
+alias wgup="sudo wg-quick up"
+alias wgdown="sudo wg-quick down"
 
 {{- if eq "wsl" .ostype }}
 alias open="explorer.exe"

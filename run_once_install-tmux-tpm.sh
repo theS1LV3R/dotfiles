@@ -1,6 +1,9 @@
 #!/bin/bash
 
-[ -d ~/.tmux ] || mkdir ~/.tmux
-[ -d ~/.tmux/plugins ] || mkdir ~/.tmux/plugins
+DIR="${HOME}/.tmux/plugins"
 
-[ -d ~/.tmux/plugins/tpm ] || git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+mkdir -p "${DIR}" || :
+
+if [[ ! -d "${DIR}/tpm" ]]; then
+ git clone https://github.com/tmux-plugins/tpm "${DIR}"/tpm
+fi

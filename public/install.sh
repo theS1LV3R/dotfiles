@@ -3,11 +3,26 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+# ==============================================================================
+#region Config stuff
+# ==============================================================================
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 YELLOW='\033[0;33m'
 NC='\033[0m' # No Color
+
+_REPO="https://github.com/theS1LV3R/dotfiles.git"
+export common_packages="neovim unzip zsh tmux gcc neofetch curl net-tools vim"
+
+# ==============================================================================
+#endregion
+# ==============================================================================
+
+# ==============================================================================
+#region Utility functions
+# ==============================================================================
 
 log_info() {
   echo -e "${GREEN}[INFO]>>>${NC} $1"
@@ -25,7 +40,10 @@ log_verbose() {
   echo -e "${BLUE}[VERB]---${NC} $1"
 }
 
-_REPO="https://github.com/theS1LV3R/dotfiles.git"
+# ==============================================================================
+#endregion
+# ==============================================================================
+
 export SUB=false
 export YES=false
 export CODESPACES=false
@@ -33,7 +51,6 @@ export CODESPACES=false
 log_info "Collecting information..."
 is_arch=$(test -f /etc/arch-release && echo true || echo false)
 is_debian=$(test -f /etc/debian_version && echo true || echo false)
-export common_packages="neovim unzip zsh tmux gcc neofetch curl net-tools vim"
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -171,11 +188,18 @@ install_tty-clock() {
   make
   strip -s tty-clock
   PREFIX=~/.local make install
+
+  cd "$orig_dir"
 }
 
-pwfeedback() {
-  log_verbose "Installing pwfeedback"
-  sudo cp ../misc/01-pwfeedback /etc/sudoers.d/
+sudoersd-files() {
+  log_verbose "Installing sudoers.d files"
+
+  log_ask "Copying files to /etc/sudoers.d requires root privileges. Do you want to continue?"
+  read -r -p "[y/N] " response </dev/tty
+  if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+    sudo cp -r ../misc/sudoers.d/* /etc/sudoers.d/
+  fi
 }
 
 log_ask "Install all or ask manually?"
@@ -183,7 +207,7 @@ read -r -p "[A/m] " response </dev/tty
 if [[ ! $response =~ ^([mM])$ ]] || [[ $YES == "true" ]]; then
   change_shell
   install_ptsh
-  pwfeedback
+  sudoersd-files
   install_tty-clock
 else
 
@@ -201,10 +225,10 @@ else
     install_ptsh
   fi
 
-  log_ask "Configure sudo pwfeedback?"
+  log_ask "Copy sudoers.d files?"
   read -r -p "[y/N] " response </dev/tty
   if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
-    pwfeedback
+    sudoersd-files
   fi
 
   log_ask "Install tty-clock?"

@@ -216,7 +216,8 @@ function _bw_status {
 
 function _bw_serve {
   _arguments -C \
-    '--port[The port to run your API webserver on. Default port is 8087.]' \
+    '--hostname[The hostname to bind your API webserver to.]' \
+    '--port[The port to run your API webserver on.]' \
     '(-h --help)'{-h,--help}'[output usage information]' \
     "*::arg:->args"
 }

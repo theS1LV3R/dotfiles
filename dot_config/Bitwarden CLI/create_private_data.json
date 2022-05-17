@@ -1,0 +1,40 @@
+{
+  "tempAccountSettings": {
+    "biometricLocked": null,
+    "environmentUrls": {
+      "base": null,
+      "api": null,
+      "identity": null,
+      "icons": null,
+      "notifications": null,
+      "events": null,
+      "webVault": null,
+      "keyConnector": null
+    },
+    "pinProtected": {
+      "decrypted": null,
+      "encrypted": null
+    },
+    "protectedPin": null,
+    "settings": null,
+    "vaultTimeoutAction": "lock"
+  },
+  "global": {
+    "locale": "en",
+    "theme": "system",
+    "window": {},
+    "stateVersion": 4,
+    "environmentUrls": {
+      "base": null,
+      "api": null,
+      "identity": null,
+      "icons": null,
+      "notifications": null,
+      "events": null,
+      "webVault": null,
+      "keyConnector": null
+    },
+    "installedVersion": "1.22.1"
+  },
+  "authenticatedAccounts": []
+}

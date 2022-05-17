@@ -21,11 +21,7 @@ for x in {0..8}; do
     done
 done
 
-echo ""
-
-
-
-for i in {0..255}; do
-    #shellcheck disable=SC2296,SC2298
-    print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+$'\n'};
-done
+# for i in {0..255}; do
+#     #shellcheck disable=SC2296,SC2298
+#     print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+$'\n'};
+# done

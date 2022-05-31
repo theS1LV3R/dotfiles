@@ -39,15 +39,24 @@ else if (( ! $+commands[paru] )) && (( $+commands[yay] ))
   alias paru=yay
 fi
 
+# Splits a jwt string, and returns the header and payload
 alias jwt="jq -R 'split(\".\") | select(length > 0) | .[0],.[1] | @base64d | fromjson'"
 alias grep='grep --color'
 alias c="clear -x"
 alias define=dict
 alias clock="tty-clock -sScbn"
-alias serial="sudo mintty"
+alias serial="sudo minicom"
+alias hostname="hostnamectl hostname"
+
+# force zsh to show the complete history
+alias history="history 0"
+
 
 alias wgup="sudo wg-quick up"
 alias wgdown="sudo wg-quick down"
+
+alias deactivateLinux="systemctl --user start activate-linux.service"
+alias activateLinux="systemctl --user stop activate-linux.service"
 
 {{- if eq "wsl" .ostype }}
 alias open="explorer.exe"

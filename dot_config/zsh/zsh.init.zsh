@@ -26,9 +26,6 @@ source $ZSH_SCRIPTS/keybinds.zsh
 source $ZSH_SCRIPTS/completion.zsh
 source $ZSH_SCRIPTS/history.zsh
 
-# force zsh to show the complete history
-alias history="history 0"
-
 precmd() { print -Pn "\e]2;%n@%M:%~\a"; } # title bar prompt
 
 source $ZSH_SCRIPTS/env.zsh

@@ -1,5 +1,0 @@
-# vim: set ft=ssh_config
-
-AddKeysToAgent ask
-CanonicalizeHostname yes
-ServerAliveInterval 60

@@ -1,3 +1,10 @@
-# vim: set ft=ssh_config
+# vim: set ft=sshconfig
 
-Include config.d/*
+Include config.d/*.conf
+
+
+
+# ADD CONFIG OVER THIS LINE
+
+AddKeysToAgent ask
+ServerAliveInterval 60

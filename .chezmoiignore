@@ -15,3 +15,5 @@ completions
 misc
 # installation files, screenshots, util scripts, etc.
 public
+
+.vscode

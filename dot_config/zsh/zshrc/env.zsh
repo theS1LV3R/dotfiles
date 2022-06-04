@@ -3,14 +3,7 @@ export PATH=$PATH:./node_modules/.bin
 export PATH=$PATH:~/.local/bin
 export PATH=$PATH:$GOPATH/bin
 
-# Disable dotnet telemetry
-export DOTNET_CLI_TELEMETRY_OPTOUT=true
-
 export EDITOR=nvim
-
-if [[ -n "$SSH_CONNECTION" ]]; then
-  export PINENTRY_USER_DATA="USE_CURSES=1"
-fi
 
 ASDF=false
 

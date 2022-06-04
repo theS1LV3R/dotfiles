@@ -6,3 +6,10 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DATA_HOME="$HOME/.local/share"
 export GTK_USE_PORTAL=1
+
+# Disable dotnet telemetry
+export DOTNET_CLI_TELEMETRY_OPTOUT=true
+
+if [[ -n "$SSH_CONNECTION" ]]; then
+  export PINENTRY_USER_DATA="USE_CURSES=1"
+fi

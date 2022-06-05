@@ -1,0 +1,70 @@
+#!/usr/bin/env zsh
+#! DO NOT FORMAT THIS FILE!
+
+(( $+commands[nvim] )) && alias vim='nvim'
+(( $+commands[bat] )) && alias cat='bat'
+(( $+commands[ls] )) && alias ls='lsd --color=auto'
+(( $+commands[bat] )) && alias pcat='bat --paging=never -p'
+
+# ls aliases
+alias ll='ls -l'
+alias la='ls -A'
+alias l='ls -F'
+alias lah='ls -lah'
+
+colorauto_commands=(
+  dir
+  vdir
+  grep
+  fgrep
+  egrep
+  diff
+  ip
+)
+
+for command in "${colorauto_commands[@]}"; do
+  alias "$command"="$command --color=auto"
+done
+
+# Termbin
+alias tb='nc termbin.com 9999'
+
+# Systemctl aliases
+systemctl_aliases=(
+  start
+  restart
+  stop
+  status
+  enable
+  disable
+  reload
+)
+for alias in "${systemctl_aliases[@]}"; do
+  alias $alias="sudo systemctl $alias"
+done
+
+# (( $+commands[ptpwd] )) && alias pwd='ptpwd'
+# (( $+commands[ptcp] )) && alias cp='ptcp'
+
+if (( $+commands[paru])) && (( !$+commands[yay] )); then
+  alias yay=paru
+elif (( !$+commands[paru] )) && (( $+commands[yay] )); then
+  alias paru=yay
+fi
+
+# Splits a jwt string, and returns the header and payload
+alias jwt="jq -R 'split(\".\") | select(length > 0) | .[0],.[1] | @base64d | fromjson'"
+alias grep='grep --color'
+alias c="clear -x"
+alias define=dict
+alias clock="tty-clock -sScbn"
+alias serial="sudo minicom"
+alias hostname="hostnamectl hostname"
+alias open='xdg-open'
+alias history="history 0" # force zsh to show the complete history
+
+alias wgup="sudo wg-quick up"
+alias wgdown="sudo wg-quick down"
+
+alias deactivateLinux="systemctl --user start activate-linux.service"
+alias activateLinux="systemctl --user stop activate-linux.service"

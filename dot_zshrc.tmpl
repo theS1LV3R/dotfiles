@@ -1,15 +1,11 @@
 #zmodload zsh/zprof
 
-{{- if eq "wsl" .ostype }}
-# WSL spesifics
-export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}'):0.0 #GWSL
-export PULSE_SERVER=tcp:$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}') #GWSL
-export LIBGL_ALWAYS_INDIRECT=1 #GWSL
-{{- end }}
-
-
 export DOTFILES_DIR={{ .chezmoi.sourceDir }}
 export SCRIPTS_DIR="$HOME/.config/zsh"
+
+#! SOURCE **BEFORE** ANTIGEN
+#! IMPORTANT
+source $SCRIPTS_DIR/zsh-autocomplete.zsh
 
 # Load antigen (Plugin manager)
 source $DOTFILES_DIR/antigen/antigen.zsh
@@ -23,7 +19,7 @@ source $SCRIPTS_DIR/p10k.init.zsh
 source $SCRIPTS_DIR/zsh.init.zsh
 
 # Load custom completions
-antigen bundle $DOTFILES_DIR/completions
+antigen bundle $SCRIPTS_DIR/completions
 
 # P10K theme
 antigen theme romkatv/powerlevel10k

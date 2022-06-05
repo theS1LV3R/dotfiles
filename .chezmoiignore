@@ -9,11 +9,14 @@ README.md
 
 # submodule
 antigen
-# autocomp files
-completions
+
 # files that dont fit in other categories
 misc
-# installation files, screenshots, util scripts, etc.
-public
+
+# installation files
+script
+
+# Dont copy zsh plugins to home dir
+zsh_plugins
 
 .vscode

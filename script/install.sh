@@ -102,7 +102,7 @@ if [[ "$is_git_repo" == "false" ]] && [[ "$SUB" == "false" ]]; then
 
   git clone --depth 1 $_REPO "$TEMP_DIR"
 
-  cd "$TEMP_DIR"/public
+  cd "$TEMP_DIR"/script
 
   bash "./install.sh" -s "$@"
 fi

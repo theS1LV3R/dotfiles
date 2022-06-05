@@ -27,12 +27,10 @@ export ZSH_SCRIPTS=$SCRIPTS_DIR/zshrc
 source $ZSH_SCRIPTS/keybinds.zsh
 source $ZSH_SCRIPTS/completion.zsh
 source $ZSH_SCRIPTS/history.zsh
-
-precmd() { print -Pn "\e]2;%n@%M:%~\a"; } # title bar prompt
-
 source $ZSH_SCRIPTS/env.zsh
 source $ZSH_SCRIPTS/colors.zsh
 source $ZSH_SCRIPTS/aliases.zsh
 source $ZSH_SCRIPTS/functions.zsh
+source $ZSH_SCRIPTS/wsl.zsh
 
 unset ZSH_SCRIPTS

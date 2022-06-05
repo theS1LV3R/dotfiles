@@ -28,12 +28,4 @@ if [[ "$ASDF" == true ]]; then
   fi
 fi
 
-# tabtab source for netlify package
-# uninstall by removing these lines
-[[ -f ~/.config/tabtab/__tabtab.zsh ]] && . ~/.config/tabtab/__tabtab.zsh
-
-
-# Load a local env file if it exists, for example secrets and stuff
-if [[ -f $ZSH_SCRIPTS/env.local.zsh && -r $ZSH_SCRIPTS/env.local.zsh ]]; then
-  source $ZSH_SCRIPTS/env.local.zsh
-fi
+[[ -x $ZSH_SCRIPTS/env.local.zsh ]] && source $ZSH_SCRIPTS/env.local.zsh

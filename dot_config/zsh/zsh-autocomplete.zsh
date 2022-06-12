@@ -1,6 +1,8 @@
 zstyle ':completion:*:*:*:*:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' # case insensitive tab completion
 
+fpath=($SCRIPTS_DIR/completions $fpath)
+
 typeset -A key
 key=(
     BackSpace "${terminfo[kbs]}"

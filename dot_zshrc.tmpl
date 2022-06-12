@@ -1,6 +1,7 @@
 #zmodload zsh/zprof
 zmodload zsh/complist
 autoload -Uzd compinit bashcompinit
+compinit
 
 export DOTFILES_DIR={{ .chezmoi.sourceDir }}
 export SCRIPTS_DIR="$HOME/.config/zsh"

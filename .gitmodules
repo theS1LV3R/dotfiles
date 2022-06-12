@@ -1,6 +1,7 @@
-[submodule "antigen"]
-    path = antigen
-    url = https://github.com/zsh-users/antigen
 [submodule "zsh_plugins/zsh-autocomplete"]
 	path = zsh_plugins/zsh-autocomplete
-	url = git@github.com:marlonrichert/zsh-autocomplete.git
+	url = https://github.com/marlonrichert/zsh-autocomplete.git
+
+[submodule "zi/bin"]
+	path = zi/bin
+	url = https://github.com/z-shell/zi.git

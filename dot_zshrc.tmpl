@@ -1,13 +1,13 @@
 #zmodload zsh/zprof
 
 zmodload zsh/complist
-autoload compinit && compinit
+autoload -U compinit && compinit
 autoload -U bashcompinit && bashcompinit
-
 
 export DOTFILES_DIR={{ .chezmoi.sourceDir }}
 export SCRIPTS_DIR="$HOME/.config/zsh"
 export GPG_TTY=$(tty)
+export fpath=($SCRIPTS_DIR/completions $fpath)
 
 # Zi options
 declare -A ZI
@@ -15,16 +15,15 @@ declare -A ZI
 ZI[HOME_DIR]="${DOTFILES_DIR}/zi"
 ZI[BIN_DIR]="${ZI[HOME_DIR]}/bin"
 
-export zi_home="${DOTFILES_DIR}/zi"
+export zi_home="${ZI[HOME_DIR]}"
 source "${zi_home}/bin/zi.zsh"
 
+autoload -Uz _zi
+(( ${+_comps} )) && _comps[zi]=_zi
 
 #! SOURCE **BEFORE** ANTIGEN
 #! IMPORTANT
 source $SCRIPTS_DIR/zsh-autocomplete.zsh
-
-
-export fpath=($SCRIPTS_DIR/completions $fpath)
 
 # p10k (Prompt)
 source $SCRIPTS_DIR/p10k.init.zsh
@@ -58,7 +57,6 @@ for plugin in "${omz_plugins[@]}"; do
     zi snippet OMZP::${plugin}
 done
 
-zi light-mode for \
-  z-shell/z-a-meta-plugins \
-  @annexes
+zi light-mode for z-shell/z-a-meta-plugins @annexes
+
 zicompinit

@@ -3,7 +3,7 @@
 
 (( $+commands[nvim] )) && alias vim='nvim'
 (( $+commands[bat] )) && alias cat='bat'
-(( $+commands[ls] )) && alias ls='lsd --color=auto'
+(( $+commands[ls] )) && alias ls='lsd'
 (( $+commands[bat] )) && alias pcat='bat --paging=never -p'
 
 # ls aliases
@@ -13,6 +13,7 @@ alias l='ls -F'
 alias lah='ls -lah'
 
 colorauto_commands=(
+  lsd
   dir
   vdir
   grep
@@ -54,7 +55,6 @@ fi
 
 # Splits a jwt string, and returns the header and payload
 alias jwt="jq -R 'split(\".\") | select(length > 0) | .[0],.[1] | @base64d | fromjson'"
-alias grep='grep --color'
 alias c="clear -x"
 alias define=dict
 alias clock="tty-clock -sScbn"
@@ -62,6 +62,8 @@ alias serial="sudo minicom"
 alias hostname="hostnamectl hostname"
 alias open='xdg-open'
 alias history="history 0" # force zsh to show the complete history
+alias dotfiles="code $DOTFILES_DIR"
+alias dps='docker ps --format "table {{.ID}}\t{{.Names}}\t{{.RunningFor}}\t{{.State}}\t{{.Status}}"'
 
 alias wgup="sudo wg-quick up"
 alias wgdown="sudo wg-quick down"

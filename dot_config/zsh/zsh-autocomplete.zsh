@@ -17,7 +17,7 @@ key=(
     PageUp "${terminfo[kpp]}"
     PageDown "${terminfo[knp]}"
     Control-Space "${terminfo[kcbt]}"
-    Return "${terminfo[kent]}"
+    Return "${terminfo[cr]}"
 )
 
 ##################################################
@@ -37,7 +37,7 @@ zstyle ':autocomplete:*' min-delay 1.0 # number of seconds (float)
 # 0.0: Start autocompletion immediately when you stop typing.
 # 0.4: Wait 0.4 seconds for more keyboard input before showing completions.
 
-zstyle ':autocomplete:*' min-input 3 # number of characters (integer)
+zstyle ':autocomplete:*' min-input 2 # number of characters (integer)
 # 0: Show completions immediately on each new command line.
 # 1: Wait for at least 1 character of input.
 
@@ -45,9 +45,21 @@ zstyle ':autocomplete:*' ignored-input '' # extended glob pattern
 # '':     Always show completions.
 # '..##': Don't show completions when the input consists of two or more dots.
 
-# When completions don't fit on screen, show up to this many lines:
-zstyle ':autocomplete:*' list-lines 8 # (integer)
-# 💡 NOTE: The actual amount shown can be less.
+zstyle ':autocomplete:*' list-lines 8 # int
+# If there are fewer than this many lines below the prompt, move the prompt up
+# to make room for showing this many lines of completions (approximately).
+
+zstyle ':autocomplete:history-search:*' list-lines 8 # int
+# Show this many history lines when pressing ↑.
+
+zstyle ':autocomplete:history-incremental-search-*:*' list-lines 4 # int
+# Show this many history lines when pressing ⌃R or ⌃S.
+
+zstyle ':autocomplete:*' recent-dirs cdr
+# cdr:  Use Zsh's `cdr` function to show recent directories as completions.
+# no:   Don't show recent directories.
+# zsh-z|zoxide|z.lua|z.sh|autojump|fasd: Use this instead (if installed).
+# ⚠️ NOTE: This setting can NOT be changed at runtime.
 
 # If any of the following are shown at the same time, list them in this order:
 zstyle ':completion:*:' group-order \
@@ -66,7 +78,7 @@ zstyle ':autocomplete:*' widget-style complete-word
 # menu-select:   Same as `menu-complete`, but updates selection in menu.
 # ⚠️ NOTE: This can NOT be changed at runtime.
 
-zstyle ':autocomplete:*' fzf-completion no
+zstyle ':autocomplete:*' fzf-completion yes
 # no:  Tab uses Zsh's completion system only.
 # yes: Tab first tries Fzf's completion, then falls back to Zsh's.
 # ⚠️ NOTE: This can NOT be changed at runtime and requires that you have
@@ -77,13 +89,12 @@ zstyle ':autocomplete:*' add-space \
     executables aliases functions builtins reserved-words commands
 
 return;
-
 source ${DOTFILES_DIR}/zsh_plugins/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 #
 # NOTE: All settings below should come AFTER sourcing zsh-autocomplete!
 #
 
-bindkey $key[Up] up-line-or-search
+bindkey $key[Up] up-line-or-select
 # up-line-or-search:  Open history menu.
 # up-line-or-history: Cycle to previous history line.
 
@@ -95,10 +106,15 @@ bindkey $key[Control-Space] list-expand
 # list-expand:      Reveal hidden completions.
 # set-mark-command: Activate text selection.
 
-#bindkey -M menuselect $key[Return] .accept-line
+bindkey -M menuselect $key[Return] accept-line
 # .accept-line: Accept command line.
 # accept-line:  Accept selection and exit menu.
 
 # Uncomment the following lines to disable live history search:
-zle -A {.,}history-incremental-search-forward
-zle -A {.,}history-incremental-search-backward
+# zle -A {.,}history-incremental-search-forward
+# zle -A {.,}history-incremental-search-backward
+
+# Return key in completion menu & history menu:
+bindkey -M menuselect $key[Return]  accept-line
+# .accept-line: Accept command line.
+# accept-line:  Accept selection and exit menu.

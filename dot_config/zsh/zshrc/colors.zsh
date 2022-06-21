@@ -12,4 +12,5 @@ if [ -x /usr/bin/dircolors ]; then
 
     # Take advantage of $LS_COLORS for completion as well
     zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+    export ZLS_COLORS="${LS_COLORS}"
 fi

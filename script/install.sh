@@ -244,3 +244,5 @@ else
   fi
 
 fi
+
+log_info 'Done :)'

@@ -104,7 +104,7 @@ if [[ "$is_git_repo" == "false" ]] && [[ "$SUB" == "false" ]]; then
 
   cd "$TEMP_DIR"/script
 
-  bash "./install.sh" -s "$@"
+  exec bash "./install.sh" -s "$@"
 fi
 
 _install() {
@@ -155,12 +155,16 @@ install_ptsh() {
 
   log_verbose "Cloning ptSh"
   git clone https://github.com/jszczerbinsky/ptSh "$dir"
-  cp -r ../misc/patches/ptSh/* "$dir"/patches || mkdir "$dir"/patches
 
-  cd "$dir"
-
-  log_verbose "Applying patches"
-  patch -p1 <patches/*.patch
+  if [[ -d ../misc/patches/ptSh ]]; then
+    log_verbose "Applying patches"
+    cp -r ../misc/patches/ptSh/* "$dir"/patches
+    patch -p1 <patches/*.patch
+    cd "$dir"
+  else
+    echo "No patches to apply, skipping"
+    cd "$dir"
+  fi
 
   log_verbose "Making and installing ptSh"
   make

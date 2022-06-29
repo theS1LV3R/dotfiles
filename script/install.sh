@@ -168,7 +168,9 @@ install_ptsh() {
 
   log_verbose "Making and installing ptSh"
   make
-  strip -s build/bin/*
+  strip -s build/bin/ptls
+  strip -s build/bin/ptcp
+  strip -s build/bin/ptpwd
   sudo make install
 
   cd "$orig_dir"

@@ -155,7 +155,7 @@ install_ptsh() {
 
   log_verbose "Cloning ptSh"
   git clone https://github.com/jszczerbinsky/ptSh "$dir"
-  cp -r ../misc/patches/ptSh/* "$dir"/patches
+  cp -r ../misc/patches/ptSh/* "$dir"/patches || mkdir "$dir"/patches
 
   cd "$dir"
 

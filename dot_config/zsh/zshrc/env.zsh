@@ -1,3 +1,4 @@
+export PATH=$PATH:~/.cargo/bin
 export PATH=$PATH:~/.yarn/bin
 export PATH=$PATH:./node_modules/.bin
 export PATH=$PATH:~/.local/bin

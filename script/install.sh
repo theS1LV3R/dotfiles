@@ -138,6 +138,10 @@ done
 
 asdf install
 
+if [[ "${is_debian}" == "true" ]]; then
+  cargo install lsd
+fi
+
 change_shell() {
   if [ "$(command -v zsh)" ]; then
     log_verbose "Changing shell to zsh"

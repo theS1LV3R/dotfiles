@@ -4,7 +4,7 @@
 (( $+commands[nvim] )) && alias vim='nvim'
 (( $+commands[bat] )) && alias cat='bat'
 (( $+commands[ls] )) && alias ls='lsd'
-(( $+commands[bat] )) && alias pcat='bat --paging=never -p'
+(( $+commands[bat] )) && alias pcat='bat --paging=never -p' && alias bcat='/bin/cat'
 
 # ls aliases
 alias ll='ls -l'
@@ -64,6 +64,8 @@ alias open='xdg-open'
 alias history="history 0" # force zsh to show the complete history
 alias dotfiles="code $DOTFILES_DIR"
 alias dps='docker ps --format "table {{.ID}}\t{{.Names}}\t{{.RunningFor}}\t{{.State}}\t{{.Status}}"'
+# https://www.reddit.com/r/archlinux/comments/ohv6g9/does_pacman_not_resolve_cycles_in_dependency/
+alias depcycle='comm -23 <(pacman -Qqd | sort -u) <(pacman -Qqe | xargs -n1 pactree -u | sort -u) | comm -23 - <(pacman -Qqttd | sort -u)'
 
 alias wgup="sudo wg-quick up"
 alias wgdown="sudo wg-quick down"

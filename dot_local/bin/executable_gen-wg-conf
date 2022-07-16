@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+readonly server_publickey="nL9eRYs7XCAvYRyt9Khq9TRgtB521uigx03r1RxMIxI="
+readonly subnet="10.240.0"
+readonly keepalive="15"
+readonly port="51820"
+readonly endpoint="vpn.if11.xyz:${port}"
+
+readonly name="${1}"
+readonly ip="${2}"
+
+privkey=$(wg genkey)
+pubkey=$(wg pubkey < <(echo "${privkey}"))
+psk=$(wg genpsk)
+
+config="
+[Interface]
+Address    = ${subnet}.${ip}/24
+ListenPort = ${port}
+PrivateKey = ${privkey}
+
+[Peer]
+PublicKey           = ${server_publickey}
+PresharedKey        = ${psk}
+AllowedIPs          = ${subnet}.0/24
+Endpoint            = ${endpoint}
+PersistentKeepalive = ${keepalive}
+"
+
+server_config="
+[Peer]
+PublicKey           = ${pubkey}
+PresharedKey        = ${psk}
+AllowedIPs          = ${subnet}.${ip}/32
+PersistentKeepalive = ${keepalive}
+"
+
+echo "${config}" | tee "${name}-${ip}.conf" >/dev/null
+echo "${server_config}"

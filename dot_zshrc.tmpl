@@ -26,7 +26,12 @@ autoload -Uz _zi
 source $SCRIPTS_DIR/zsh-autocomplete.zsh
 
 # p10k (Prompt)
-source $SCRIPTS_DIR/p10k.init.zsh
+
+if [[ "${TERM}" == "linux" ]]; then
+    source $SCRIPTS_DIR/zshrc/basic-prompt.zsh
+else
+    source $SCRIPTS_DIR/p10k.init.zsh
+fi
 
 # Everything else zsh related
 source $SCRIPTS_DIR/zsh.init.zsh

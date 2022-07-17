@@ -50,6 +50,7 @@ packages+=(
     zlib
     base-devel
     archlinux-keyring
+    pkgfile
 )
 
 aur_install() {

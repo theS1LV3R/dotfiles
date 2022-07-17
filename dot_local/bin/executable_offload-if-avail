@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-if optimus-manager --print-mode | grep hybrid; then
-    exec prime-run "$@"
-else
-    exec "$@"
-fi

@@ -1,0 +1,13 @@
+#compdef offload
+
+_offload() {
+    integer ret=1
+    local -a args
+    args+=(
+        '*:program: _path_commands'
+    )
+    _arguments "${args[@]}" && ret=0
+    return $ret
+}
+
+_offload

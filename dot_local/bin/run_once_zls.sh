@@ -2,12 +2,22 @@
 
 set -euo pipefail
 
-readonly url="https://github.com/zigtools/zls/releases/latest/download/x86_64-linux.tar.xz"
-readonly save_archive="/tmp/zls-latest.tar.xz"
-readonly bin_output="${HOME}/.local/bin"
+readonly url="https://github.com/zigtools/zls/"
+readonly bin_dir="${HOME}/.local/bin"
+readonly git_dir="/tmp/zigtools-zls"
 
-wget "${url}" -O "${save_archive}"
+if [[ -d "${git_dir}" ]]; then
+  rm -rf "${git_dir}"
+fi
 
-tar -xJ --strip-components=1 -C "${bin_output}" -f "${save_archive}" bin/zls
+git clone --depth 1 --recurse-submodules "${url}" "${git_dir}"
 
-chmod +x "${bin_output}/zls"
+cd "${git_dir}"
+
+zig build -Drelease-safe
+
+cp "zig-out/bin/zls" "${bin_dir}"
+
+chmod +x "${bin_dir}/zls"
+
+zls config

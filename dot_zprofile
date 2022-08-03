@@ -1,3 +1,4 @@
+#!/usr/bin/env zsh
 # vi: ft=zsh
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 export GOPATH=$HOME/.go
@@ -13,3 +14,6 @@ export DOTNET_CLI_TELEMETRY_OPTOUT=true
 if [[ -n "$SSH_CONNECTION" ]]; then
   export PINENTRY_USER_DATA="USE_CURSES=1"
 fi
+
+# https://github.com/alacritty/alacritty/issues/3465
+export WINIT_X11_SCALE_FACTOR=1

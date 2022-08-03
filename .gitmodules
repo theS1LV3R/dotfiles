@@ -1,7 +1,11 @@
 [submodule "zsh_plugins/zsh-autocomplete"]
 	path = zsh_plugins/zsh-autocomplete
 	url = https://github.com/marlonrichert/zsh-autocomplete.git
+	depth = 1
+	shallow = true
 
 [submodule "zi/bin"]
 	path = zi/bin
 	url = https://github.com/z-shell/zi.git
+	depth = 1
+	shallow = true

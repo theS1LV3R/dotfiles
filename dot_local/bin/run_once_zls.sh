@@ -14,10 +14,11 @@ git clone --depth 1 --recurse-submodules "${url}" "${git_dir}"
 
 cd "${git_dir}"
 
-zig build -Drelease-safe
+if zig build -Drelease-safe; then
 
-cp "zig-out/bin/zls" "${bin_dir}"
+  cp "zig-out/bin/zls" "${bin_dir}"
 
-chmod +x "${bin_dir}/zls"
+  chmod +x "${bin_dir}/zls"
 
-zls config
+  zls config
+fi

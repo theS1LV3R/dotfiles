@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+# shellcheck source=executable___common.sh
+source "${HOME}/.local/bin/__common.sh"
+
+if ! command -v optimus-manager; then
+    log_error "optimus-manager not installed"
+    exit 1
+fi
+
 if optimus-manager --print-mode | grep -iq hybrid; then
     __NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only __GLX_VENDOR_LIBRARY_NAME=nvidia exec "$@"
 else

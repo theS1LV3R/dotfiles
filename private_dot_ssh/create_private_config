@@ -3,8 +3,7 @@
 Include config.d/*.conf
 
 
-
 # ADD CONFIG OVER THIS LINE
-
-AddKeysToAgent ask
-ServerAliveInterval 60
+Host *
+    AddKeysToAgent ask
+    ServerAliveInterval 60

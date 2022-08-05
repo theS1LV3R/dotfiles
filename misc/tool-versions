@@ -1,9 +1,8 @@
-nodejs 18.1.0
+nodejs 18.7.0
 python system
-ruby 3.1.1
-yarn 1.22.18
-golang 1.18
-rust 1.59.0
+yarn 1.22.19
+golang 1.19
+rust 1.62.1
 zig master
-deno 1.23.2
-lazygit 0.34
+deno 1.24.0
+lazygit 0.35

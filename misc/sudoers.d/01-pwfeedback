@@ -1,2 +1,3 @@
+# vi: ft=sudoers
 # Shows * when you type in your password
 Defaults pwfeedback

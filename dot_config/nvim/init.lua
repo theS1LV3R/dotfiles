@@ -32,6 +32,15 @@ vim.opt.showmode = false
 vim.opt.undolevels = 1000
 vim.opt.backspace = 'indent,eol,start'
 
+vim.api.nvim_set_keymap('n', '<C-t>', ':NvimTreeFocus<CR>', {
+    noremap = true,
+    silent = true
+})
+vim.api.nvim_set_keymap('n', '<C-d>', ':qa<CR>', {
+    noremap = true,
+    silent = false
+})
+
 vim.cmd([[
 filetype plugin on
 syntax on

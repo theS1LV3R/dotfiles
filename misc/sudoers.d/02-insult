@@ -1,2 +1,3 @@
+# vi: ft=sudoers
 # Insults you when you're an idiot and types your password incorrectly.
 Defaults insults

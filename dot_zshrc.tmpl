@@ -1,13 +1,18 @@
+# vi: ft=zsh
+# shellcheck shell=bash
+
 #zmodload zsh/zprof
 
 zmodload zsh/complist
-autoload -U compinit && compinit
-autoload -U bashcompinit && bashcompinit
+autoload -U compinit && compinit -d ~/.cache/zcompdump
+autoload -U bashcompinit && bashcompinit -d ~/.cache/zbashcompdump
 
-export DOTFILES_DIR={{ .chezmoi.sourceDir }}
-export SCRIPTS_DIR="$HOME/.config/zsh"
+export DOTFILES_DIR="{{ .chezmoi.sourceDir }}"
+export SCRIPTS_DIR="${HOME}/.config/zsh"
+# shellcheck disable=SC2155
 export GPG_TTY=$(tty)
-export fpath=($SCRIPTS_DIR/completions $fpath)
+# shellcheck disable=SC2206
+export fpath=("${SCRIPTS_DIR}/completions" ${fpath})
 
 # Zi options
 declare -A ZI
@@ -16,28 +21,33 @@ ZI[HOME_DIR]="${DOTFILES_DIR}/zi"
 ZI[BIN_DIR]="${ZI[HOME_DIR]}/bin"
 
 export zi_home="${ZI[HOME_DIR]}"
+# shellcheck source=/dev/null
 source "${zi_home}/bin/zi.zsh"
 
 autoload -Uz _zi
-(( ${+_comps} )) && _comps[zi]=_zi
+(( ${+_comps} )) && _comps["zi"]=_zi
 
 #! SOURCE **BEFORE** ANTIGEN
 #! IMPORTANT
-source $SCRIPTS_DIR/zsh-autocomplete.zsh
+# shellcheck source=/dev/null
+source "${SCRIPTS_DIR}/zsh-autocomplete.zsh"
 
 # p10k (Prompt)
 
 if [[ "${TERM}" == "linux" ]]; then
-    source $SCRIPTS_DIR/zshrc/basic-prompt.zsh
+    # shellcheck source=/dev/null
+    source "${SCRIPTS_DIR}/zshrc/basic-prompt.zsh"
 else
-    source $SCRIPTS_DIR/p10k.init.zsh
+    # shellcheck source=/dev/null
+    source "${SCRIPTS_DIR}/p10k.init.zsh"
 fi
 
 # Everything else zsh related
-source $SCRIPTS_DIR/zsh.init.zsh
+# shellcheck source=/dev/null
+source "${SCRIPTS_DIR}/zsh.init.zsh"
 
 # P10K theme
-zi ice if"[ "${TERM##*-}" = '256color' ] || [ "${terminfo[colors]:?}" -gt 255 ]" depth=1
+zi ice if"[ ${TERM##*-} = '256color' ] || [ ${terminfo[colors]:?} -gt 255 ]" depth=1
 zi light romkatv/powerlevel10k
 
 # Various other stuff
@@ -59,7 +69,7 @@ omz_plugins=(
 )
 
 for plugin in "${omz_plugins[@]}"; do
-    zi snippet OMZP::${plugin}
+    zi snippet "OMZP::${plugin}"
 done
 
 zi light-mode for z-shell/z-a-meta-plugins @annexes

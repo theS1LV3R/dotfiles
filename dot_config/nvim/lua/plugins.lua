@@ -13,15 +13,15 @@ return require('packer').startup(function(use)
 
     use 'vim-airline/vim-airline'
     use 'vim-airline/vim-airline-themes'
+    use 'arcticicestudio/nord-vim'
 
     use {
         'neoclide/coc.nvim',
         branch = 'release'
     }
     use 'tpope/vim-sensible'
-    use 'arcticicestudio/nord-vim'
-    use 'airblade/vim-gitgutter'
     use 'tpope/vim-fugitive'
+    use 'airblade/vim-gitgutter'
 
     use {
         'junegunn/fzf',
@@ -41,6 +41,8 @@ return require('packer').startup(function(use)
         requires = {'kyazdani42/nvim-web-devicons' -- file icons
         }
     }
+
+    use 'neovim/nvim-lspconfig'
 
     if packer_bootstrap then
         require("packer").sync()

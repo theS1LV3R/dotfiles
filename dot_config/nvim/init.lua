@@ -24,7 +24,7 @@ vim.opt.shiftwidth = 2
 vim.opt.smartindent = true
 vim.opt.smarttab = true
 vim.opt.softtabstop = 2
-vim.opt.mouse = a
+vim.opt.mouse = 'a'
 
 vim.opt.ruler = true
 vim.opt.showmode = false

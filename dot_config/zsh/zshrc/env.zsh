@@ -1,18 +1,4 @@
-export PATH=$PATH:~/.cargo/bin
-export PATH=$PATH:~/.yarn/bin
-export PATH=$PATH:./node_modules/.bin
-export PATH=$PATH:~/.local/bin
-export PATH=$PATH:$GOPATH/bin
-
-export EDITOR=nvim
-
 ASDF=false
-
-export ASDF_CONFIG_FILE=${XDG_CONFIG_HOME}/asdf/asdfrc
-
-export ASDF_PYTHON_DEFAULT_PACKAGES_FILE=${XDG_CONFIG_HOME}/asdf/default-python-packages
-export ASDF_NPM_DEFAULT_PACKAGES_FILE=${XDG_CONFIG_HOME}/asdf/default-npm-packages
-export ASDF_GEM_DEFAULT_PACKAGES_FILE=${XDG_CONFIG_HOME}/asdf/default-gems
 
 if [[ -f /opt/asdf-vm/asdf.sh ]]; then
   . /opt/asdf-vm/asdf.sh
@@ -28,5 +14,7 @@ if [[ "$ASDF" == true ]]; then
     source $rust_dir/env
   fi
 fi
+
+export PATH="$PATH:$GOPATH/bin"
 
 [[ -x $ZSH_SCRIPTS/env.local.zsh ]] && source $ZSH_SCRIPTS/env.local.zsh

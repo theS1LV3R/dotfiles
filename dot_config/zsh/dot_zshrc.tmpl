@@ -27,12 +27,8 @@ source "${zi_home}/bin/zi.zsh"
 autoload -Uz _zi
 (( ${+_comps} )) && _comps["zi"]=_zi
 
-#! SOURCE **BEFORE** ANTIGEN
-#! IMPORTANT
-# shellcheck source=/dev/null
+# shellcheck source=zsh-autocomplete.zsh
 source "${SCRIPTS_DIR}/zsh-autocomplete.zsh"
-
-# p10k (Prompt)
 
 if [[ "${TERM}" == "linux" ]]; then
     # shellcheck source=/dev/null
@@ -42,8 +38,7 @@ else
     source "${SCRIPTS_DIR}/p10k.init.zsh"
 fi
 
-# Everything else zsh related
-# shellcheck source=/dev/null
+# shellcheck source=zsh.init.zsh
 source "${SCRIPTS_DIR}/zsh.init.zsh"
 
 # P10K theme
@@ -62,7 +57,6 @@ omz_plugins=(
     docker
     docker-compose
     node
-    gitignore
     git
     aliases
     archlinux

@@ -1,0 +1,4 @@
+# vi: ft=zsh
+# shellcheck shell=bash
+
+clear

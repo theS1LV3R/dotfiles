@@ -1,3 +1,4 @@
+# vi: ft=properties
 [core]
     autocrlf = false
     eol = lf
@@ -44,3 +45,15 @@
     smudge = git-lfs smudge -- %f
     process = git-lfs filter-process
     required = true
+
+[interactive]
+    diffFilter = delta --color-only
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+
+[submodule]
+    recurse = true

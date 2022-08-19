@@ -1,0 +1,17 @@
+# vi: ft=zsh
+# shellcheck shell=bash
+
+# In order:
+# - .zshenv always
+# - .zprofile if login
+# - .zshrc if interactive
+# - .zlogin if login
+# - .zlogout if exists, on logout
+
+# https://unix.stackexchange.com/a/487889/386231
+# https://unix.stackexchange.com/a/71258/386231
+
+export ZDOTDIR="${HOME}/.config/zsh/"
+
+# shellcheck source=dot_config/zsh/dot_zshenv
+source "${ZDOTDIR}/.zshenv"

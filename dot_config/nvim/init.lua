@@ -1,11 +1,10 @@
 require("plugins")
 require("plug-configs")
+require("lsp")
 
 vim.g.airline_powerline_fonts = 1
 
-vim.cmd([[
-colorscheme nord
-]])
+vim.cmd("colorscheme nord")
 
 vim.opt.number = true
 vim.opt.linebreak = true

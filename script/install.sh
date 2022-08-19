@@ -25,7 +25,6 @@ fi
 
 source common.sh
 
-
 export YES=false
 
 # Parse arguments
@@ -72,11 +71,7 @@ else
   exit 1
 fi
 
-plugins=$(awk '{print $1;}' "${HOME}/.tool-versions" | tr '\n' ' ')
-
-IFS=' ' read -r -a plugins <<<"${plugins}"
-
-for plugin in "${plugins[@]}"; do
+awk '{print $1;}' "${HOME}/.tool-versions" | while IFS= read -r plugin; do
   asdf plugin add "$plugin" 2>/dev/null || true
 done
 

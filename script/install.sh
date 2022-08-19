@@ -84,7 +84,7 @@ fi
 change_shell() {
   zsh_bin=$(command -v zsh)
 
-  if $?; then
+  if [[ -n $zsh_bin ]]; then
     log_verbose "Changing shell to zsh"
 
     if grep -qv "${zsh_bin}" /etc/shells; then

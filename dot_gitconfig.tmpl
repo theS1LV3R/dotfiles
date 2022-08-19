@@ -7,10 +7,12 @@
 [user]
     name = {{ .name }}
     email = {{ .email }}
+{{- if eq .chezmoi.hostname "carbon-arch" }}
     signingkey = 85FA2FC2D8035859AE77FF6E636660BB3A5C2F87
 
 [commit]
     gpgsign = true
+{{- end }}
 
 [gpg]
 {{- if eq .chezmoi.os "windows" }}

@@ -3,43 +3,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-# ==============================================================================
-#region Config stuff
-# ==============================================================================
-
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-YELLOW='\033[0;33m'
-NC='\033[0m' # No Color
-
-# ==============================================================================
-#endregion
-# ==============================================================================
-
-# ==============================================================================
-#region Utility functions
-# ==============================================================================
-
-log_info() {
-    echo -e "${GREEN}[INFO]>>>${NC} $1"
-}
-
-log_warn() {
-    echo -e "${RED}[WARN]!!!${NC} $1"
-}
-
-log_ask() {
-    echo -e "${YELLOW}[ASK] ???${NC} $1"
-}
-
-log_verbose() {
-    echo -e "${BLUE}[VERB]---${NC} $1"
-}
-
-# ==============================================================================
-#endregion
-# ==============================================================================
+source common.sh
 
 IFS=' ' read -r -a packages <<<"$*"
 
@@ -56,15 +20,15 @@ packages+=(
 sudo apt update
 sudo apt install -y "${packages[@]}"
 
-if [ ! "$(command -v chezmoi)" ]; then
+if ! command -v chezmoi >/dev/null; then
     bin_dir="$HOME/.local/bin"
     chezmoi="$bin_dir/chezmoi"
 
     log_info "Chezmoi not installed, installing to $chezmoi"
 
-    if [ "$(command -v curl)" ]; then
+    if command -v curl >/dev/null; then
         sh -c "$(curl -fsSL https://git.io/chezmoi)" -- -b "$bin_dir"
-    elif [ "$(command -v wget)" ]; then
+    elif command -v wget >/dev/null; then
         sh -c "$(wget -qO- https://git.io/chezmoi)" -- -b "$bin_dir"
     else
         log_warn "To install chezmoi, you must have curl or wget installed." >&2
@@ -76,7 +40,7 @@ fi
 
 $chezmoi init theS1LV3R --apply --force
 
-if [[ ! -d $HOME/.asdf ]] && [[ ! $(command -v asdf) ]]; then
+if [[ ! -d $HOME/.asdf ]] && ! command -v asdf >/dev/null; then
     log_info "asdf not installed, installing to $HOME/.asdf"
     git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.9.0
 fi

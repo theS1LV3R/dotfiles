@@ -70,4 +70,6 @@ zi light-mode for z-shell/z-a-meta-plugins @annexes
 
 zicompinit
 
-[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
+if [[ "$TERM_PROGRAM" == "vscode" ]]; then
+    source "$(code --locate-shell-integration-path zsh)"
+fi

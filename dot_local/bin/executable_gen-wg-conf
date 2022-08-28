@@ -23,7 +23,7 @@ psk=$(wg genpsk)
 
 config="
 [Interface]
-Address    = ${subnet}.${ip}/24
+Address    = ${ip}/24
 ListenPort = ${port}
 PrivateKey = ${privkey}
 
@@ -39,7 +39,7 @@ server_config="
 [Peer]
 PublicKey           = ${pubkey}
 PresharedKey        = ${psk}
-AllowedIPs          = ${subnet}.${ip}/32
+AllowedIPs          = ${ip}/32
 PersistentKeepalive = ${keepalive}
 "
 

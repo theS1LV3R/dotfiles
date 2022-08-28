@@ -1,6 +1,10 @@
 # vi: ft=zsh
 # shellcheck shell=bash disable=SC2154
 
+if [[ -n "$SSH_CONNECTION" ]]; then
+    export PINENTRY_USER_DATA="USE_CURSES=1"
+fi
+
 export PATH="$PATH:$HOME/.cargo/bin"
 export PATH="$PATH:$HOME/.yarn/bin"
 export PATH="$PATH:$HOME/.local/bin"

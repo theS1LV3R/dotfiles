@@ -11,7 +11,12 @@
 # https://unix.stackexchange.com/a/487889/386231
 # https://unix.stackexchange.com/a/71258/386231
 
-export ZDOTDIR="${HOME}/.config/zsh/"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+
+export ZDOTDIR="${XDG_CONFIG_HOME:-"$HOME/.config"}/zsh/"
 
 # shellcheck source=dot_config/zsh/dot_zshenv
 source "${ZDOTDIR}/.zshenv"

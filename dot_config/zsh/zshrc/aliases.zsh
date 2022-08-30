@@ -3,7 +3,7 @@
 
 (( $+commands[nvim] )) && alias vim='nvim'
 (( $+commands[bat] )) && alias cat='bat'
-(( $+commands[ls] )) && alias ls='lsd'
+(( $+commands[lsd] )) && alias ls='lsd'
 (( $+commands[bat] )) && alias pcat='bat --paging=never -p' && alias bcat='/bin/cat'
 
 # ls aliases

@@ -1,5 +1,5 @@
 # History configurations
-HISTFILE=~/.zsh_history
+HISTFILE=${XDG_DATA_HOME:-$HOME/.local/share}/.zsh_history
 HISTSIZE=25000
 SAVEHIST=20000
 setopt hist_expire_dups_first # delete duplicates first when HISTFILE size exceeds HISTSIZE

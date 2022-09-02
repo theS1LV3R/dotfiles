@@ -20,47 +20,55 @@ dict() {
 secret() {
   bytes="64"
 
-  if [ ! -z $@ ]; then bytes="$*"; fi
+  [[ ! -z $@ ]] && bytes="$*"
 
   openssl rand -hex $bytes
 }
 
 update() {
   # Check for apt systems
-  if [ "$(command -v apt)" ]; then
+  if command -v apt &>/dev/null; then
     sudo apt update
     sudo apt upgrade -y
+    return
   fi
 
-  # Check for pacman systems
-  if [ "$(command -v pacman)" ]; then
-    sudo pacman -Syu
-  fi
+  if command -v pacman &>/dev/null; then
+    if command -v paru &>/dev/null; then
+      paru -Syu --noconfirm
+    elif command -v yay &>/dev/null; then
+      yay -Syu --noconfirm
+    else
+      sudo pacman -Syu
+    fi
 
-  # Check for yay or paru systems
-  if [ "$(command -v yay)" ]; then
-    yay -Syu --noconfirm
-  elif [ "$(command -v paru)" ]; then
-    paru -Syu --noconfirm
+    return
   fi
 
   # Check for yum systems
-  if [ "$(command -v yum)" ]; then
+  if command -v yum &>/dev/null; then
     sudo yum update
+    return
   fi
 
   # Check for brew systems
-  if [ "$(command -v brew)" ]; then
+  if command -v brew &>/dev/null; then
     brew update
     brew upgrade
+    return
   fi
 }
 
 path() {
-  echo ${PATH//:/\\n} | sed '=' | sed 'N;s/\n/\t/'
+  # echo: Replace : with newline
+  # sed =: Add line numbers after each line
+  # last sed:
+  #  - n N    Read/append the next line of input into the pattern space.
+  #  - then replace newlines with tabs, this affects every other newline
+  echo ${PATH//:/\\n} | sed '=' | sed 'N;s:\n:\t:'
 }
 fpath() {
-  echo ${FPATH//:/\\n} | sed '=' | sed 'N;s/\n/\t/'
+  echo ${FPATH//:/\\n} | sed '=' | sed 'N;s:\n:\t:'
 }
 
 precmd() { print -Pn "\e]2;%n@%M:%~\a"; } # title bar prompt

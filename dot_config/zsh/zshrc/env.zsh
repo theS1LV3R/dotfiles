@@ -17,4 +17,4 @@ fi
 
 export PATH="$PATH:$GOPATH/bin"
 
-[[ -x $ZSH_SCRIPTS/env.local.zsh ]] && source $ZSH_SCRIPTS/env.local.zsh
+[[ -e $ZSH_SCRIPTS/env.local.zsh ]] && source $ZSH_SCRIPTS/env.local.zsh

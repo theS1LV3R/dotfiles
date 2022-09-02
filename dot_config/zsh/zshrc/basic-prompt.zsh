@@ -28,17 +28,17 @@ git_info() {
   local -a FLAGS
 
   local NUM_AHEAD="$(git log --oneline @{u}.. 2> /dev/null | wc -l | tr -d ' ')"
-  if [ "$NUM_AHEAD" -gt 0 ]; then
+  if [[ "$NUM_AHEAD" -gt 0 ]]; then
     DIVERGENCES+=( "${AHEAD//NUM/$NUM_AHEAD}" )
   fi
 
   local NUM_BEHIND="$(git log --oneline ..@{u} 2> /dev/null | wc -l | tr -d ' ')"
-  if [ "$NUM_BEHIND" -gt 0 ]; then
+  if [[ "$NUM_BEHIND" -gt 0 ]]; then
     DIVERGENCES+=( "${BEHIND//NUM/$NUM_BEHIND}" )
   fi
 
   local GIT_DIR="$(git rev-parse --git-dir 2> /dev/null)"
-  if [ -n $GIT_DIR ] && test -r $GIT_DIR/MERGE_HEAD; then
+  if [[ -n $GIT_DIR ]] && test -r $GIT_DIR/MERGE_HEAD; then
     FLAGS+=( "$MERGING" )
   fi
 
@@ -56,7 +56,7 @@ git_info() {
 
   local -a GIT_INFO
   GIT_INFO+=( "\033[38;5;15m±" )
-  [ -n "$GIT_STATUS" ] && GIT_INFO+=( "$GIT_STATUS" )
+  [[ -n "$GIT_STATUS" ]] && GIT_INFO+=( "$GIT_STATUS" )
   [[ ${#DIVERGENCES[@]} -ne 0 ]] && GIT_INFO+=( "${(j::)DIVERGENCES}" )
   [[ ${#FLAGS[@]} -ne 0 ]] && GIT_INFO+=( "${(j::)FLAGS}" )
   GIT_INFO+=( "\033[38;5;15m$GIT_LOCATION%{$reset_color%}" )

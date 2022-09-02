@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+curl -fLw '\n' "https://www.gitignore.io/api/$things"

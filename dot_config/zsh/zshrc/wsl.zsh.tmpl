@@ -3,7 +3,7 @@
 # Otherwise it would contain WSL specific environment variables.
 
 {{- if eq "wsl" .ostype -}}
-alias open="explorer.exe"
+alias open="start"
 
 export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}'):0.0      #GWSL
 export PULSE_SERVER=tcp:$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}') #GWSL

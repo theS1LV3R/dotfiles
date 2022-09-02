@@ -10,7 +10,7 @@ if [[ -d "${git_dir}" ]]; then
   rm -rf "${git_dir}"
 fi
 
-git clone --depth 1 --recurse-submodules "${url}" "${git_dir}"
+git clone --recurse-submodules "${url}" "${git_dir}"
 
 cd "${git_dir}"
 
@@ -20,5 +20,5 @@ if zig build -Drelease-safe; then
 
   chmod +x "${bin_dir}/zls"
 
-  zls config
+  zls --config
 fi

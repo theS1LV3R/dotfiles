@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #! DO NOT FORMAT THIS FILE!
 
-(( $+commands[nvim] )) && alias vim='nvim'
-(( $+commands[bat] )) && alias cat='bat'
-(( $+commands[lsd] )) && alias ls='lsd'
-(( $+commands[bat] )) && alias pcat='bat --paging=never -p' && alias bcat='/bin/cat'
+command -v nvim &>/dev/null && alias vim='nvim' && alias bvim='/bin/vim'
+command -v lsd &>/dev/null && alias ls='lsd' && alias bls='/bin/ls'
+command -v bat &>/dev/null && alias cat='bat' && alias bcat='/bin/cat'
+command -v bat &>/dev/null && alias pcat='bat --paging=never -p'
 
 # ls aliases
 alias ll='ls -l'
@@ -47,9 +47,9 @@ done
 # (( $+commands[ptpwd] )) && alias pwd='ptpwd'
 # (( $+commands[ptcp] )) && alias cp='ptcp'
 
-if (( $+commands[paru])) && (( !$+commands[yay] )); then
+if command -v paru &>/dev/null && ! command -v yay &>/dev/null; then
   alias yay=paru
-elif (( !$+commands[paru] )) && (( $+commands[yay] )); then
+elif ! command -v paru &>/dev/null && command -v paru &>/dev/null ; then
   alias paru=yay
 fi
 

@@ -16,6 +16,7 @@ packages+=(
     archlinux-keyring
     pkgfile
     python-virtualenv # For COQ - nvim
+    neovim
 )
 
 aur_install() {

@@ -58,7 +58,8 @@ _install() {
   source "$filename" "$@"
 }
 
-common_packages="neovim unzip zsh tmux gcc neofetch curl net-tools vim"
+common_packages="unzip zsh tmux gcc neofetch curl net-tools vim"
+# Neovim not included - Debian uses asdf
 
 if [[ "${is_arch}" == "true" ]]; then
   log_info "Detected Arch"

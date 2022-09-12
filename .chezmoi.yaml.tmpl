@@ -12,3 +12,8 @@ data:
   ostype: "{{ .chezmoi.os }}"
 {{- end }}
   codespaces: {{ $codespaces }}
+{{- if stat "/etc/debian_version"}}
+  isdebian: true
+{{- else }}
+  isdebian: false
+{{- end }}

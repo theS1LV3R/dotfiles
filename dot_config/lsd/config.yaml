@@ -1,3 +1,5 @@
+# vi: ft=yaml:ts=2:sw=2
+
 # == Classic ==
 # This is a shorthand to override some of the options to be backwards compatible
 # with `ls`. It affects the "color"->"when", "sorting"->"dir-grouping", "date"
@@ -53,8 +55,7 @@ icons:
   theme: fancy
   # Separator between icon and the name
   # Default to 1 space
-  separator: ' '
-
+  separator: " "
 
 # == Ignore Globs ==
 # A list of globs to ignore when listing.

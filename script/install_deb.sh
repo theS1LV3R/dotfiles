@@ -15,6 +15,7 @@ packages+=(
     libcurl4-openssl-dev
     libncurses6
     libncurses-dev
+    python3-venv # For COQ - nvim
 )
 
 sudo apt update

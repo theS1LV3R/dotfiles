@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# vi: ft=bash:ts=2:sw=2
 
 set -euo pipefail
 
@@ -24,5 +25,5 @@ if zig build -Drelease-safe; then
 
   read -r -p "Run config? [y/N] " yn
 
-  [[ "${yn}" =~ "^[yY]" ]] && zls --config || echo "Skipping config"
+  [[ "${yn}" =~ ^[yY] ]] && zls --config || echo "Skipping config"
 fi

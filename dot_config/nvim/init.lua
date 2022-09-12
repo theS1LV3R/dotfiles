@@ -1,3 +1,4 @@
+-- vi: ft=lua:ts=4:sw=4
 require("plugins")
 require("plug-configs")
 require("lsp")

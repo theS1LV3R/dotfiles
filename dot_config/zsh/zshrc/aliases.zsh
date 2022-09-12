@@ -63,7 +63,7 @@ alias hostname="hostnamectl hostname"
 alias open='xdg-open'
 alias history="history 0" # force zsh to show the complete history
 alias dotfiles="code $DOTFILES_DIR"
-alias dps='docker ps --format "table {{.ID}}\t{{.Names}}\t{{.RunningFor}}\t{{.State}}\t{{.Status}}"'
+alias dps='docker ps --format "table {{.ID}}\t{{.Names}}\t{{.RunningFor}}\t{{.State}}\t{{.Status}}" | (sed -u 1q ; sort -k2)'
 # https://www.reddit.com/r/archlinux/comments/ohv6g9/does_pacman_not_resolve_cycles_in_dependency/
 alias depcycle='comm -23 <(pacman -Qqd | sort -u) <(pacman -Qqe | xargs -n1 pactree -u | sort -u) | comm -23 - <(pacman -Qqttd | sort -u)'
 

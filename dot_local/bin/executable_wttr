@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# vi: ft=bash:ts=2:sw=2
 
 # Usage: wttr [options] [location]
 set -euo pipefail
@@ -11,20 +12,20 @@ CITY="bergen"
 # -n, --no-less
 
 while [[ $# -gt 0 ]]; do
-    case $1 in
-    -h | --help)
-        cat <<EOF
+  case $1 in
+  -h | --help)
+    cat <<EOF
 Usage: $0 [options] [location]
 Options:
   -h, --help    Show this help message and exit.
 EOF
-        exit 0
-        ;;
-    *)
-        CITY="$1"
-        shift
-        ;;
-    esac
+    exit 0
+    ;;
+  *)
+    CITY="$1"
+    shift
+    ;;
+  esac
 done
 
 url="https://v2.wttr.in/${CITY}?0FM&lang=en"

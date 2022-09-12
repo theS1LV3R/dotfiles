@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
+# vi: ft=bash:ts=2:sw=2
 
 set -euo pipefail
 
 is_app_installed() {
-    type "$1" &>/dev/null
+  type "$1" &>/dev/null
 }
 
 # get data either form stdin or from file
@@ -15,25 +16,25 @@ copy_use_osc52_fallback=$(tmux show-option -gvq "@copy_use_osc52_fallback")
 # Resolve copy backend: pbcopy (OSX), reattach-to-user-namespace (OSX), xclip/xsel (Linux)
 copy_backend=""
 if [[ -n "${DISPLAY-}" ]] && is_app_installed xsel; then
-    copy_backend="xsel -i --clipboard"
+  copy_backend="xsel -i --clipboard"
 elif [[ -n "${DISPLAY-}" ]] && is_app_installed xclip; then
-    copy_backend="xclip -i -f -selection primary | xclip -i -selection clipboard"
+  copy_backend="xclip -i -f -selection primary | xclip -i -selection clipboard"
 elif [[ -n "${copy_backend_remote_tunnel_port-}" ]] &&
-    (netstat -f inet -nl 2>/dev/null || netstat -4 -nl 2>/dev/null) |
-    grep -q "[.:]$copy_backend_remote_tunnel_port"; then
-    copy_backend="nc localhost $copy_backend_remote_tunnel_port"
+  (netstat -f inet -nl 2>/dev/null || netstat -4 -nl 2>/dev/null) |
+  grep -q "[.:]$copy_backend_remote_tunnel_port"; then
+  copy_backend="nc localhost $copy_backend_remote_tunnel_port"
 fi
 
 # if copy backend is resolved, copy and exit
 if [[ -n "$copy_backend" ]]; then
-    printf "%s" "$buf" | eval "$copy_backend"
-    exit
+  printf "%s" "$buf" | eval "$copy_backend"
+  exit
 fi
 
 # If no copy backends were eligible, decide to fallback to OSC 52 escape sequences
 # Note, most terminals do not handle OSC
 if [[ "$copy_use_osc52_fallback" == "off" ]]; then
-    exit
+  exit
 fi
 
 # Copy via OSC 52 ANSI escape sequence to controlling terminal
@@ -47,7 +48,7 @@ maxlen=74994
 
 # warn if exceeds maxlen
 if [[ "$buflen" -gt "$maxlen" ]]; then
-    printf "input is %d bytes too long" "$((buflen - maxlen))" >&2
+  printf "input is %d bytes too long" "$((buflen - maxlen))" >&2
 fi
 
 # build up OSC 52 ANSI escape sequence

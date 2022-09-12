@@ -1,4 +1,4 @@
-# vi: ft=properties
+# vi: ft=gitconfig
 [core]
     autocrlf = false
     eol = lf
@@ -7,7 +7,7 @@
 [user]
     name = {{ .name }}
     email = {{ .email }}
-{{- if eq .chezmoi.hostname "carbon-arch" }}
+{{- if .gitgpgsign  }}
     signingkey = 85FA2FC2D8035859AE77FF6E636660BB3A5C2F87
 
 [commit]
@@ -15,10 +15,10 @@
 {{- end }}
 
 [gpg]
-{{- if eq .chezmoi.os "windows" }}
-    program = gpg
-{{- else }}
+{{- if lookPath "gpg2" }}
     program = gpg2
+{{- else }}
+    program = gpg
 {{- end }}
 
 [pull]
@@ -40,16 +40,15 @@
     path = ~/kode/machina/.gitconfig
 
 [alias]
-    lg = log --color --graph --pretty=format:'%Cred%h%Creset %Cgreen(%cr) %C(bold blue)<%an>%Creset -%C(yellow)%d%Creset %s' --abbrev-commit
+    lg1 = log --color --graph --pretty=format:'%Cred%h%Creset %Cgreen(%cr) %C(bold blue)<%an>%Creset -%C(yellow)%d%Creset %s' --abbrev-commit
+    lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(red)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''           %C(dim white)<%an> -%C(reset) %C(white)%s%C(reset)' --all
+    lg = lg2
 
 [filter "lfs"]
     clean = git-lfs clean -- %f
     smudge = git-lfs smudge -- %f
     process = git-lfs filter-process
     required = true
-
-[interactive]
-    diffFilter = delta --color-only
 
 [merge]
     conflictstyle = diff3

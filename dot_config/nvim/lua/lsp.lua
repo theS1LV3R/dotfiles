@@ -1,3 +1,4 @@
+-- vi: ft=lua:ts=4:sw=4
 -- language server installer
 require("mason").setup({
     ui = {

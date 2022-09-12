@@ -1,5 +1,5 @@
 {
-  "useTaobaoRegistry": true,
+  "useTaobaoRegistry": false,
   "presets": {
     "all the features": {
       "useConfigFiles": true,

@@ -15,6 +15,7 @@ packages+=(
     base-devel
     archlinux-keyring
     pkgfile
+    python-virtualenv # For COQ - nvim
 )
 
 aur_install() {

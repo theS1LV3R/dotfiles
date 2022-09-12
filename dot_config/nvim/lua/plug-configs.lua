@@ -1,3 +1,4 @@
+-- vi: ft=lua:ts=4:sw=4
 -- file list and opener and stuff
 require("nvim-tree").setup {
     open_on_setup = true,

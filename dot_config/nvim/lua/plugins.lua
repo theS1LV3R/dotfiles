@@ -1,4 +1,4 @@
--- vi: ft=lua shiftwidth=4 tabstop=4
+-- vi: ft=lua:ts=4:sw=4
 local fn = vim.fn
 local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
 

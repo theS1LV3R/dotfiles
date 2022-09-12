@@ -80,6 +80,7 @@ asdf install
 
 if [[ "${is_debian}" == "true" ]]; then
   cargo install lsd
+  cargo install bat
 fi
 
 change_shell() {

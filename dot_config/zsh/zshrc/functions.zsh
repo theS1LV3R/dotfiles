@@ -35,9 +35,9 @@ update() {
 
   if command -v pacman &>/dev/null; then
     if command -v paru &>/dev/null; then
-      paru -Syu --noconfirm
+      paru -Syu
     elif command -v yay &>/dev/null; then
-      yay -Syu --noconfirm
+      yay -Syu
     else
       sudo pacman -Syu
     fi

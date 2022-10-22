@@ -25,24 +25,9 @@ fi
 
 source common.sh
 
-export YES=false
-
-# Parse arguments
-while [[ $# -gt 0 ]]; do
-  case $1 in
-  --yes | -y)
-    export YES=true
-    shift
-    ;;
-  *) ;;
-  esac
-done
-
-if [[ "${YES}" == "false" ]]; then
-  log_info "NOTE: This _will_ overwrite existing dotfiles. Make sure you have a backup."
-  log_info "Press enter to continue or ctrl-c to abort."
-  read -r </dev/tty
-fi
+log_info "NOTE: This _will_ overwrite existing dotfiles. Make sure you have a backup."
+log_info "Press enter to continue or ctrl-c to abort."
+read -r </dev/tty
 
 log_info "Collecting information..."
 is_arch=$(test -f /etc/arch-release && echo true || echo false)
@@ -111,7 +96,7 @@ sudoersd-files() {
 
 log_ask "All or manual?"
 read -r -p "[A/m] " response </dev/tty
-if [[ ! $response =~ ^([mM])$ ]] || [[ $YES == "true" ]]; then
+if [[ ! $response =~ ^([mM])$ ]]; then
   change_shell
   sudoersd-files
 else

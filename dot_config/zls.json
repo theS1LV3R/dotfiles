@@ -10,5 +10,8 @@
   "operator_completions": true,
   "include_at_in_builtins": false,
   "skip_std_references": false,
-  "max_detail_length": 1048576
+  "max_detail_length": 1048576,
+  "enable_autofix": true,
+  "inlay_hints_show_builtin": true,
+  "inlay_hints_exclude_single_argument": true
 }

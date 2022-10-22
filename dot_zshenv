@@ -16,7 +16,7 @@ export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
 
-export ZDOTDIR="${XDG_CONFIG_HOME:-"$HOME/.config"}/zsh/"
+export ZDOTDIR="${XDG_CONFIG_HOME:-"$HOME/.config"}/zsh"
 
 # shellcheck source=dot_config/zsh/dot_zshenv
 source "${ZDOTDIR}/.zshenv"

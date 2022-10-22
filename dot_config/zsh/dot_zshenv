@@ -1,6 +1,7 @@
 # vi: ft=zsh
 # shellcheck shell=bash disable=SC2154
 
+
 if [[ -n "$SSH_CONNECTION" ]]; then
     export PINENTRY_USER_DATA="USE_CURSES=1"
 fi
@@ -12,11 +13,10 @@ export PATH="./node_modules/.bin:$PATH"
 
 export EDITOR="nvim"
 export VISUAL="nvim"
-export PAGER="less"
+
+export PROMPT_EOL_MARK=""
 
 export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
-
-export WINEPREFIX="${XDG_DATA_HOME}/wine"
 
 # Disable dotnet telemetry
 export DOTNET_CLI_TELEMETRY_OPTOUT="true"
@@ -26,6 +26,33 @@ export WINIT_X11_SCALE_FACTOR=1
 
 # https://old.reddit.com/r/kde/comments/kzjo9d
 export GTK_USE_PORTAL=1
+
+# See https://www.reddit.com/r/linux/comments/uouh7p/xdgninja_a_tool_to_help_you_clean_up_your_home/
+export WINEPREFIX="$XDG_DATA_HOME/wine"
+export WGETRC="$XDG_CONFIG_HOME/wgetrc"
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
+export ANDROID_HOME="$XDG_DATA_HOME/android"
+export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export CUDA_CACHE_PATH="$XDG_CACHE_HOME/nv"
+export DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"
+export GNUPGHOME="$XDG_DATA_HOME/gnupg"
+export GRADLE_USER_HOME="$XDG_DATA_HOME/gradle"
+export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
+export KDEHOME="$XDG_CONFIG_HOME/kde"
+export NODE_REPL_HISTORY="$XDG_DATA_HOME/node_repl_history"
+export ANSIBLE_HOME="$XDG_DATA_HOME/ansible"
+export _JAVA_OPTIONS=-Djava.util.prefs.userRoot="$XDG_CONFIG_HOME/java"
+export PSQL_HISTORY="$XDG_DATA_HOME/psql_history"
+export PYTHONSTARTUP="$XDG_CONFIG_HOME/python/pythonrc"
+export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
+
+# shellcheck disable=SC2016
+export GVIMINIT='let $MYGVIMRC = !has("nvim") ? "$XDG_CONFIG_HOME/vim/gvimrc" : "$XDG_CONFIG_HOME/nvim/init.gvim"  | so $MYGVIMRC'
+# shellcheck disable=SC2016
+export VIMINIT='let $MYVIMRC = !has("nvim") ? "$XDG_CONFIG_HOME/vim/vimrc" : "$XDG_CONFIG_HOME/nvim/init.lua" | so $MYVIMRC'
+
+export AWS_SHARED_CREDENTIALS_FILE="$XDG_CONFIG_HOME/aws/credentials"
+export AWS_CONFIG_FILE="$XDG_CONFIG_HOME/aws/config"
 
 export ASDF_CONFIG_FILE="${XDG_CONFIG_HOME}/asdf/asdfrc"
 export ASDF_DATA_DIR="${XDG_DATA_HOME}/asdf"

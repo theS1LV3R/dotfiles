@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-# vi: ft=bash:ts=2:sw=2
-
-curl -fLw '\n' "https://www.gitignore.io/api/$1"

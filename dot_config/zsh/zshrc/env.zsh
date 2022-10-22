@@ -15,6 +15,4 @@ if [[ "$ASDF" == true ]]; then
   fi
 fi
 
-export PATH="$PATH:$GOPATH/bin"
-
 [[ -e $ZSH_SCRIPTS/env.local.zsh ]] && source $ZSH_SCRIPTS/env.local.zsh

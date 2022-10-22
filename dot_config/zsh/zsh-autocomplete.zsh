@@ -1,8 +1,6 @@
 zstyle ':completion:*:*:*:*:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' # case insensitive tab completion
 
-fpath=($SCRIPTS_DIR/completions $fpath)
-
 typeset -A key
 key=(
     BackSpace "${terminfo[kbs]}"
@@ -33,7 +31,7 @@ zstyle ':autocomplete:*' default-context ''
 # '': Start each new command line with normal autocompletion.
 # history-incremental-search-backward: Start in live history search mode.
 
-zstyle ':autocomplete:*' min-delay 1.0 # number of seconds (float)
+zstyle ':autocomplete:*' min-delay 0.2 # number of seconds (float)
 # 0.0: Start autocompletion immediately when you stop typing.
 # 0.4: Wait 0.4 seconds for more keyboard input before showing completions.
 
@@ -68,11 +66,11 @@ zstyle ':completion:*:' group-order \
     executables local-directories directories suffix-aliases
 # 💡 NOTE: This is NOT the order in which they are generated.
 
-zstyle ':autocomplete:*' insert-unambiguous no
+zstyle ':autocomplete:*' insert-unambiguous yes
 # no:  Tab inserts the top completion.
 # yes: Tab first inserts substring common to all listed completions, if any.
 
-zstyle ':autocomplete:*' widget-style complete-word
+zstyle ':autocomplete:*' widget-style menu-select
 # complete-word: (Shift-)Tab inserts the top (bottom) completion.
 # menu-complete: Press again to cycle to next (previous) completion.
 # menu-select:   Same as `menu-complete`, but updates selection in menu.
@@ -88,17 +86,16 @@ zstyle ':autocomplete:*' fzf-completion yes
 zstyle ':autocomplete:*' add-space \
     executables aliases functions builtins reserved-words commands
 
-return;
 source ${DOTFILES_DIR}/zsh_plugins/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 #
 # NOTE: All settings below should come AFTER sourcing zsh-autocomplete!
 #
 
-bindkey $key[Up] up-line-or-select
+bindkey $key[Up] up-line-or-history
 # up-line-or-search:  Open history menu.
 # up-line-or-history: Cycle to previous history line.
 
-bindkey $key[Down] down-line-or-select
+bindkey $key[Down] down-line-or-history
 # down-line-or-select:  Open completion menu.
 # down-line-or-history: Cycle to next history line.
 

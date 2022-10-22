@@ -1,5 +1,5 @@
 # vi: ft=zsh
-# shellcheck shell=bash
+# shellcheck shell=bash disable=SC1091
 
 #zmodload zsh/zprof
 
@@ -14,6 +14,30 @@ export GPG_TTY=$(tty)
 # shellcheck disable=SC2206
 export fpath=("${SCRIPTS_DIR}/completions" ${fpath})
 
+# shellcheck source=zsh-autocomplete.zsh
+source "${SCRIPTS_DIR}/zsh-autocomplete.zsh"
+
+if [[ "${TERM}" == "linux" ]]; then
+    # shellcheck source=./zshrc/basic-prompt.zsh
+    source "${SCRIPTS_DIR}/zshrc/basic-prompt.zsh"
+else
+    # shellcheck source=p10k.init.zsh
+    source "${SCRIPTS_DIR}/p10k.init.zsh"
+fi
+
+export ZSH_SCRIPTS=$SCRIPTS_DIR/zshrc
+
+source "$ZSH_SCRIPTS/options.zsh"
+source "$ZSH_SCRIPTS/keybinds.zsh"
+source "$ZSH_SCRIPTS/completion.zsh"
+source "$ZSH_SCRIPTS/env.zsh"
+source "$ZSH_SCRIPTS/colors.zsh"
+source "$ZSH_SCRIPTS/aliases.zsh"
+source "$ZSH_SCRIPTS/functions.zsh"
+source "$ZSH_SCRIPTS/wsl.zsh"
+
+unset ZSH_SCRIPTS
+
 # Zi options
 declare -A ZI
 
@@ -26,20 +50,6 @@ source "${zi_home}/bin/zi.zsh"
 
 autoload -Uz _zi
 (( ${+_comps} )) && _comps["zi"]=_zi
-
-# shellcheck source=zsh-autocomplete.zsh
-source "${SCRIPTS_DIR}/zsh-autocomplete.zsh"
-
-if [[ "${TERM}" == "linux" ]]; then
-    # shellcheck source=/dev/null
-    source "${SCRIPTS_DIR}/zshrc/basic-prompt.zsh"
-else
-    # shellcheck source=/dev/null
-    source "${SCRIPTS_DIR}/p10k.init.zsh"
-fi
-
-# shellcheck source=zsh.init.zsh
-source "${SCRIPTS_DIR}/zsh.init.zsh"
 
 # P10K theme
 zi ice if"[ ${TERM##*-} = '256color' ] || [ ${terminfo[colors]:?} -gt 255 ]" depth=1
@@ -58,6 +68,7 @@ omz_plugins=(
     docker-compose
     node
     git
+    gitignore
     aliases
     archlinux
 )
@@ -69,4 +80,3 @@ done
 zi light-mode for z-shell/z-a-meta-plugins @annexes
 
 zicompinit
-

@@ -1,5 +1,7 @@
 # Dotfiles
 
+## All of this is outdated. Dont use it.
+
 These are the dotfiles i chose to keep between my linux installs. Nothing really special about them.
 
 ## Requirements

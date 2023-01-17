@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 #! DO NOT FORMAT THIS FILE!
 
-command -v nvim &>/dev/null && alias vim='nvim' && alias bvim='/bin/vim'
-command -v lsd &>/dev/null && alias ls='lsd' && alias bls='/bin/ls'
-command -v bat &>/dev/null && alias cat='bat' && alias bcat='/bin/cat'
-command -v bat &>/dev/null && alias pcat='bat --paging=never -p'
+checkexists() {
+  command -v $1 &>/dev/null
+}
+
+checkexists nvim && alias vim='nvim' && alias bvim='/bin/vim'
+checkexists lsd && alias ls='lsd' && alias bls='/bin/ls'
+checkexists bat && alias cat='bat' && alias bcat='/bin/cat' && alias pcat='bat --paging=never -p'
+
+unset checkexists
 
 # ls aliases
 alias ll='ls -l'
@@ -43,15 +48,6 @@ systemctl_aliases=(
 for alias in "${systemctl_aliases[@]}"; do
   alias $alias="sudo systemctl $alias"
 done
-
-# (( $+commands[ptpwd] )) && alias pwd='ptpwd'
-# (( $+commands[ptcp] )) && alias cp='ptcp'
-
-if command -v paru &>/dev/null && ! command -v yay &>/dev/null; then
-  alias yay=paru
-elif ! command -v paru &>/dev/null && command -v paru &>/dev/null ; then
-  alias paru=yay
-fi
 
 # Splits a jwt string, and returns the header and payload
 alias jwt="jq -R 'split(\".\") | select(length > 0) | .[0],.[1] | @base64d | fromjson'"

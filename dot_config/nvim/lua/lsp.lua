@@ -12,7 +12,7 @@ vim.g.coq_settings = {
             mode = "short"
         }
     },
-    auto_start = true,
+    auto_start = 'shut-up',
     xdg = true
 }
 

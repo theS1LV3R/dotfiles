@@ -1,5 +1,0 @@
-# vi: ft=shellcheckrc
-enable=all
-external-sources=true
-severity=style
-disable=SC2250,SC2312

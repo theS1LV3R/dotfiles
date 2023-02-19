@@ -1,20 +1,188 @@
-#!/usr/bin/env bash
-# vi: ft=bash:ts=2:sw=2
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# vi: ft=python:ts=4:sw=4
 
-# shellcheck source=executable___common.sh
-source "${HOME}/.local/bin/__common.sh"
+import argparse
+import logging as log
+import ssl
+import textwrap
+import urllib.request
+import socket
 
-host=${1%:*}
-port=""
+import dns.resolver
+import httpx
+from cryptography import x509
 
-if echo "${1}" | grep -q ':'; then
-  port=${1##*:}
-fi
+debug = log.debug
+error = log.error
 
-if [[ -z ${port} ]]; then
-  port=443
-fi
 
-nslookup "${host}"
+def indent(text): return textwrap.indent(text, '\t')
 
-openssl s_client -showcerts -servername "${host}" -connect "${host}:${port}" <<< "Q" | openssl x509 -text -noout | grep -i "Validity" -A2
+
+def parse_arguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("hostname", type=str,
+                        help="The hostname to be resolved")
+    parser.add_argument("-p", "--port", type=int,
+                        help="The port to use for resolution")
+    parser.add_argument("-v", "--verbose",
+                        action="store_true", help="Verbose output")
+    parser.add_argument("-t", "--type", help="The type of server to be tested. Used for both SSL and HTTP testing",
+                        default="https", type=str, choices=["http", "https", "smtp"])
+    return parser.parse_args(["if11.xyz"])
+
+
+def dns_resolution(hostname: str, *args, **kwargs) -> None:
+    resolver = dns.resolver.Resolver()
+    try:
+        debug(f"Resolving CNAME records for {hostname}")
+        response = resolver.resolve(hostname, 'CNAME')
+        cname = response.rrset.to_text()
+        print(indent(cname))
+    except dns.resolver.NoAnswer:
+        debug(f"No CNAME records found")
+
+    try:
+        debug(f"Resolving A records for {hostname}")
+        a_response = resolver.resolve(hostname, "A")
+        a_record = a_response.rrset.to_text()
+        print(indent(a_record))
+    except dns.resolver.NoAnswer:
+        debug("No A records found")
+
+    try:
+        debug(f"Resolving AAAA records for {hostname}")
+        aaaa_response = resolver.resolve(hostname, "AAAA")
+        aaaa_record = aaaa_response.rrset.to_text()
+        print(indent(aaaa_record))
+    except dns.resolver.NoAnswer:
+        debug("No AAAA records found")
+
+
+def ssl_certificate(hostname: str, port: int, *args, **kwargs) -> None:
+    if port is None:
+        port = 443
+    debug(f"Loading SSL certificate for {hostname}:{port}")
+    cert_pem = ssl.get_server_certificate((hostname, port)).encode("utf-8")
+    cert = x509.load_pem_x509_certificate(cert_pem)
+
+    debug(f"Extracting parameters")
+    subject = " = ".join(cert.subject.rfc4514_string().split("="))
+    issuer = ", ".join(reversed(cert.issuer.rfc4514_string().split(",")))
+    valid_from = cert.not_valid_before
+    valid_after = cert.not_valid_after
+    sans = cert.extensions.get_extension_for_class(
+        x509.SubjectAlternativeName).value.get_values_for_type(x509.DNSName)
+
+    print(indent(f"""\
+Subject:\t{subject}
+Issuer:\t\t{issuer}
+Not before:\t{valid_from}
+Not after:\t{valid_after}
+x509 SAN:\t{', '.join(sans)}"""))
+
+
+def smtp_ssl_cert(hostname: str, port: int, *args, **kwargs):
+    debug("Creating context")
+    context = ssl.create_default_context()
+    context.verify_mode = ssl.CERT_OPTIONAL
+
+    debug("Connecting")
+    with socket.create_connection((hostname, port), timeout=1) as sock:
+        debug("Wrapping socket")
+        with context.wrap_socket(sock, server_hostname=hostname) as ssock:
+            debug("Getting peer cert")
+            cert = ssock.getpeercert()
+
+    issuer = f"C = {cert['issuer'][0][0][1]}, OU = {cert['issuer'][1][0][1]}, CN = {cert['issuer'][2][0][1]}"
+    sans = ", ".join([tup[1] for tup in cert['subjectAltName']])
+
+    print(indent(f"""\
+Subject CN:\t{cert['subject'][0][0][1]}
+Issuer:\t\t{issuer}
+Not before:\t{cert['notBefore']}
+Not after:\t{cert['notAfter']}
+x509 SANs:\t{sans}
+"""))
+
+
+def http_test(hostname: str, port: int, http_type='https', *args, **kwargs) -> None:
+    if port is None:
+        port = 443
+    with httpx.Client(http2=True, verify=False, follow_redirects=False) as client:
+        res: httpx.Response = client.get(
+            f"{http_type}://{hostname}:{port}")
+
+    print(
+        indent(f"HTTP:\t\t{res.http_version} {res.status_code} {res.reason_phrase}"))
+    if res.is_redirect:
+        print(indent(f"Location:\t{res.headers.get('location')}"))
+    print(indent(f"""\
+Date:\t\t{res.headers.get('date')}
+Server:\t\t{res.headers.get('server')}
+Content-Type:\t{res.headers.get('content-type')}
+"""))
+
+
+def smtp_test(hostname: str, port: int, *args, **kwargs) -> None:
+    debug("Creating and connecting socket")
+    sock = socket.create_connection((hostname, port), timeout=1)
+
+    received_data = ""
+    while True:
+        debug("Receiving data")
+        data = sock.recv(1024).decode()
+        if not data:
+            break
+        received_data += data
+        if '\r\n' in received_data:
+            debug("Found delimiter")
+            received_data = received_data.split('\r\n')[0]
+            break
+
+    print(indent(f"SMTP server:\t{received_data}"))
+
+
+def is_http(server_type: str): return server_type in ["http", "https"]
+def is_smtp(server_type: str): return server_type == "smtp"
+
+
+modules = [
+    ("DNS Resolution", dns_resolution),
+    ("SSL Certificate", ssl_certificate, is_http),
+    ("SSL Certificate (SMTP)", smtp_ssl_cert, is_smtp),
+    ("HTTP(S) checking", http_test, is_http),
+    ("SMTP checking", smtp_test, is_smtp)
+]
+
+if __name__ == "__main__":
+    args = parse_arguments()
+    hostname = args.hostname
+    port = args.port
+    verbose = args.verbose
+    server_type = args.type
+
+    if not port and server_type == "smtp":
+        port = 25
+
+    log.basicConfig(level=log.DEBUG if verbose else log.INFO,
+                    format='%(levelname)s: %(message)s')
+
+    debug("Running in verbose mode")
+    debug(args)
+
+    for module in modules:
+        debug(f"Running module: {module[0]}")
+
+        if len(module) > 2 and not module[2](server_type=server_type):
+            debug(f"Skipping {module[0]}: Check failed")
+            continue
+
+        try:
+            print(module[0])
+            module[1](hostname=hostname, port=port)
+        except Exception as e:
+            error(f"Error while running module: {module[0]}")
+            error(e)
+        print()

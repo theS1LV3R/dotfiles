@@ -4,10 +4,10 @@
 
 import argparse
 import logging as log
+import socket
 import ssl
 import textwrap
 import urllib.request
-import socket
 
 import dns.resolver
 import httpx

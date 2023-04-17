@@ -2,11 +2,20 @@
 # shellcheck shell=bash
 
 # In order:
-# - .zshenv always
-# - .zprofile if login
-# - .zshrc if interactive
-# - .zlogin if login
-# - .zlogout if exists, on logout
+#   /etc/zsh/zshenv (always)
+#   ${HOME}/.zshenv
+#
+#   /etc/zsh/zprofile (login shells)
+#   ${HOME}/.zprofile
+#
+#   /etc/zsh/zshrc (interactive shells)
+#   ${HOME}/.zshrc
+#
+#   /etc/zsh/zlogin (login shells)
+#   ${HOME}/.zlogin
+#
+#   ${HOME}/.zlogout (on logout)
+#   /etc/zsh/zlogout
 
 # https://unix.stackexchange.com/a/487889/386231
 # https://unix.stackexchange.com/a/71258/386231
@@ -15,6 +24,7 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
+export XDG_RUNTIME_DIR="/run/user/$UID"
 
 export ZDOTDIR="${XDG_CONFIG_HOME:-"$HOME/.config"}/zsh"
 

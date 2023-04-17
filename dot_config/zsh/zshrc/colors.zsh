@@ -1,4 +1,4 @@
-# enable color support of ls, less and man, and also add handy aliases
+# enable color support of ls, less and man
 if [[ -x /usr/bin/dircolors ]]; then
     [[ -r ~/.dircolors ]] && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 

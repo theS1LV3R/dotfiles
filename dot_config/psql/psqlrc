@@ -1,0 +1,28 @@
+-- vi: ft=sql
+-- https://www.digitalocean.com/community/tutorials/how-to-customize-the-postgresql-prompt-with-psqlrc-on-ubuntu-14-04
+\set QUIET 1
+
+-- https://www.endpointdev.com/blog/2015/02/postgres-onerrorrollback-explained/
+\set ON_ERROR_ROLLBACK interactive
+
+-- autocomplete in uppercase
+\set COMP_KEYWORD_CASE upper
+
+-- main prompt
+\set PROMPT1 '[%M]:%> %n@%/%R%#%x '
+-- secondary prompt (when unfinished query)
+\set PROMPT2 '[%M] %n@%/%R %# '
+
+-- null values are empty by default, show text instead
+\pset null '[null]'
+
+-- show query times
+\timing
+
+-- history count
+\set HISTSIZE 2000
+
+-- verbose error reports
+\set VERBOSITY verbose
+
+\set QUIET 0

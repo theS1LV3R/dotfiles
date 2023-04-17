@@ -2,14 +2,16 @@
 # vi: ft=bash:ts=2:sw=2
 
 # shellcheck source=executable___common.sh
-source "${HOME}/.local/bin/__common.sh"
+source "$HOME/.local/bin/__common.sh"
 
-cachedir="${HOME}/.cache/cheat.sh/"
+cachedir="${XDG_CACHE_DIR:-"$HOME/.cache"}/cheat.sh/"
 url="https://cheat.sh/$*"
 
 mkdir -p "${cachedir}"
 
-ping -c 1 -w 1 cheat.sh >/dev/null 2>&1
+# -c = count
+# -w = final timeout
+ping -c 1 -w 1 cheat.sh &>/dev/null
 exitstatus=$?
 
 if [[ ${exitstatus} -ne 0 ]]; then

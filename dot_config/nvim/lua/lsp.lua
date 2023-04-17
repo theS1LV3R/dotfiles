@@ -12,14 +12,14 @@ vim.g.coq_settings = {
             mode = "short"
         }
     },
-    auto_start = 'shut-up',
+    auto_start = "shut-up",
     xdg = true
 }
 
 local lsp_capabilities = vim.lsp.protocol.make_client_capabilities()
 lsp_capabilities.textDocument.completion.completionItem.snippetSupport = true
 
-local json_schemas = require('schemastore').json.schemas {}
+local json_schemas = require("schemastore").json.schemas {}
 local yaml_schemas = {}
 
 vim.tbl_map(function(schema)
@@ -47,7 +47,7 @@ require("mason-lspconfig").setup_handlers {
     end,
 
     ["jsonls"] = function()
-        require('lspconfig')["jsonls"].setup(coq.lsp_ensure_capabilities(merge_common {
+        require("lspconfig")["jsonls"].setup(coq.lsp_ensure_capabilities(merge_common {
             settings = {
                 json = {
                     schemas = json_schemas,

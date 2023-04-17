@@ -6,13 +6,19 @@
 zmodload zsh/complist
 autoload -U compinit && compinit -d ~/.cache/zcompdump
 autoload -U bashcompinit && bashcompinit -d ~/.cache/zbashcompdump
+autoload -U add-zsh-hook
 
 export DOTFILES_DIR="{{ .chezmoi.sourceDir }}"
 export SCRIPTS_DIR="${HOME}/.config/zsh"
+export ZSH_SCRIPTS=$SCRIPTS_DIR/zshrc
+
 # shellcheck disable=SC2155
-export GPG_TTY=$(tty)
+# Declare and assign separately to avoid masking return values.
+export GPG_TTY=$(tty) # When making commits during SSH, so GPG uses the TTY and doesnt break
+
 # shellcheck disable=SC2206
-export fpath=("${SCRIPTS_DIR}/completions" ${fpath})
+# We cant quote, it breaks zsh _hard_
+export fpath=("${SCRIPTS_DIR}/completions" $fpath)
 
 # shellcheck source=zsh-autocomplete.zsh
 source "${SCRIPTS_DIR}/zsh-autocomplete.zsh"
@@ -25,16 +31,15 @@ else
     source "${SCRIPTS_DIR}/p10k.init.zsh"
 fi
 
-export ZSH_SCRIPTS=$SCRIPTS_DIR/zshrc
-
-source "$ZSH_SCRIPTS/options.zsh"
-source "$ZSH_SCRIPTS/keybinds.zsh"
-source "$ZSH_SCRIPTS/completion.zsh"
+source "$ZSH_SCRIPTS/options.zsh"     # Options using setopt, as well as history
+source "$ZSH_SCRIPTS/keybinds.zsh"    # Shell keybinds
+source "$ZSH_SCRIPTS/completion.zsh"  # Completion scripts
 source "$ZSH_SCRIPTS/env.zsh"
 source "$ZSH_SCRIPTS/colors.zsh"
 source "$ZSH_SCRIPTS/aliases.zsh"
 source "$ZSH_SCRIPTS/functions.zsh"
-source "$ZSH_SCRIPTS/wsl.zsh"
+source "$ZSH_SCRIPTS/wsl.zsh"         # Does it _actually_ work in WSL? Probably not but it's worth a try
+source "$ZSH_SCRIPTS/hooks.sh"        # Mostly exit hooks
 
 unset ZSH_SCRIPTS
 
@@ -63,11 +68,11 @@ zi load zsh-users/zsh-completions
 omz_plugins=(
     pip
     aws
+    node
+    git
     command-not-found
     docker
     docker-compose
-    node
-    git
     gitignore
     aliases
     archlinux

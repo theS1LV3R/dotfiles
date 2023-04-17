@@ -1,6 +1,7 @@
-#!/usr/bin/env bash
+# shellcheck shell=bash
 # vi: ft=bash:ts=2:sw=2
 
+echo "TEXT COLOR"
 echo -e "\033[0mNC (No color)"
 echo -e "\033[1;37mWHITE\t\033[0;30mBLACK"
 echo -e "\033[0;34mBLUE\t\033[1;34mLIGHT_BLUE"
@@ -13,16 +14,46 @@ echo -e "\033[1;30mGRAY\t\033[0;37mLIGHT_GRAY"
 
 echo ""
 
-for x in {0..8}; do
-  for i in {30..37}; do
-    for a in {40..47}; do
-      echo -ne "\e[${x};${i};${a}""m\\\e[${x};${i};${a}""m\e[0;37;40m \u001b[0m"
+echo "TEXT STYLE"
+for i in {0..8}; do
+  case $i in
+  0) style="Normal" ;;
+  1) style="Bold" ;;
+  2) style="Dim" ;;
+  3) style="Italic" ;;
+  4) style="Underlined" ;;
+  5) style="Blinking (non-standard)" ;;
+  6) style="Inverted (non-standard)" ;;
+  7) style="Hidden (non-standard)" ;;
+  8) style="Strikethrough (non-standard)" ;;
+  *) return ;; # How did we get here
+  esac
+  echo -e "\n$x - $style:"
+  for j in {30..37}; do
+    for k in {40..47}; do
+      # Print a colored block with the current style and colors
+      # i = style
+      # j = foreground
+      # k = background
+      echo -ne "\e[${i};${j};${k}""m\\\e[${i};${j};${k}""m\e[0;37;40m \u001b[0m"
     done
-    echo
+    echo # Print a new line after each row
   done
 done
 
-# for i in {0..255}; do
-#     #shellcheck disable=SC2296,SC2298
-#     print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+$'\n'};
-# done
+echo
+echo
+
+echo "XTERM COLORS"
+# Print out a table of 256 different color codes
+for i in {0..257}; do
+  if ((i < 2)); then
+    printf "  ---  "
+  else
+    if ((i % 6 == 0)); then
+      printf "\n"
+    fi
+    # Print a colored block with the current xterm color
+    printf "\033[48;5;%sm  %03d  \033[0m" "$((i - 2))" "$((i - 2))"
+  fi
+done

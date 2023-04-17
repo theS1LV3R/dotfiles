@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # vi: ft=bash:ts=2:sw=2
 
-# Usage: wttr [options] [location]
-set -euo pipefail
-IFS=$'\n\t'
+# shellcheck source=executable___common.sh
+source "${HOME}/.local/bin/__common.sh"
 
 CITY="bergen"
 
+# Usage: wttr [options] [location]
 # Parse flags
 # -h, --help
 # -n, --no-less

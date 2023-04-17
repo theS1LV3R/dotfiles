@@ -2,3 +2,5 @@
 # shellcheck shell=bash
 
 clear
+
+echo "$USER@$(hostname) logged out at $(date -Iseconds)"

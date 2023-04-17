@@ -1,12 +1,15 @@
 #compdef offload
+# vi: ft=zsh
+# shellcheck shell=bash
 
 _offload() {
     integer ret=1
     local -a args
     args+=(
-        '*:program: _path_commands'
+        '1:program: _command_names -e'
+        '*::'
     )
-    _arguments "${args[@]}" && ret=0
+    _arguments -s "${args[@]}" && ret=0
     return $ret
 }
 

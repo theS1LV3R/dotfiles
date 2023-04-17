@@ -3,15 +3,14 @@
   "zig_exe_path": "/home/s1lv3r/.local/share/asdf/shims/zig",
   "enable_snippets": true,
   "enable_ast_check_diagnostics": true,
-  "enable_import_embedfile_argument_completions": true,
-  "warn_style": true,
+  "enable_autofix": true,
   "enable_semantic_tokens": true,
   "enable_inlay_hints": true,
-  "operator_completions": true,
-  "include_at_in_builtins": false,
-  "skip_std_references": false,
-  "max_detail_length": 1048576,
-  "enable_autofix": true,
   "inlay_hints_show_builtin": true,
-  "inlay_hints_exclude_single_argument": true
+  "inlay_hints_exclude_single_argument": true,
+  "inlay_hints_hide_redundant_param_names": true,
+  "operator_completions": true,
+  "warn_style": true,
+  "include_at_in_builtins": true,
+  "skip_std_references": false
 }

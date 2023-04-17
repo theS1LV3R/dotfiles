@@ -1,0 +1,7 @@
+# Allow user "username" to start a wg-quick service
+s1lv3r ALL=(ALL) NOPASSWD: /usr/bin/systemctl start wg-quick@*.service
+s1lv3r ALL=(ALL) NOPASSWD: /usr/bin/systemctl stop wg-quick@*.service
+s1lv3r ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart wg-quick@*.service
+s1lv3r ALL=(ALL) NOPASSWD: /usr/bin/systemctl start wg-quick@*
+s1lv3r ALL=(ALL) NOPASSWD: /usr/bin/systemctl stop wg-quick@*
+s1lv3r ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart wg-quick@*

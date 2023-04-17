@@ -1,14 +1,18 @@
-# shellcheck disable=all
+# vi: ft=ini
 
 prefix=${XDG_DATA_HOME}/npm
 cache=${XDG_CACHE_HOME}/npm
-cacache=${XDG_RUNTIME_DIR}/npm
 init-module=${XDG_CONFIG_HOME}/npm/config/npm-init.js
+fund=false # https://docs.npmjs.com/cli/v9/using-npm/config#fund
+audit=false # https://docs.npmjs.com/cli/v9/using-npm/config#audit
 
-auto-install-peers=true
-strict-peer-dependencies=false
-fund=false
-audit=false
+# npm WARN config tmp This setting is no longer used.  npm stores temporary files in a special
+# npm WARN config location in the cache, and they are managed by
+# npm WARN config     [`cacache`](http://npm.im/cacache).
+# tmp=${XDG_RUNTIME_DIR}/npm
+cacache=${XDG_RUNTIME_DIR}/npm
 
 # PNPM
 store-dir=${XDG_DATA_HOME}/pnpm-store
+auto-install-peers=true # https://pnpm.io/npmrc#auto-install-peers
+strict-peer-dependencies=false # https://pnpm.io/npmrc#strict-peer-dependencies

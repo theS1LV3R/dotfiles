@@ -3,9 +3,17 @@
 setopt prompt_subst
 autoload -U colors && colors # Enable colors in prompt
 
+red="%{$fg[red]%}"
+cyan="%{$fg[cyan]%}"
+magenta="%{$fg[magenta]%}"
+yellow="%{$fg[yellow]%}"
+green="%{$fg[green]%}"
+blue="%{$fg[blue]%}"
+nc="%{$reset_color%}"
+
 # Echoes a username/host string when connected over SSH (empty otherwise)
 ssh_info() {
-  [[ "$SSH_CONNECTION" != '' ]] && echo '%(!.%{$fg[red]%}.%{$fg[yellow]%})%n%{$reset_color%}@%{$fg[green]%}%m%{$reset_color%}:' || echo ''
+  [[ "$SSH_CONNECTION" != '' ]] && echo '%(!.${red}.${yellow})%n$nc@${green}%m$nc:' || echo ''
 }
 
 # Echoes information about Git repository status when inside a Git repository
@@ -17,12 +25,12 @@ git_info() {
   # Git branch/tag, or name-rev if on detached head
   local GIT_LOCATION=${$(git symbolic-ref -q HEAD || git name-rev --name-only --no-undefined --always HEAD)#(refs/heads/|tags/)}
 
-  local AHEAD="%{$fg[red]%}↑NUM%{$reset_color%}"
-  local BEHIND="%{$fg[cyan]%}↓NUM%{$reset_color%}"
-  local MERGING="%{$fg[magenta]%}‼%{$reset_color%}"
-  local UNTRACKED="%{$fg[red]%}○%{$reset_color%}"
-  local MODIFIED="%{$fg[yellow]%}○%{$reset_color%}"
-  local STAGED="%{$fg[green]%}○%{$reset_color%}"
+  local AHEAD="$red↑NUM$nc"
+  local BEHIND="$cyan↓NUM$nc"
+  local MERGING="$magenta‼$nc"
+  local UNTRACKED="$red○$nc"
+  local MODIFIED="$yellow○$nc"
+  local STAGED="$green○$nc"
 
   local -a DIVERGENCES
   local -a FLAGS
@@ -59,13 +67,20 @@ git_info() {
   [[ -n "$GIT_STATUS" ]] && GIT_INFO+=( "$GIT_STATUS" )
   [[ ${#DIVERGENCES[@]} -ne 0 ]] && GIT_INFO+=( "${(j::)DIVERGENCES}" )
   [[ ${#FLAGS[@]} -ne 0 ]] && GIT_INFO+=( "${(j::)FLAGS}" )
-  GIT_INFO+=( "\033[38;5;15m$GIT_LOCATION%{$reset_color%}" )
+  GIT_INFO+=( "\033[38;5;15m$GIT_LOCATION$nc" )
   echo "${(j: :)GIT_INFO}"
-
 }
 
-# Use ❯ as the non-root prompt character; # for root
+# Use > as the non-root prompt character; # for root
 # Change the prompt character color if the last command had a nonzero exit code
 PS1='
-$(ssh_info)%{$fg[magenta]%}%~%u $(git_info)
-%(?.%{$fg[blue]%}.%{$fg[red]%})%(!.#.>)%{$reset_color%} '
+$(ssh_info)$magenta%~%u $(git_info)
+%(?.$blue.$red)%(!.#.>)$nc '
+
+unset red
+unset cyan
+unset magenta
+unset yellow
+unset green
+unset blue
+unset nc

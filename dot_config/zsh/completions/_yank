@@ -1,0 +1,15 @@
+#compdef yank.sh
+# vi: ft=zsh
+# shellcheck shell=bash
+
+_yank.sh() {
+    integer ret=1
+    local -a args
+    args+=(
+        '*:file:_files'
+    )
+    _arguments -s "${args[@]}" && ret=0
+    return $ret
+}
+
+_yank.sh

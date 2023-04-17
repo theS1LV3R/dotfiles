@@ -86,24 +86,24 @@ zstyle ':autocomplete:*' fzf-completion yes
 zstyle ':autocomplete:*' add-space \
     executables aliases functions builtins reserved-words commands
 
-source ${DOTFILES_DIR}/zsh_plugins/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+#source ${DOTFILES_DIR}/zsh_plugins/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 #
 # NOTE: All settings below should come AFTER sourcing zsh-autocomplete!
 #
 
-bindkey $key[Up] up-line-or-history
+#bindkey $key[Up] up-line-or-history
 # up-line-or-search:  Open history menu.
 # up-line-or-history: Cycle to previous history line.
 
-bindkey $key[Down] down-line-or-history
+#bindkey $key[Down] down-line-or-history
 # down-line-or-select:  Open completion menu.
 # down-line-or-history: Cycle to next history line.
 
-bindkey $key[Control-Space] list-expand
+#bindkey $key[Control-Space] list-expand
 # list-expand:      Reveal hidden completions.
 # set-mark-command: Activate text selection.
 
-bindkey -M menuselect $key[Return] accept-line
+#bindkey -M menuselect $key[Return] accept-line
 # .accept-line: Accept command line.
 # accept-line:  Accept selection and exit menu.
 
@@ -112,6 +112,6 @@ bindkey -M menuselect $key[Return] accept-line
 # zle -A {.,}history-incremental-search-backward
 
 # Return key in completion menu & history menu:
-bindkey -M menuselect $key[Return]  accept-line
+#bindkey -M menuselect $key[Return]  accept-line
 # .accept-line: Accept command line.
 # accept-line:  Accept selection and exit menu.

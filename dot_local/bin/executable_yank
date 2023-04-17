@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+# vi: ft=bash:ts=2:sw=2
+
+# shellcheck source=executable___common.sh
+source "${HOME}/.local/bin/__common.sh"
+
+# get data either from stdin or from file
+buf=$(cat "$@")
+
+copy_backend_remote_tunnel_port=$(tmux show-option -gvq "@copy_backend_remote_tunnel_port" 2>/dev/null || true)
+copy_use_osc52_fallback=$(tmux show-option -gvq "@copy_use_osc52_fallback" 2>/dev/null || true)
+
+copy_backend=""
+if [[ -n "${DISPLAY-}" ]]; then
+  # If we have DISPLAY, use either xclip or xsel
+  installed xsel && copy_backend="xsel -i --clipboard"
+  installed xclip && copy_backend="xclip -i -f -selection primary | xclip -i -selection clipboard"
+
+elif [[ -n "${copy_backend_remote_tunnel_port-}" ]] &&
+  # If we dont have DISPLAY we are probably remoted and/or using tmux
+  # -l = listening sockets only
+  # -n = numeric, don't resolve IPs to hosts or ports to services
+  # -f = show RFCOMM sockets (bluetooth) (not enabled on arch?)
+  # -4 = only show IPv4 addresses
+
+  # I am guessing we are checking if we are listening on the remote tunnel port provided?
+  # And using netcat if we are
+  (netstat -f inet -nl 2>/dev/null || netstat -4 -nl 2>/dev/null) |
+  grep -q "[.:]$copy_backend_remote_tunnel_port"; then
+  copy_backend="nc localhost $copy_backend_remote_tunnel_port"
+fi
+
+# if copy backend is resolved, copy and exit
+if [[ -n "$copy_backend" ]]; then
+  printf "%s" "$buf" | eval "$copy_backend"
+  exit
+fi
+
+# If no copy backends were eligible, decide to fallback to OSC 52 escape sequences
+# Note, most terminals do not handle OSC
+if [[ "$copy_use_osc52_fallback" == "off" ]]; then
+  exit
+fi
+
+# Copy via OSC 52 ANSI escape sequence to controlling terminal
+buflen=$(printf %s "$buf" | wc -c)
+
+# https://sunaku.github.io/tmux-yank-osc52.html
+# The maximum length of an OSC 52 escape sequence is 100_000 bytes, of which
+# 7 bytes are occupied by a "\033]52;c;" header, 1 byte by a "\a" footer, and
+# 99_992 bytes by the base64-encoded result of 74_994 bytes of copyable text
+# From ChatGPT:
+#   If you are measuring the sequence as a string of characters, then yes, it
+#   appears to only be four characters: "\033", "]", "5", and "2". However, when
+#   the sequence is sent to the terminal, it is interpreted as a control sequence,
+#   not as a string of characters. In this context, the sequence takes up a total
+#   of 7 bytes - 2 bytes for the escape sequence ("\033"), 1 byte for
+#   the "]" character, 1 byte for the "5" character, 1 byte for the "2" character,
+#   and 2 bytes for the ";c" payload.
+maxlen=74994
+
+# warn if exceeds maxlen
+if [[ "$buflen" -gt "$maxlen" ]]; then
+  printf "input is %d bytes too long, only including part that fits" "$((buflen - maxlen))" >&2
+fi
+
+header="\033]52;c;"
+
+# build up OSC 52 ANSI escape sequence
+esc="$header$(printf %s "$buf" | head -c "${maxlen}" | base64 | tr -d '\r\n')\a"
+esc="\033Ptmux;\033$esc\033\\"
+
+# resolve target terminal to send escape sequence
+# if we are on remote machine, send directly to SSH_TTY to transport escape sequence
+# to terminal on local machine, so data lands in clipboard on our local machine
+pane_active_tty=$(tmux list-panes -F "#{pane_active} #{pane_tty}" | awk '$1=="1" { print $2 }')
+target_tty="${SSH_TTY:-$pane_active_tty}"
+
+printf '%s' "$esc" >"$target_tty"

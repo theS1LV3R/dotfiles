@@ -8,70 +8,40 @@ source common.sh
 IFS=' ' read -r -a packages <<<"$*"
 
 packages+=(
-    chezmoi
-    lsd
-    asdf-vm
-    zlib
     base-devel
     archlinux-keyring
-    pkgfile
-    python-virtualenv # For COQ - nvim
     neovim
+    chezmoi                            # dotfile management
+    lsd                                # Better ls command
+    asdf-vm                            # Version management
+    firefox-profile-switcher-connector # Firefox extension allowing better profile switching
 )
 
 aur_install() {
+    orig_dir="$PWD"
     package=$1
 
     log_info "Installing $package from AUR"
 
     dir=$(mktemp -d)
+    git clone "https://aur.archlinux.org/$package.git" "$dir"
     cd "$dir"
 
-    git clone "https://aur.archlinux.org/$package.git"
-    cd paru
-    makepkg -si --noconfirm
+    makepkg -sicC --noconfirm
+
+    cd "$orig_dir"
 }
 
-pm=null
+log_info "Installing paru"
+aur_install paru
 
-_yay=$(command -v yay)
-_paru=$(command -v paru)
-
-if [[ -n $_yay ]] && [[ -n $_paru ]]; then
-    log_ask "Found yay and paru, select which one to use"
-    read -r -p "[Y/p] " yay_or_paru </dev/tty
-    if [[ "${yay_or_paru}" =~ ^[Pp] ]]; then
-        pm="paru"
-    else
-        pm="yay"
-    fi
-
-    log_info "Using $pm"
-elif [[ -n $_yay ]] && [[ -z $_paru ]]; then
-    log_info "Found yay, but not paru, using yay"
-    pm="yay"
-elif [[ -z $_yay ]] && [[ -n $_paru ]]; then
-    log_info "Found paru, but not yay, using paru"
-    pm="paru"
-else
-    log_ask "Neither yay nor paru not found, select one to install"
-    read -r -p "[Y/p]" yay_or_paru </dev/tty
-    if [[ "${yay_or_paru}" =~ ^[Pp] ]]; then
-        orig_dir=$(pwd)
-
-        aur_install paru
-
-        cd "$orig_dir"
-    else
-        orig_dir=$(pwd)
-
-        aur_install yay
-
-        cd "$orig_dir"
-    fi
+log_ask "Install yay?"
+read -r -p "[y/N]" install_yay </dev/tty
+if [[ "$install_yay" =~ ^[Yy] ]]; then
+    aur_install yay
 fi
 
-$pm -Sy --noconfirm --needed "${packages[@]}"
+paru -Sy --noconfirm --needed "${packages[@]}"
 
 log_info "Initializing chezmoi"
 chezmoi init --apply theS1LV3R

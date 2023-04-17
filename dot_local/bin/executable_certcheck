@@ -30,7 +30,7 @@ def parse_arguments():
                         action="store_true", help="Verbose output")
     parser.add_argument("-t", "--type", help="The type of server to be tested. Used for both SSL and HTTP testing",
                         default="https", type=str, choices=["http", "https", "smtp"])
-    return parser.parse_args(["if11.xyz"])
+    return parser.parse_args()
 
 
 def dns_resolution(hostname: str, *args, **kwargs) -> None:
@@ -41,7 +41,7 @@ def dns_resolution(hostname: str, *args, **kwargs) -> None:
         cname = response.rrset.to_text()
         print(indent(cname))
     except dns.resolver.NoAnswer:
-        debug(f"No CNAME records found")
+        debug("No CNAME records found")
 
     try:
         debug(f"Resolving A records for {hostname}")
@@ -67,8 +67,10 @@ def ssl_certificate(hostname: str, port: int, *args, **kwargs) -> None:
     cert_pem = ssl.get_server_certificate((hostname, port)).encode("utf-8")
     cert = x509.load_pem_x509_certificate(cert_pem)
 
-    debug(f"Extracting parameters")
-    subject = " = ".join(cert.subject.rfc4514_string().split("="))
+
+
+    debug("Extracting parameters")
+    subject = cert.subject.rfc4514_string().replace("=", " = ")
     issuer = ", ".join(reversed(cert.issuer.rfc4514_string().split(",")))
     valid_from = cert.not_valid_before
     valid_after = cert.not_valid_after
@@ -80,7 +82,8 @@ Subject:\t{subject}
 Issuer:\t\t{issuer}
 Not before:\t{valid_from}
 Not after:\t{valid_after}
-x509 SAN:\t{', '.join(sans)}"""))
+x509 SAN:\t{', '.join(sans)}
+Serial:\t\t{cert.serial_number}"""))
 
 
 def smtp_ssl_cert(hostname: str, port: int, *args, **kwargs):
@@ -103,8 +106,7 @@ Subject CN:\t{cert['subject'][0][0][1]}
 Issuer:\t\t{issuer}
 Not before:\t{cert['notBefore']}
 Not after:\t{cert['notAfter']}
-x509 SANs:\t{sans}
-"""))
+x509 SANs:\t{sans}"""))
 
 
 def http_test(hostname: str, port: int, http_type='https', *args, **kwargs) -> None:
@@ -121,8 +123,7 @@ def http_test(hostname: str, port: int, http_type='https', *args, **kwargs) -> N
     print(indent(f"""\
 Date:\t\t{res.headers.get('date')}
 Server:\t\t{res.headers.get('server')}
-Content-Type:\t{res.headers.get('content-type')}
-"""))
+Content-Type:\t{res.headers.get('content-type')}"""))
 
 
 def smtp_test(hostname: str, port: int, *args, **kwargs) -> None:
@@ -172,7 +173,7 @@ if __name__ == "__main__":
     debug("Running in verbose mode")
     debug(args)
 
-    for module in modules:
+    for index, module in enumerate(modules):
         debug(f"Running module: {module[0]}")
 
         if len(module) > 2 and not module[2](server_type=server_type):
@@ -185,4 +186,6 @@ if __name__ == "__main__":
         except Exception as e:
             error(f"Error while running module: {module[0]}")
             error(e)
-        print()
+
+        if index != len(modules):
+            print()

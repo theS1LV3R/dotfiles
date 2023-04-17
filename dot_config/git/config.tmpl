@@ -33,9 +33,6 @@
 [feature]
     manyFiles = true
 
-[include]
-    path = ~/.gitconfig_local
-
 [includeIf "gitdir:~/kode/machina/"]
     path = ~/kode/machina/.gitconfig
 
@@ -58,3 +55,15 @@
 
 [submodule]
     recurse = true
+
+[url "ssh://aur@aur.archlinux.org/"]
+    insteadOf = aur://
+
+[url "https://github.com/"]
+    insteadOf = gh-https://
+    insteadOf = github-https://
+
+# Imma be honest I have no idea why i need an additional / at the end here but it wont work without it
+[url "ssh://git@github.com:/"]
+    insteadOf = gh://
+    insteadOf = github://

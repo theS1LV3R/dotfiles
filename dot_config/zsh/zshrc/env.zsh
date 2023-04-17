@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 ASDF=false
 
 if [[ -f /opt/asdf-vm/asdf.sh ]]; then
@@ -9,7 +10,7 @@ elif [[ -f $HOME/.asdf/asdf.sh ]]; then
 fi
 
 if [[ "$ASDF" == true ]]; then
-  rust_dir=$(asdf where rust)
+  local rust_dir=$(asdf where rust)
   if [[ -n "$rust_dir" ]]; then
     source $rust_dir/env
   fi

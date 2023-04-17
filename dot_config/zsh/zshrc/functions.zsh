@@ -9,52 +9,40 @@ ssh() {
 dict() {
   page=$(command dict "$@")
 
-  if test $(echo "$page" | wc -l) -gt $(tput lines); then
+  if [[ $(echo "$page" | wc -l) -gt $(tput lines) ]]; then
     echo "$page" | less -R
-    echo "$page"
+    echo -e "$page"
   else
     echo -e "$page"
   fi
 }
 
 secret() {
-  bytes="64"
+  bytes="${1:-48}"
 
-  [[ ! -z $@ ]] && bytes="$*"
-
-  openssl rand -hex $bytes
+  openssl rand -rand /dev/urandom -base64 $bytes | tr --delete '\n'
 }
 
 update() {
-  # Check for apt systems
   if command -v apt &>/dev/null; then
     sudo apt update
-    sudo apt upgrade -y
+    sudo apt upgrade
+    sudo apt autoremove --purge
     return
   fi
 
   if command -v pacman &>/dev/null; then
+    pm="sudo pacman"
+
     if command -v paru &>/dev/null; then
-      paru -Syu
+      pm=paru
     elif command -v yay &>/dev/null; then
-      yay -Syu
-    else
-      sudo pacman -Syu
+      pm=yay
     fi
 
-    return
-  fi
+    $pm -Syu
+    $pm -Qdtq | $pm -Rsun || true
 
-  # Check for yum systems
-  if command -v yum &>/dev/null; then
-    sudo yum update
-    return
-  fi
-
-  # Check for brew systems
-  if command -v brew &>/dev/null; then
-    brew update
-    brew upgrade
     return
   fi
 }
@@ -65,10 +53,85 @@ path() {
   # last sed:
   #  - n N    Read/append the next line of input into the pattern space.
   #  - then replace newlines with tabs, this affects every other newline
-  echo ${PATH//:/\\n} | sed '=' | sed 'N;s:\n:\t:'
+  echo ${PATH//:/\\n} | sed '=' | sed 'N;s|\n|\t|'
 }
 fpath() {
-  echo ${FPATH//:/\\n} | sed '=' | sed 'N;s:\n:\t:'
+  echo ${FPATH//:/\\n} | sed '=' | sed 'N;s|\n|\t|'
 }
 
-precmd() { print -Pn "\e]2;%n@%M:%~\a"; } # title bar prompt
+idl() {
+  id | sed -E 's| |\n|g' | sed 's|groups=|groups:\n - |' | sed -E 's|=| = |g' | sed -E 's|,|\n - |g'
+}
+
+drmgrep() {
+  docker container rm $(docker container ls -a | grep $1 | awk '{ print $1 }')
+}
+drm!grep() {
+  docker container rm -f $(docker container ls -a | grep $1 | awk '{ print $1 }')
+}
+
+dnetworks() {
+  docker network ls -q --filter driver=bridge | while IFS= read -r netId; do
+    inspect=$(docker network inspect $netId)
+
+    name=$(echo $inspect | jq -r '.[].Name' 2>/dev/null)
+    subnet=$(echo $inspect | jq -r '.[].IPAM.Config[].Subnet' 2>/dev/null)
+
+    [[ -z $name || $name == "null" ]] && name=$(echo $inspect | jq -r '.[].name')
+    [[ -z $subnet || $subnet == "null" ]] && subnet=$(echo $inspect | jq -r '.[].subnets[].subnet')
+
+    echo -e "\e[1;37;40m$name\033[0m"
+    echo $subnet
+  done
+}
+
+ipinfo() {
+  export GUM_SPIN_SPINNER="minidot"
+  export GUM_SPIN_SHOW_OUTPUT="true"
+
+  ip=${1:-''}
+
+  if [[ -z "$ip" ]]; then
+    ip=$(gum spin --title="Getting own public IP..." \
+      -- curl -s "https://ifconfig.me")
+  fi
+
+  if [[ -z "$IPINFO_API_TOKEN" ]]; then
+    echo "Missing IPinfo API token! Remember to add it to env vars - \$IPINFO_API_TOKEN"
+  fi
+
+  gum spin --title="Getting IP information..." \
+    -- curl -u $IPINFO_API_TOKEN: -s "https://ipinfo.io/$ip/json" | jq
+
+  usage=$(gum spin --title="Getting IPinfo usage..." \
+    -- curl -u $IPINFO_API_TOKEN: -s "https://ipinfo.io/me" | jq '.requests|.month,.limit' | paste -s -d'/')
+  # /me endpoint is undocumented, got it from an email to IPinfo
+  echo "Usage this month: $usage"
+
+  unset GUM_SPIN_SPINNER
+  unset GUM_SPIN_SHOW_OUTPUT
+}
+
+autoclick() {
+  _time=${1:-10}                # Default 10 seconds
+  _delay=${2:-5}                # Default 5 seconds
+  _between_click_delay=${3:-20} # Miliseconds
+
+  gum spin \
+    --spinner="minidot" \
+    --title="Waiting for $_delay before clicking..." \
+    -- sleep "$_delay"
+
+  gum spin \
+    --spinner="minidot" \
+    --title="Clicking for $_time..." \
+    --show-output \
+    -- timeout $_time xdotool click \
+    --delay $_between_click_delay \
+    --repeat 99999999999999999 \
+    1
+}
+
+optdeps() {
+  pacman -Qe | awk '{print $1}' | xargs pacman -Qi | awk '/^Name/ {name=$3} /^Optional Deps/ && !/None/ {print name ":"; sub(/^Optional Deps\s*:\s*/, "", $0); gsub(/,\s*/, "\n  ", $0); print "  " $0}'
+}

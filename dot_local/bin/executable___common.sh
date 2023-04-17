@@ -2,6 +2,9 @@
 # shellcheck disable=SC2311,SC2312
 # vi: ft=bash:ts=2:sw=2
 
+# SC2311 - Bash implicitly disabled set -e for this function invocation because it's inside a command substitution.
+# SC2312 - Consider invoking this command separately to avoid masking its return value (or use '|| true' to ignore).
+
 set -euo pipefail
 IFS=$'\n\t'
 
@@ -18,22 +21,10 @@ pager() {
   echo -e "$1"
 }
 
-timestamp() {
-  date --rfc-3339=seconds
-}
+timestamp() { date --rfc-3339=seconds; }
+installed() { command -v "$1" &>/dev/null; }
 
-log_info() {
-  echo -e "${GREEN}[$(timestamp) INFO]${NC}\t $1"
-}
-
-log_warn() {
-  echo -e "${YELLOW}[$(timestamp) WARN]${NC}\t $1"
-}
-
-log_ask() {
-  echo -e "${BLUE}[$(timestamp) ASK]${NC}\t $1"
-}
-
-log_error() {
-  echo -e "${BLUE}[$(timestamp) ERROR]${NC}\t $1"
-}
+log_info() { echo -e "${GREEN}[$(timestamp) INFO]${NC}\t $1"; }
+log_warn() { echo -e "${YELLOW}[$(timestamp) WARN]${NC}\t $1"; }
+log_ask() { echo -e "${BLUE}[$(timestamp) ASK]${NC}\t $1"; }
+log_error() { echo -e "${RED}[$(timestamp) ERROR]${NC}\t $1" &>/dev/stderr; }

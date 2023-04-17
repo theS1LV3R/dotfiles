@@ -10,15 +10,15 @@ if ! command -v git &>/dev/null; then
   exit 1
 fi
 
-is_git_repo=$(git rev-parse --is-inside-work-tree 2>/dev/null && echo true || echo false)
+is_git_repo=$(git rev-parse --is-inside-work-tree 2>/dev/null && echo true)
 
-if [[ "${is_git_repo}" == "false" ]]; then
+if [[ -z "$is_git_repo" ]]; then
   log_info "Not in git repo, cloning to temp dir"
   TEMP_DIR=$(mktemp -d)
 
-  git clone --depth 1 "${_REPO}" "${TEMP_DIR}"
+  git clone --depth 1 "$_REPO" "$TEMP_DIR"
 
-  cd "${TEMP_DIR}"/script
+  cd "$TEMP_DIR"/script
 
   exec bash "./install.sh" "$@"
 fi
@@ -30,88 +30,76 @@ log_info "Press enter to continue or ctrl-c to abort."
 read -r </dev/tty
 
 log_info "Collecting information..."
-is_arch=$(test -f /etc/arch-release && echo true || echo false)
-is_debian=$(test -f /etc/debian_version && echo true || echo false)
+os_release=""
+[[ -e /etc/arch-release ]] && os_release="arch"
+[[ -e /etc/debian_version ]] && os_release="debian"
 
 _install() {
   filename="install_$1.sh"
 
-  shift
+  # Neovim not included - Debian uses asdf
+  common_packages="unzip zsh tmux gcc neofetch curl wget net-tools vim"
 
   log_info "Running ./$filename"
   # shellcheck disable=SC1090
-  source "$filename" "$@"
+  source "$filename" "$common_packages"
 }
 
-common_packages="unzip zsh tmux gcc neofetch curl net-tools vim"
-# Neovim not included - Debian uses asdf
+case "$os_release" in
+arch) log_info "Detected Arch" && _install arch ;;
+debian) log_info "Detected Debian" && _install deb ;;
+*) log_error "Unsupported distribution" && exit 1 ;;
+esac
 
-if [[ "${is_arch}" == "true" ]]; then
-  log_info "Detected Arch"
-  _install arch "$common_packages"
-elif [[ "${is_debian}" == "true" ]]; then
-  log_info "Detected Debian"
-  _install deb "$common_packages"
-else
-  log_warn "Unsupported distribution"
-  exit 1
-fi
-
-awk '{print $1;}' "${HOME}/.tool-versions" | while IFS= read -r plugin; do
+while IFS= read -r plugin; do
   asdf plugin add "$plugin" 2>/dev/null || true
-done
+done <<<"$(awk '{ print $1; }' "$HOME/.tool-versions")"
 
 asdf install
 
-if [[ "${is_debian}" == "true" ]]; then
+[[ "$os_release" == "debian" ]] && {
   cargo install lsd
   cargo install bat
-fi
+  cargo install 
+}
 
 change_shell() {
+  log_verbose "Changing shell to zsh"
+
   zsh_bin=$(command -v zsh)
 
-  if [[ -n $zsh_bin ]]; then
-    log_verbose "Changing shell to zsh"
-
-    if grep -qv "${zsh_bin}" /etc/shells; then
-      echo "${zsh_bin}" sudo tee -a /etc/shells
-    fi
-
-    sudo chsh -s "${zsh_bin}" "${USER}"
-  else
-    log_warn "zsh not found, skipping"
+  if ! grep -qv "$zsh_bin" /etc/shells; then
+    log_info "$zsh_bin not found in /etc/shells - enter password to add"
+    echo "$zsh_bin" | sudo -- tee -a /etc/shells
   fi
+
+  sudo chsh -s "$zsh_bin" "$USER"
 }
 
 sudoersd-files() {
   log_verbose "Installing sudoers.d files"
 
-  log_ask "Copying files to /etc/sudoers.d requires root privileges. Do you want to continue?"
-  read -r -p "[y/N] " response </dev/tty
-  if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    sudo cp -r ../misc/sudoers.d/* /etc/sudoers.d/
-  fi
+  prompt="[sudo] enter password to copy files:"
+  sudo -p "$prompt" -- cp -r ../misc/sudoers.d/* /etc/sudoers.d/
 }
 
 log_ask "All or manual?"
 read -r -p "[A/m] " response </dev/tty
-if [[ ! $response =~ ^([mM])$ ]]; then
+if [[ ! $response =~ ^[mM]$ ]]; then
   change_shell
   sudoersd-files
 else
-
   log_info "Installing manually"
 
   log_ask "Set zsh as default shell?"
   read -r -p "[y/N] " response </dev/tty
-  if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
+  if [[ $response =~ ^[yY] ]]; then
     change_shell
   fi
 
   log_ask "Copy sudoers.d files?"
   read -r -p "[y/N] " response </dev/tty
-  if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
+  if [[ $response =~ ^[yY] ]]; then
     sudoersd-files
   fi
 fi

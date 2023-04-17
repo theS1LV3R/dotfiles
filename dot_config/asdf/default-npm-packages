@@ -3,3 +3,4 @@ license
 neovim
 bulldohzer
 pnpm
+npm@latest

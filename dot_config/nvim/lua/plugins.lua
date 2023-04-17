@@ -40,17 +40,17 @@ return require("packer").startup(function(use)
     use "mattn/emmet-vim" -- emmet; the html thingy
     use "sheerun/vim-polyglot" -- file type pack for like a thousand different file types
     use "andweeb/presence.nvim" -- discord presence
---    use { -- Disabled due to being a pain to use
---        "kyazdani42/nvim-tree.lua", -- https://github.com/kyazdani42/nvim-tree.lua -- file explorer
---        requires = {"kyazdani42/nvim-web-devicons" -- file icons
---        }
---    }
+    -- use { -- Disabled due to being a pain to use
+    --    "kyazdani42/nvim-tree.lua", -- https://github.com/kyazdani42/nvim-tree.lua -- file explorer
+    --    requires = {"kyazdani42/nvim-web-devicons" -- file icons
+    --    }
+    -- }
 
     use "williamboman/mason.nvim" -- language server installer
     use "williamboman/mason-lspconfig.nvim" -- integration between nvim-lspconfig and mason
     use "neovim/nvim-lspconfig" -- make nvim use native lsp stuff
     use "b0o/schemastore.nvim" -- https://github.com/b0o/SchemaStore.nvim -- json schemas
-    use 'mfussenegger/nvim-dap' -- https://github.com/mfussenegger/nvim-dap --  Debug Adapter Protocol client implementation for Neovim
+    use "mfussenegger/nvim-dap" -- https://github.com/mfussenegger/nvim-dap --  Debug Adapter Protocol client implementation for Neovim
 
     use {
         "folke/trouble.nvim",

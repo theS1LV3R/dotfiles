@@ -103,9 +103,17 @@ ipinfo() {
   gum spin --title="Getting IP information..." \
     -- curl -u $IPINFO_API_TOKEN: -s "https://ipinfo.io/$ip/json" | jq
 
+  # /me endpoint is undocumented, got it from an email to IPinfo
+  # Hello Zoe,
+  # Thanks for reaching out and getting in touch!
+  # We have an undocumented endpoint that you can use to conveniently grab limited data about your quota usage information.
+  # https://ipinfo.io/me?token={YOUR_TOKEN}
+  # This will tell you how much requests you have left.
+  # I hope that helps. Let us know if you have further questions.
+  # Cheers,
+  # Cornelius
   usage=$(gum spin --title="Getting IPinfo usage..." \
     -- curl -u $IPINFO_API_TOKEN: -s "https://ipinfo.io/me" | jq '.requests|.month,.limit' | paste -s -d'/')
-  # /me endpoint is undocumented, got it from an email to IPinfo
   echo "Usage this month: $usage"
 
   unset GUM_SPIN_SPINNER

@@ -67,8 +67,6 @@ def ssl_certificate(hostname: str, port: int, *args, **kwargs) -> None:
     cert_pem = ssl.get_server_certificate((hostname, port)).encode("utf-8")
     cert = x509.load_pem_x509_certificate(cert_pem)
 
-
-
     debug("Extracting parameters")
     subject = cert.subject.rfc4514_string().replace("=", " = ")
     issuer = ", ".join(reversed(cert.issuer.rfc4514_string().split(",")))
@@ -78,12 +76,13 @@ def ssl_certificate(hostname: str, port: int, *args, **kwargs) -> None:
         x509.SubjectAlternativeName).value.get_values_for_type(x509.DNSName)
 
     print(indent(f"""\
-Subject:\t{subject}
-Issuer:\t\t{issuer}
-Not before:\t{valid_from}
-Not after:\t{valid_after}
-x509 SAN:\t{', '.join(sans)}
-Serial:\t\t{cert.serial_number}"""))
+Subject:     {subject}
+Issuer:      {issuer}
+Not before:  {valid_from}
+Not after:   {valid_after}
+x509 SAN:    {', '.join(sans)}
+Serial:      {cert.serial_number}\
+"""))
 
 
 def smtp_ssl_cert(hostname: str, port: int, *args, **kwargs):
@@ -94,7 +93,9 @@ def smtp_ssl_cert(hostname: str, port: int, *args, **kwargs):
     debug("Connecting")
     with socket.create_connection((hostname, port), timeout=1) as sock:
         debug("Wrapping socket")
-        with context.wrap_socket(sock, server_hostname=hostname) as ssock:
+        with context.wrap_socket(sock, server_hostname=hostname, do_handshake_on_connect=False) as ssock:
+            debug("Wrapped, doing handshake")
+            ssock.do_handshake()
             debug("Getting peer cert")
             cert = ssock.getpeercert()
 
@@ -102,28 +103,27 @@ def smtp_ssl_cert(hostname: str, port: int, *args, **kwargs):
     sans = ", ".join([tup[1] for tup in cert['subjectAltName']])
 
     print(indent(f"""\
-Subject CN:\t{cert['subject'][0][0][1]}
-Issuer:\t\t{issuer}
-Not before:\t{cert['notBefore']}
-Not after:\t{cert['notAfter']}
-x509 SANs:\t{sans}"""))
+Subject CN:  {cert['subject'][0][0][1]}
+Issuer:      {issuer}
+Not before:  {cert['notBefore']}
+Not after:   {cert['notAfter']}
+x509 SANs:   {sans}"""))
 
 
 def http_test(hostname: str, port: int, http_type='https', *args, **kwargs) -> None:
     if port is None:
         port = 443
     with httpx.Client(http2=True, verify=False, follow_redirects=False) as client:
-        res: httpx.Response = client.get(
-            f"{http_type}://{hostname}:{port}")
+        res: httpx.Response = client.get(f"{http_type}://{hostname}:{port}")
 
-    print(
-        indent(f"HTTP:\t\t{res.http_version} {res.status_code} {res.reason_phrase}"))
+    print(indent(f"""\
+HTTP:          {res.http_version} {res.status_code} {res.reason_phrase}
+Date:          {res.headers.get('date')}
+Server:        {res.headers.get('server')}
+Content-Type:  {res.headers.get('content-type')}\
+"""))
     if res.is_redirect:
         print(indent(f"Location:\t{res.headers.get('location')}"))
-    print(indent(f"""\
-Date:\t\t{res.headers.get('date')}
-Server:\t\t{res.headers.get('server')}
-Content-Type:\t{res.headers.get('content-type')}"""))
 
 
 def smtp_test(hostname: str, port: int, *args, **kwargs) -> None:

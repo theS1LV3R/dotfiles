@@ -13,6 +13,7 @@ if [[ "$ASDF" == true ]]; then
   local rust_dir=$(asdf where rust)
   if [[ -n "$rust_dir" ]]; then
     source $rust_dir/env
+    export CARGO_HOME="$rust_dir"
   fi
 fi
 

@@ -3,18 +3,15 @@
 # vi: ft=python:ts=4:sw=4
 
 import argparse
-import logging as log
 import socket
 import ssl
 import textwrap
 import urllib.request
+import sys
 
 import dns.resolver
 import httpx
 from cryptography import x509
-
-debug = log.debug
-error = log.error
 
 
 def indent(text): return textwrap.indent(text, '\t')
@@ -80,7 +77,7 @@ Subject:     {subject}
 Issuer:      {issuer}
 Not before:  {valid_from}
 Not after:   {valid_after}
-x509 SAN:    {', '.join(sans)}
+x509 SANs:    {', '.join(sans)}
 Serial:      {cert.serial_number}\
 """))
 
@@ -107,7 +104,8 @@ Subject CN:  {cert['subject'][0][0][1]}
 Issuer:      {issuer}
 Not before:  {cert['notBefore']}
 Not after:   {cert['notAfter']}
-x509 SANs:   {sans}"""))
+x509 SANs:   {sans}\
+"""))
 
 
 def http_test(hostname: str, port: int, http_type='https', *args, **kwargs) -> None:
@@ -117,13 +115,14 @@ def http_test(hostname: str, port: int, http_type='https', *args, **kwargs) -> N
         res: httpx.Response = client.get(f"{http_type}://{hostname}:{port}")
 
     print(indent(f"""\
-HTTP:          {res.http_version} {res.status_code} {res.reason_phrase}
-Date:          {res.headers.get('date')}
-Server:        {res.headers.get('server')}
-Content-Type:  {res.headers.get('content-type')}\
+HTTP:            {res.http_version} {res.status_code} {res.reason_phrase}
+Date:            {res.headers.get('date')}
+Server:          {res.headers.get('server')}
+Content-Type:    {res.headers.get('content-type')}
+Content-Length:  {res.headers.get('content-length')}\
 """))
     if res.is_redirect:
-        print(indent(f"Location:\t{res.headers.get('location')}"))
+        print(indent(f"Location:        {res.headers.get('location')}"))
 
 
 def smtp_test(hostname: str, port: int, *args, **kwargs) -> None:
@@ -167,8 +166,11 @@ if __name__ == "__main__":
     if not port and server_type == "smtp":
         port = 25
 
-    log.basicConfig(level=log.DEBUG if verbose else log.INFO,
-                    format='%(levelname)s: %(message)s')
+    def debug(message):
+        if verbose:
+            print(f"INFO:{message}")
+
+    def error(message): print(f"ERROR:{message}", file=sys.stderr)
 
     debug("Running in verbose mode")
     debug(args)

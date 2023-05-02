@@ -77,9 +77,7 @@ export PSQL_HISTORY="$XDG_DATA_HOME/psql_history"
 export PSQLRC="$XDG_CONFIG_HOME/psql/psqlrc"
 export PGHOST="localhost"
 
-# shellcheck disable=SC2016
-export GVIMINIT='let $MYGVIMRC = !has("nvim") ? "$XDG_CONFIG_HOME/vim/gvimrc" : "$XDG_CONFIG_HOME/nvim/init.gvim"  | so $MYGVIMRC'
-# shellcheck disable=SC2016
+# shellcheck disable=SC2016 # Expressions don't expand in single quotes, use double quotes for that.
 export VIMINIT='let $MYVIMRC = !has("nvim") ? "$XDG_CONFIG_HOME/vim/vimrc" : "$XDG_CONFIG_HOME/nvim/init.lua" | so $MYVIMRC'
 
 export AWS_SHARED_CREDENTIALS_FILE="$XDG_CONFIG_HOME/aws/credentials"

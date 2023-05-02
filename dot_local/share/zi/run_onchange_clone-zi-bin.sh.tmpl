@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# vi: ft=bash
+
+repo=https://github.com/z-shell/zi.git
+dir="$HOME/.local/share/zi"
+
+mkdir -p "$dir"
+
+if [[ -d "$dir/bin" ]]; then
+    rm -rf "${dir:?}/bin"
+fi
+
+git clone "$repo" "$dir/bin"

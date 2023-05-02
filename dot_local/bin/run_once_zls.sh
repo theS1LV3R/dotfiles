@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# vi: ft=bash:ts=2:sw=2
+# vi: ft=sh:ts=2:sw=2
 
 set -euo pipefail
 

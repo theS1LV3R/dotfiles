@@ -1,6 +1,13 @@
+#!/usr/bin/env bash
+# vi: ft=sh
+
 # enable color support of ls, less and man
 if [[ -x /usr/bin/dircolors ]]; then
-    [[ -r ~/.dircolors ]] && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    if [[ -r ~/.dircolors ]]; then
+        eval "$(dircolors -b ~/.dircolors)";
+    else
+        eval "$(dircolors -b)";
+    fi
 
     export LESS_TERMCAP_mb=$'\E[1;31m'     # begin blink
     export LESS_TERMCAP_md=$'\E[1;36m'     # begin bold
@@ -11,6 +18,10 @@ if [[ -x /usr/bin/dircolors ]]; then
     export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
 
     # Take advantage of $LS_COLORS for completion as well
-    zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-    export ZLS_COLORS="${LS_COLORS}"
+    if [[ -n "$ZSH_VERSION" ]]; then
+        # shellcheck disable=SC2296 # Parameter expansions can't start with (. Double check syntax.
+        zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+        # shellcheck disable=all
+        export ZLS_COLORS="$LS_COLORS"
+    fi
 fi

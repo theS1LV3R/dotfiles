@@ -60,11 +60,17 @@ asdf install
 [[ "$os_release" == "debian" ]] && {
   cargo install lsd
   cargo install bat
-  cargo install 
+  cargo install
 }
 
-change_shell() {
-  log_verbose "Changing shell to zsh"
+CHANGE_SHELL="Change shell"
+SUDOERSD_FILES="/etc/sudoers.d files"
+PODMAN_DOCKER="Podman 'nodocker' file"
+
+options="$(gum choose --no-limit --selected="All" "All" "$CHANGE_SHELL" "$SUDOERSD_FILES" "$PODMAN_DOCKER")"
+
+if [[ $options =~ ^All$ ]] || [[ $options =~ ^$CHANGE_SHELL$ ]]; then
+  log_verbose "$CHANGE_SHELL"
 
   zsh_bin=$(command -v zsh)
 
@@ -74,34 +80,19 @@ change_shell() {
   fi
 
   sudo chsh -s "$zsh_bin" "$USER"
-}
+fi
 
-sudoersd-files() {
-  log_verbose "Installing sudoers.d files"
+if [[ $options =~ ^All$ ]] || [[ $options =~ ^$CHANGE_SHELL$ ]]; then
+  log_verbose "$SUDOERSD_FILES"
 
   prompt="[sudo] enter password to copy files:"
   sudo -p "$prompt" -- cp -r ../misc/sudoers.d/* /etc/sudoers.d/
-}
+fi
 
-log_ask "All or manual?"
-read -r -p "[A/m] " response </dev/tty
-if [[ ! $response =~ ^[mM]$ ]]; then
-  change_shell
-  sudoersd-files
-else
-  log_info "Installing manually"
+if [[ $options =~ ^All$ ]] || [[ $options =~ ^$PODMAN_DOCKER$ ]]; then
+  log_verbose "$PODMAN_DOCKER"
 
-  log_ask "Set zsh as default shell?"
-  read -r -p "[y/N] " response </dev/tty
-  if [[ $response =~ ^[yY] ]]; then
-    change_shell
-  fi
-
-  log_ask "Copy sudoers.d files?"
-  read -r -p "[y/N] " response </dev/tty
-  if [[ $response =~ ^[yY] ]]; then
-    sudoersd-files
-  fi
+  touch "$HOME/.local/share/containers/nodocker"
 fi
 
 log_info 'Done :)'

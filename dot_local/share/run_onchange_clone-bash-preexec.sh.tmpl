@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# vi: ft=sh
+
+repo=https://github.com/rcaloras/bash-preexec.git
+dir="$HOME/.local/share/bash-preexec"
+
+mkdir -p "$dir"
+
+if [[ -d "$dir" ]]; then
+    rm -rf "$dir"
+fi
+
+git clone "$repo" "$dir"

@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
-# shellcheck shell=bash
+# vi: ft=sh
+# shellcheck shell=bash disable=SC2139
+# SC2139 - This expands when defined, not when used. Consider escaping.
 
 checkexists() {
-  command -v $1 &>/dev/null
+  command -v "$1" &>/dev/null
 }
 
 enhanced_aliases=(
@@ -17,9 +19,8 @@ for alias in "${enhanced_aliases[@]}"; do
   orig=$(cut -d' ' -f1 <<<"$alias")
   new=$(cut -d' ' -f2 <<<"$alias")
 
-  checkexists $new || continue
-
-  alias "b$orig"=$(which $orig)
+  checkexists "$new" || continue
+  alias "b$orig"="$(command -v "$orig")"
   alias "$orig"="$new"
 done
 
@@ -59,14 +60,12 @@ systemctl_aliases=(
   reload
 )
 for alias in "${systemctl_aliases[@]}"; do
-  alias $alias="sudo systemctl $alias"
+  alias "$alias"="sudo systemctl $alias"
 done
 
 alias jwt="jq -R 'split(\".\") | select(length > 0) | .[0],.[1] | @base64d | fromjson'" # Splits a jwt string, and returns the header and payload
 alias c="clear -x"                                                                      # Do not clear scrollback
 alias define=dict
-alias clock="tty-clock -sScbn"
-alias serial="minicom"
 alias hostname="hostnamectl hostname"
 alias open='xdg-open'
 alias history="history 0" # force zsh to show the complete history
@@ -88,3 +87,5 @@ alias wgdown="sudo wg-quick down "
 
 alias deactivateLinux="systemctl --user start activate-linux.service"
 alias activateLinux="systemctl --user stop activate-linux.service"
+
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'

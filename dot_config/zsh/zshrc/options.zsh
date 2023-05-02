@@ -1,6 +1,10 @@
 #! GENERATES ERRORS - DO NOT USE
 # setopt KSH_ARRAYS           # arrays start at 0
 
+# why zsh only?
+# - setopt is a zsh command
+# - zsh specific HISTFILE
+
 setopt AUTO_CD             # change directory just by typing its name
 setopt AUTO_PUSHD          # automatically push to the directory stack
 setopt PUSHD_IGNORE_DUPS   # don't push the same directory twice
@@ -22,9 +26,5 @@ setopt HIST_EXPIRE_DUPS_FIRST # delete duplicates first when HISTFILE size excee
 setopt HIST_IGNORE_DUPS       # ignore duplicated commands history list
 setopt HIST_IGNORE_SPACE      # ignore commands that start with space
 setopt HIST_VERIFY            # show command with history expansion to user before running it
-
-HISTFILE=${XDG_DATA_HOME:-$HOME/.local/share}/.zsh_history # The file to save the history in when an interactive shell exits.  If unset, the history is not saved.
-HISTSIZE=25000                                             # The  maximum  number  of  events  stored  in  the  internal  history  list.
-SAVEHIST=20000                                             # The maximum number of history events to save in the history file.
 
 WORDCHARS=${WORDCHARS//\//} # Don't consider certain characters part of the word

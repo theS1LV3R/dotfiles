@@ -1,4 +1,8 @@
 # configure key keybindings
+
+# why zsh only?
+# - bindkey is a zsh command
+
 bindkey -e                                     # emacs key bindings
 bindkey ' ' magic-space                        # do history expansion on space
 bindkey '^[[3;5~' kill-word                    # ctrl + Supr

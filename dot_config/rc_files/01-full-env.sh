@@ -1,5 +1,5 @@
-# vi: ft=zsh
-# shellcheck shell=bash disable=SC2154
+#!/usr/bin/env bash
+# vi: ft=sh
 
 # Sources for a lot of these:
 #   https://www.reddit.com/r/linux/comments/uouh7p/ - XDG ninja
@@ -94,5 +94,5 @@ export ASDF_NPM_DEFAULT_PACKAGES_FILE="$XDG_CONFIG_HOME/asdf/default-npm-package
 export ASDF_GEM_DEFAULT_PACKAGES_FILE="$XDG_CONFIG_HOME/asdf/default-gems"
 export ASDF_GOLANG_DEFAULT_PACKAGES_FILE="$XDG_CONFIG_HOME/asdf/default-go-packages"
 
-# shellcheck source=./zshrc/ssh-env.sh
+# shellcheck source=./ssh-env.sh
 source "$XDG_CONFIG_HOME/zsh/zshrc/ssh-env.sh"

@@ -1,4 +1,5 @@
-# vi: ft=zsh
+#!/usr/bin/env zsh
+# vi: ft=sh
 # shellcheck shell=bash disable=SC1091
 
 #zmodload zsh/zprof
@@ -8,37 +9,34 @@ autoload -U compinit && compinit -d ~/.cache/zcompdump
 autoload -U bashcompinit && bashcompinit -d ~/.cache/zbashcompdump
 autoload -U add-zsh-hook
 
-export DOTFILES_DIR="{{ .chezmoi.sourceDir }}"
-export SCRIPTS_DIR="${HOME}/.config/zsh"
+export SCRIPTS_DIR="$HOME/.config/zsh"
 export ZSH_SCRIPTS=$SCRIPTS_DIR/zshrc
-
+export RC_FILES="$XDG_CONFIG_HOME/rc_files"
 
 # shellcheck disable=SC2206
 # We cant quote, it breaks zsh _hard_
 export fpath=("${SCRIPTS_DIR}/completions" $fpath)
 
-# shellcheck source=zsh-autocomplete.zsh
-source "${SCRIPTS_DIR}/zsh-autocomplete.zsh"
-
-if [[ "${TERM}" == "linux" ]]; then
-    # shellcheck source=./zshrc/basic-prompt.zsh
-    source "${SCRIPTS_DIR}/zshrc/basic-prompt.zsh"
+if [[ "$TERM" == "linux" ]]; then
+    # shellcheck source=zshrc/basic-prompt.zsh
+    source "$SCRIPTS_DIR/zshrc/basic-prompt.zsh"
 else
     # shellcheck source=p10k.init.zsh
-    source "${SCRIPTS_DIR}/p10k.init.zsh"
+    source "$SCRIPTS_DIR/p10k.init.zsh"
 fi
 
-source "$ZSH_SCRIPTS/options.zsh"     # Options using setopt, as well as history
-source "$ZSH_SCRIPTS/keybinds.zsh"    # Shell keybinds
-source "$ZSH_SCRIPTS/completion.zsh"  # Completion scripts
-source "$ZSH_SCRIPTS/env.zsh"
-source "$ZSH_SCRIPTS/colors.zsh"
-source "$ZSH_SCRIPTS/aliases.zsh"
-source "$ZSH_SCRIPTS/functions.zsh"
-source "$ZSH_SCRIPTS/wsl.zsh"         # Does it _actually_ work in WSL? Probably not but it's worth a try
-source "$ZSH_SCRIPTS/hooks.sh"        # Mostly exit hooks
+# shellcheck source=zsh-autocomplete.zsh
+source "$SCRIPTS_DIR/zsh-autocomplete.zsh"
+source "$ZSH_SCRIPTS/options.zsh"     # Options using setopt
+source "$ZSH_SCRIPTS/keybinds.zsh"          # Shell keybinds
+source "$ZSH_SCRIPTS/completion.zsh"        # Completion scripts
 
-unset ZSH_SCRIPTS
+for file in "$RC_FILES"/*.sh; do
+    # shellcheck source=/dev/null
+    source "$file"
+done
+
+unset ZSH_SCRIPTS RC_FILES
 
 # Zi options
 declare -A ZI

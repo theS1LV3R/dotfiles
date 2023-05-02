@@ -1,4 +1,5 @@
-#!/bin/zsh
+#!/usr/bin/env bash
+# vi: ft=sh
 
 ssh() {
   emulate -L zsh
@@ -53,10 +54,11 @@ path() {
   # last sed:
   #  - n N    Read/append the next line of input into the pattern space.
   #  - then replace newlines with tabs, this affects every other newline
-  echo ${PATH//:/\\n} | sed '=' | sed 'N;s|\n|\t|'
+  echo "${PATH//:/\\n}" | sed '=' | sed 'N;s|\n|\t|'
 }
-fpath() {
-  echo ${FPATH//:/\\n} | sed '=' | sed 'N;s|\n|\t|'
+[[ -n "$ZSH_VERSION" ]] && fpath() {
+  # shellcheck disable=SC2154 # FPATH is referenced but not assigned.
+  echo "${FPATH//:/\\n}" | sed '=' | sed 'N;s|\n|\t|'
 }
 
 idl() {
@@ -64,24 +66,24 @@ idl() {
 }
 
 drmgrep() {
-  docker container rm $(docker container ls -a | grep $1 | awk '{ print $1 }')
+  docker container rm "$(docker container ls -a | grep "$1" | awk '{ print $1 }')"
 }
-drm!grep() {
-  docker container rm -f $(docker container ls -a | grep $1 | awk '{ print $1 }')
+drmfgrep() {
+  docker container rm -f "$(docker container ls -a | grep "$1" | awk '{ print $1 }')"
 }
 
 dnetworks() {
   docker network ls -q --filter driver=bridge | while IFS= read -r netId; do
-    inspect=$(docker network inspect $netId)
+    inspect=$(docker network inspect "$netId")
 
-    name=$(echo $inspect | jq -r '.[].Name' 2>/dev/null)
-    subnet=$(echo $inspect | jq -r '.[].IPAM.Config[].Subnet' 2>/dev/null)
+    name=$(echo "$inspect" | jq -r '.[].Name' 2>/dev/null)
+    subnet=$(echo "$inspect" | jq -r '.[].IPAM.Config[].Subnet' 2>/dev/null)
 
-    [[ -z $name || $name == "null" ]] && name=$(echo $inspect | jq -r '.[].name')
-    [[ -z $subnet || $subnet == "null" ]] && subnet=$(echo $inspect | jq -r '.[].subnets[].subnet')
+    [[ -z $name || $name == "null" ]] && name=$(echo "$inspect" | jq -r '.[].name')
+    [[ -z $subnet || $subnet == "null" ]] && subnet=$(echo "$inspect" | jq -r '.[].subnets[].subnet')
 
     echo -e "\e[1;37;40m$name\033[0m"
-    echo $subnet
+    echo "$subnet"
   done
 }
 

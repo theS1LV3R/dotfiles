@@ -1,4 +1,5 @@
-# vi: ft=zsh
+#!/usr/bin/env bash
+# vi: ft=sh
 # shellcheck disable=SC1054,SC1083,SC1073,SC1072,SC1056,SC1009
 
 # If this file is empty, you are likely not using WSL.
@@ -7,9 +8,11 @@
 {{- if eq "wsl" .ostype -}}
 alias open="start"
 
+export GDK_SCALE=2                                                                          #GWSL
+export QT_SCALE_FACTOR=2                                                                    #GWSL
+export LIBGL_ALWAYS_INDIRECT=1                                                              #GWSL
 export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}'):0.0      #GWSL
 export PULSE_SERVER=tcp:$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}') #GWSL
-export LIBGL_ALWAYS_INDIRECT=1                                                              #GWSL
 
 fix_wsl2_interop() {
   for i in $(pstree -np -s $$ | grep -o -E '[0-9]+'); do

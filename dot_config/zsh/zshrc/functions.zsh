@@ -103,7 +103,7 @@ ipinfo() {
   gum spin --title="Getting IP information..." \
     -- curl -u $IPINFO_API_TOKEN: -s "https://ipinfo.io/$ip/json" | jq
 
-  # /me endpoint is undocumented, got it from an email to IPinfo
+  # /me endpoint is undocumented, got it from an email to IPinfo:
   # Hello Zoe,
   # Thanks for reaching out and getting in touch!
   # We have an undocumented endpoint that you can use to conveniently grab limited data about your quota usage information.

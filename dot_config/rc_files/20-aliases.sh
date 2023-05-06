@@ -65,11 +65,11 @@ done
 
 alias jwt="jq -R 'split(\".\") | select(length > 0) | .[0],.[1] | @base64d | fromjson'" # Splits a jwt string, and returns the header and payload
 alias c="clear -x"                                                                      # Do not clear scrollback
-alias define=dict
+alias define="dict"
 alias hostname="hostnamectl hostname"
 alias open='xdg-open'
 alias history="history 0" # force zsh to show the complete history
-alias dotfiles="code $DOTFILES_DIR"
+alias dotfiles="code $(chezmoi source-path)"
 alias ipa="ip -brief a"
 alias less="less -R" # Rendering of color codes
 alias tb='nc termbin.com 9999'

@@ -27,9 +27,9 @@ fi
 
 # shellcheck source=zsh-autocomplete.zsh
 source "$SCRIPTS_DIR/zsh-autocomplete.zsh"
-source "$ZSH_SCRIPTS/options.zsh"     # Options using setopt
-source "$ZSH_SCRIPTS/keybinds.zsh"          # Shell keybinds
-source "$ZSH_SCRIPTS/completion.zsh"        # Completion scripts
+source "$ZSH_SCRIPTS/options.zsh"    # Options using setopt
+source "$ZSH_SCRIPTS/keybinds.zsh"   # Shell keybinds
+source "$ZSH_SCRIPTS/completion.zsh" # Completion scripts
 
 for file in "$RC_FILES"/*.sh; do
     # shellcheck source=/dev/null

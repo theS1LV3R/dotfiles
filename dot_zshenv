@@ -20,10 +20,11 @@
 # https://unix.stackexchange.com/a/487889/386231
 # https://unix.stackexchange.com/a/71258/386231
 
-# shellcheck source=dot_config/rc_files/xdg-env.sh
-source "$HOME/.config/rc_files/xdg-env.sh"
+# shellcheck source=dot_config/rc_files/00-xdg-env.sh
+source "$HOME/.config/rc_files/00-xdg-env.sh"
 
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 
-# shellcheck source=dot_config/rc_files/full-env.sh
-source "$ZDOTDIR/rc_files/full-env.sh"
+# Manually source here so the env files are included in every program
+# shellcheck source=dot_config/rc_files/01-full-env.sh
+source "$XDG_CONFIG_HOME/rc_files/01-full-env.sh"

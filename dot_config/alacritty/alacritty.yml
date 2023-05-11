@@ -10,7 +10,7 @@
 # All imports must either be absolute paths starting with `/`, or paths relative
 # to the user's home directory starting with `~/`.
 import:
-  - ~/.config/alacritty/theme-gruv-dark.yaml
+  - ~/.config/alacritty/themes/gruvbox_dark.yaml
 
 # Any items in the `env` entry below will be added as
 # environment variables. Some entries may override variables
@@ -728,7 +728,7 @@ cursor:
 #
 #    This is mainly used to send applications the correct escape sequences
 #    when in different modes.
-#
+#$TMPDIR/themes/
 #    - AppCursor
 #    - AppKeypad
 #    - Search

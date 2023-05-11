@@ -77,7 +77,7 @@ Subject:     {subject}
 Issuer:      {issuer}
 Not before:  {valid_from}
 Not after:   {valid_after}
-x509 SANs:    {', '.join(sans)}
+x509 SANs:   {', '.join(sans)}
 Serial:      {cert.serial_number}\
 """))
 

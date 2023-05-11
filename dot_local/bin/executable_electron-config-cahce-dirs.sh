@@ -3,7 +3,10 @@
 # shellcheck source=executable___common.sh
 source "$HOME/.local/bin/__common.sh"
 
-search_dir="$HOME/.config"
+search_dirs=(
+    "$XDG_CONFIG_HOME"
+    "$XDG_DATA_HOME"
+)
 
 find_dirs=(
     "Crash Reports"
@@ -19,24 +22,29 @@ find_dirs=(
     CachedExtensionVSIXs
 )
 
-for dir in "${find_dirs[@]}"; do
-    sanitized=${dir// /_}
-    sanitized=${sanitized,,}
+for sdir in "${search_dirs[@]}"; do
+    for dir in "${find_dirs[@]}"; do
+        sanitized=${dir// /_}
+        sanitized=${sanitized,,}
 
-    checked_dirs=$(find "$search_dir" -type d -iname "$dir")
+        checked_dirs=$(find "$sdir" -type d -iname "$dir")
 
-    echo "Cleaning '$dir'"
-    while IFS= read -r source; do
-        [[ -z $source ]] && continue
-        mini_source=${source//"$search_dir/"/}
-        target="${XDG_CACHE_HOME:-"$HOME/.cache"}/$mini_source"
+        echo "Cleaning '$dir'"
+        while IFS= read -r source; do
+            [[ -z $source ]] && continue
+            mini_source=${source//"$sdir/"/}
+            target="${XDG_CACHE_HOME:-"$HOME/.cache"}/$mini_source"
 
-        mkdir -p "$(dirname "$target")"
+            mkdir -p "$(dirname "$target")"
 
-        echo ".config/$mini_source -> $target"
+            echo "$source -> $target"
 
-        mv "$source" "$target"
-        # ln [TARGET] [LINK NAME]
-        ln -s "$target" "$source"
-    done <<<"$checked_dirs"
+            if ! mv -v "$source" "$target"; then
+                mv -v "$source" "$target-2"
+            fi
+
+            # ln [TARGET] [LINK NAME]
+            ln -s "$target" "$source"
+        done <<<"$checked_dirs"
+    done
 done

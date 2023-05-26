@@ -97,6 +97,7 @@ fi
 if [[ $options =~ ^All$ ]] || [[ $options =~ ^$PODMAN_DOCKER$ ]]; then
   log_verbose "$PODMAN_DOCKER"
 
+  mkdir -p "$HOME/.local/share/containers"
   touch "$HOME/.local/share/containers/nodocker"
 fi
 

@@ -51,10 +51,15 @@ debian) log_info "Detected Debian" && _install deb ;;
 *) log_error "Unsupported distribution" && exit 1 ;;
 esac
 
-while IFS= read -r plugin; do
-  [[ "$plugin" == "" ]] && continue
-  asdf plugin add "$plugin" 2>/dev/null || true
-done <<<"$(awk '{ print $1; }' "$HOME/.tool-versions")"
+while IFS= read -r line; do
+  [[ "$line" == "" ]] && continue
+  [[ "$line" =~ "^#" ]] && continue
+
+  plugin=$(awk '{ print $1 }' <<<"$line")
+  url=$(awk '{ print $4 }' <<<"$line" || true)
+
+  asdf plugin add "$plugin" "$url" || true
+done <"$HOME/.tool-versions"
 
 asdf install
 

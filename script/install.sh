@@ -52,6 +52,7 @@ debian) log_info "Detected Debian" && _install deb ;;
 esac
 
 while IFS= read -r plugin; do
+  [[ "$plugin" == "" ]] && continue
   asdf plugin add "$plugin" 2>/dev/null || true
 done <<<"$(awk '{ print $1; }' "$HOME/.tool-versions")"
 

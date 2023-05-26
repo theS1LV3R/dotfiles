@@ -3,12 +3,12 @@
 # shellcheck source=executable___common.sh
 source "$HOME/.local/bin/__common.sh"
 
-DEVICE=${DEVICE:-/dev/video2}
-NOTIFICATION_TIME=${NOTIFICATION_TIME:-3}
+readonly DEVICE="${DEVICE:-/dev/video2}"
+readonly NOTIFICATION_TIME="${NOTIFICATION_TIME:-3}"
 
-ARG=${1:-No args provided}
-AUTO=0
+readonly ARG="${1:-'No args provided'}"
 ABSOLUTE=0
+AUTO=0
 
 case "$ARG" in
 auto) {

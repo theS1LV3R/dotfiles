@@ -2,36 +2,20 @@
 # vi: ft=sh:ts=2:sw=2
 
 # shellcheck source=executable___common.sh
-source "${HOME}/.local/bin/__common.sh"
+source "$HOME/.local/bin/__common.sh"
 
-CITY="bergen"
+CITY="${1:-'bergen'}"
 
-# Usage: wttr [options] [location]
-# Parse flags
-# -h, --help
-# -n, --no-less
+# Options:
+#  - m = Metric (SI) units
+#  - M = Wind speed in m/s
+#  - 0 = Only current weather
+#  - F = Do not show "Follow" line
 
-while [[ $# -gt 0 ]]; do
-  case $1 in
-  -h | --help)
-    cat <<EOF
-Usage: $0 [options] [location]
-Options:
-  -h, --help    Show this help message and exit.
-EOF
-    exit 0
-    ;;
-  *)
-    CITY="$1"
-    shift
-    ;;
-  esac
-done
+url="https://v2.wttr.in/$CITY?mM0F&lang=en"
 
-url="https://v2.wttr.in/${CITY}?0FM&lang=en"
+echo "Opening $url"
 
-echo "Opening ${url}"
+page=$(curl -s "$url")
 
-page=$(curl -s "${url}")
-
-pager "${page}"
+pager "$page"

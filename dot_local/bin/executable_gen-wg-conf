@@ -2,16 +2,16 @@
 # vi: ft=sh:ts=2:sw=2
 
 # shellcheck source=executable___common.sh
-source "${HOME}/.local/bin/__common.sh"
+source "$HOME/.local/bin/__common.sh"
 
 readonly server_publickey="nL9eRYs7XCAvYRyt9Khq9TRgtB521uigx03r1RxMIxI="
 readonly subnet="10.240.0"
 readonly keepalive="15"
 readonly port="51820"
-readonly endpoint="vpn.if11.xyz:${port}"
+readonly endpoint="vpn.if11.xyz:$port"
 
-readonly name="$(gum input --prompt 'Name of client (used in filename): ' --placeholder 'hostname')"
-readonly ip="$(gum input --prompt 'Wireguard IP client should get: ' --value "$subnet.")"
+name="$(gum input --prompt 'Name of client (used in filename): ' --placeholder 'hostname')"
+ip="$(gum input --prompt 'Wireguard IP client should get: ' --value "$subnet.")"
 
 if ! command -v wg &>/dev/null; then
   log_error '"wg" not installed, install it and try again'
@@ -19,33 +19,33 @@ if ! command -v wg &>/dev/null; then
 fi
 
 privkey=$(wg genkey)
-pubkey=$(wg pubkey < <(echo "${privkey}"))
+pubkey=$(wg pubkey <<<"$privkey")
 psk=$(wg genpsk)
 
 config="
 [Interface]
-Address    = ${ip}/24
-ListenPort = ${port}
-PrivateKey = ${privkey}
+Address    = $ip/24
+ListenPort = $port
+PrivateKey = $privkey
 
 [Peer]
-PublicKey           = ${server_publickey}
-PresharedKey        = ${psk}
-AllowedIPs          = ${subnet}.0/24
-Endpoint            = ${endpoint}
-PersistentKeepalive = ${keepalive}
+PublicKey           = $server_publickey
+PresharedKey        = $psk
+AllowedIPs          = $subnet.0/24
+Endpoint            = $endpoint
+PersistentKeepalive = $keepalive
 "
 
 server_config="
 [Peer]
-PublicKey           = ${pubkey}
-PresharedKey        = ${psk}
-AllowedIPs          = ${ip}/32
-PersistentKeepalive = ${keepalive}
+PublicKey           = $pubkey
+PresharedKey        = $psk
+AllowedIPs          = $ip/32
+PersistentKeepalive = $keepalive
 "
 
-echo "${config}" | tee "${name}-${ip}.conf" >/dev/null
+echo "$config" | tee "$name-$ip.conf" >/dev/null
 
 log_info "Put this into your wireguard server config"
 
-echo "${server_config}"
+echo "$server_config"

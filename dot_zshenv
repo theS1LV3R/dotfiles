@@ -3,18 +3,18 @@
 
 # In order:
 #   /etc/zsh/zshenv (always)
-#   ${HOME}/.zshenv
+#   $HOME/.zshenv
 #
 #   /etc/zsh/zprofile (login shells)
-#   ${HOME}/.zprofile
+#   $HOME/.zprofile
 #
 #   /etc/zsh/zshrc (interactive shells)
-#   ${HOME}/.zshrc
+#   $HOME/.zshrc
 #
 #   /etc/zsh/zlogin (login shells)
-#   ${HOME}/.zlogin
+#   $HOME/.zlogin
 #
-#   ${HOME}/.zlogout (on logout)
+#   $HOME/.zlogout (on logout)
 #   /etc/zsh/zlogout
 
 # https://unix.stackexchange.com/a/487889/386231

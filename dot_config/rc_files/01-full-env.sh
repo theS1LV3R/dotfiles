@@ -43,12 +43,8 @@ export PATH="./node_modules/.bin:$PATH"
 #! Minikube
 export MINIKUBE_HOME="$XDG_DATA_HOME/minikube"
 export MINIKUBE_SUBNET="10.246.0.1/16"
-
-#! Docker/Podman
-if command -v podman >/dev/null; then
-    export DOCKER_HOST="unix://$XDG_RUNTIME_DIR/podman/podman.sock"
-    export DOCKER_BUILDKIT=0
-fi
+export MINIKUBE_DRIVER=docker
+export MINIKUBE_ROOTLESS=false
 
 #! Java stuff
 export _JAVA_OPTIONS="-Djava.util.prefs.userRoot=$XDG_CONFIG_HOME/java -Dawt.useSystemAAFontSettings=on -Dswing.aatext=true"

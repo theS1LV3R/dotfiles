@@ -2,9 +2,9 @@
 # vi: ft=sh:ts=2:sw=2
 
 # shellcheck source=executable___common.sh
-source "${HOME}/.local/bin/__common.sh"
+source "$HOME/.local/bin/__common.sh"
 
-if ! command -v optimus-manager; then
+if ! installed optimus-manager; then
   log_error "optimus-manager not installed"
   exit 1
 fi

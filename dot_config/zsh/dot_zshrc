@@ -14,8 +14,8 @@ export ZSH_SCRIPTS=$SCRIPTS_DIR/zshrc
 export RC_FILES="$XDG_CONFIG_HOME/rc_files"
 
 # shellcheck disable=SC2206
-# We cant quote, it breaks zsh _hard_
-export fpath=("${SCRIPTS_DIR}/completions" $fpath)
+# We cant quote the $fpath, it breaks zsh _hard_
+export fpath=("$SCRIPTS_DIR/completions" $fpath)
 
 if [[ "$TERM" == "linux" ]]; then
     # shellcheck source=zshrc/basic-prompt.zsh
@@ -71,7 +71,7 @@ omz_plugins=(
 )
 
 for plugin in "${omz_plugins[@]}"; do
-    zi snippet "OMZP::${plugin}"
+    zi snippet "OMZP::$plugin"
 done
 
 zi light-mode for z-shell/z-a-meta-plugins @annexes

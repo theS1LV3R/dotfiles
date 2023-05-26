@@ -28,14 +28,14 @@ for i in {0..8}; do
   8) style="Strikethrough (non-standard)" ;;
   *) return ;; # How did we get here
   esac
-  echo -e "\n$x - $style:"
+  echo -e "\n$i - $style:"
   for j in {30..37}; do
     for k in {40..47}; do
       # Print a colored block with the current style and colors
       # i = style
       # j = foreground
       # k = background
-      echo -ne "\e[${i};${j};${k}""m\\\e[${i};${j};${k}""m\e[0;37;40m \u001b[0m"
+      echo -ne "\e[$i;$j;$k""m\\\e[$i;$j;$k""m\e[0;37;40m \u001b[0m"
     done
     echo # Print a new line after each row
   done

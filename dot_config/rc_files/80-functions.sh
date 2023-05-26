@@ -122,26 +122,6 @@ ipinfo() {
   unset GUM_SPIN_SHOW_OUTPUT
 }
 
-autoclick() {
-  _time=${1:-10}                # Default 10 seconds
-  _delay=${2:-5}                # Default 5 seconds
-  _between_click_delay=${3:-20} # Miliseconds
-
-  gum spin \
-    --spinner="minidot" \
-    --title="Waiting for $_delay before clicking..." \
-    -- sleep "$_delay"
-
-  gum spin \
-    --spinner="minidot" \
-    --title="Clicking for $_time..." \
-    --show-output \
-    -- timeout $_time xdotool click \
-    --delay $_between_click_delay \
-    --repeat 99999999999999999 \
-    1
-}
-
 optdeps() {
   pacman -Qe | awk '{print $1}' | xargs pacman -Qi | awk '/^Name/ {name=$3} /^Optional Deps/ && !/None/ {print name ":"; sub(/^Optional Deps\s*:\s*/, "", $0); gsub(/,\s*/, "\n  ", $0); print "  " $0}'
 }

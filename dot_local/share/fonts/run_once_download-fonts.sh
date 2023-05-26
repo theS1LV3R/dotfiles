@@ -9,19 +9,19 @@ types=(
   "MesloLGS NF Italic"
   "MesloLGS NF Bold Italic"
 )
-font_dir="${HOME}/.local/share/fonts"
+font_dir="$HOME/.local/share/fonts"
 
-mkdir -p "${font_dir}"
+mkdir -p "$font_dir"
 
 for type in "${types[@]}"; do
   font_url=${type// /\%20}
   filename=${type// /_}
 
-  url=${baseurl//\{\}/${font_url}}
-  file="${font_dir}/${filename}.ttf"
+  url=${baseurl//\{\}/$font_url}
+  file="$font_dir/$filename.ttf"
 
-  if [[ ! -f "${file}" ]]; then
-    curl -L "${url}" -o "${file}"
+  if [[ ! -f "$file" ]]; then
+    curl -L "$url" -o "$file"
   fi
 done
 

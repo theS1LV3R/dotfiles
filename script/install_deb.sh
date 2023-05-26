@@ -10,7 +10,7 @@ packages+=()
 sudo apt update
 sudo apt install -y "${packages[@]}"
 
-if ! command_exists chezmoi; then
+if ! installed chezmoi; then
     bin_dir="$HOME/.local/bin"
     chezmoi="$bin_dir/chezmoi"
 
@@ -23,21 +23,24 @@ fi
 
 $chezmoi init --apply theS1LV3R
 
-if [[ ! -d $HOME/.asdf ]] && ! command -v asdf >/dev/null; then
+if [[ ! -d $HOME/.asdf ]] && ! installed asdf; then
     log_info "asdf not installed, installing to $HOME/.asdf"
     git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.9.0
 fi
 
+log_info "Sourcing asdf"
 set +euo pipefail
 # shellcheck source=/dev/null
 . "$HOME/.asdf/asdf.sh"
 set -euo pipefail
 
-if command_exists firefox || command_exists firefox-developer-edition; then
+log_info "Updating asdf"
+asdf update
+
+if installed firefox || installed firefox-developer-edition; then
+    log_info "Installing firefox-profile-switcher-connector"
+
     tmpdir=$(mktemp -d)
-    origdir=$PWD
-    cd "$tmpdir"
-    wget https://github.com/null-dev/firefox-profile-switcher-connector/releases/download/v0.1.1/linux-x64.deb
-    sudo dpkg -i linux-x64.deb
-    cd "$origdir"
+    wget -P "$tmpdir" https://github.com/null-dev/firefox-profile-switcher-connector/releases/download/v0.1.1/linux-x64.deb
+    sudo dpkg -i "$tmpdir/linux-x64.deb"
 fi

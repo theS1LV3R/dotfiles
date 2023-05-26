@@ -19,6 +19,3 @@ if [[ "$ASDF" == true ]]; then
     export CARGO_HOME="$rust_dir"
   fi
 fi
-
-# shellcheck disable=SC2154 # ZSH_SCRIPTS not defined
-[[ -e "$ZSH_SCRIPTS/env.local.sh" ]] && source "$ZSH_SCRIPTS/env.local.sh"

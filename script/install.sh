@@ -1,35 +1,12 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
-IFS=$'\n\t'
-
-_REPO="https://github.com/theS1LV3R/dotfiles.git"
-
-if ! command -v git &>/dev/null; then
-  echo "Missing git. Install git and try again"
-  exit 1
-fi
-
-is_git_repo=$(git rev-parse --is-inside-work-tree 2>/dev/null && echo true)
-
-if [[ -z "$is_git_repo" ]]; then
-  log_info "Not in git repo, cloning to temp dir"
-  TEMP_DIR=$(mktemp -d)
-
-  git clone --depth 1 "$_REPO" "$TEMP_DIR"
-
-  cd "$TEMP_DIR"/script
-
-  exec bash "./install.sh" "$@"
-fi
-
 source common.sh
 
 log_info "NOTE: This _will_ overwrite existing dotfiles. Make sure you have a backup."
 log_info "Press enter to continue or ctrl-c to abort."
-read -r </dev/tty
+read -r
 
-log_info "Collecting information..."
+log_info "Collecting information"
 os_release=""
 [[ -e /etc/arch-release ]] && os_release="arch"
 [[ -e /etc/debian_version ]] && os_release="debian"
@@ -51,6 +28,7 @@ debian) log_info "Detected Debian" && _install deb ;;
 *) log_error "Unsupported distribution" && exit 1 ;;
 esac
 
+log_info "Installing asdf plugins"
 while IFS= read -r line; do
   [[ "$line" == "" ]] && continue
   [[ "$line" =~ "^#" ]] && continue
@@ -64,9 +42,13 @@ done <"$HOME/.tool-versions"
 asdf install
 
 [[ "$os_release" == "debian" ]] && {
+  # These are in the AUR on arch, so we dont need to manually install them there
+  log_info "Installing cargo packages"
   cargo install lsd
   cargo install bat
 }
+
+log_info "Performing misc actions"
 
 CHANGE_SHELL="Change shell"
 SUDOERSD_FILES="/etc/sudoers.d files"
@@ -74,27 +56,26 @@ PODMAN_DOCKER="Podman 'nodocker' file"
 
 options="$(gum choose --no-limit --selected="All" "All" "$CHANGE_SHELL" "$SUDOERSD_FILES" "$PODMAN_DOCKER")"
 
-if [[ $options =~ ^All$ ]] || [[ $options =~ ^$CHANGE_SHELL$ ]]; then
+if [[ $options =~ "^All$" ]] || [[ $options =~ ^$CHANGE_SHELL$ ]]; then
   log_verbose "$CHANGE_SHELL"
 
   zsh_bin=$(command -v zsh)
 
   if ! grep -qv "$zsh_bin" /etc/shells; then
     log_info "$zsh_bin not found in /etc/shells - enter password to add"
-    echo "$zsh_bin" | sudo -- tee -a /etc/shells
+    echo "$zsh_bin" | sudo tee -a /etc/shells
   fi
 
   sudo chsh -s "$zsh_bin" "$USER"
 fi
 
-if [[ $options =~ ^All$ ]] || [[ $options =~ ^$CHANGE_SHELL$ ]]; then
+if [[ $options =~ "^All$" ]] || [[ $options =~ ^$SUDOERSD_FILES$ ]]; then
   log_verbose "$SUDOERSD_FILES"
 
-  prompt="[sudo] enter password to copy files:"
-  sudo -p "$prompt" -- cp -r ../misc/sudoers.d/* /etc/sudoers.d/
+  sudo cp -r ../misc/sudoers.d/* /etc/sudoers.d/
 fi
 
-if [[ $options =~ ^All$ ]] || [[ $options =~ ^$PODMAN_DOCKER$ ]]; then
+if [[ $options =~ "^All$" ]] || [[ $options =~ ^$PODMAN_DOCKER$ ]]; then
   log_verbose "$PODMAN_DOCKER"
 
   mkdir -p "$HOME/.local/share/containers"

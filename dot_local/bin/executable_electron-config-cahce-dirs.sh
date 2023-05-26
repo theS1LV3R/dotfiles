@@ -6,6 +6,7 @@ source "$HOME/.local/bin/__common.sh"
 search_dirs=(
     "$XDG_CONFIG_HOME"
     "$XDG_DATA_HOME"
+    "$HOME/.vscode"
 )
 
 find_dirs=(
@@ -20,6 +21,7 @@ find_dirs=(
     logs
     workspaceStorage
     CachedExtensionVSIXs
+    ShaderCache
 )
 
 for sdir in "${search_dirs[@]}"; do

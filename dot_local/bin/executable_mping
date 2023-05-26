@@ -4,10 +4,10 @@
 # shellcheck source=executable___common.sh
 source "$HOME/.local/bin/__common.sh"
 
+readonly session_name="mping"
+
 declare -a ips
 IFS=$' ' read -ra ips <<<"$@"
-
-session_name="mping"
 
 tmux kill-session -t "$session_name" || true
 tmux new-session -d -s "$session_name"
@@ -15,7 +15,7 @@ tmux new-session -d -s "$session_name"
 index=1
 for ip in "${ips[@]}"; do
   tmux split-window -t "$session_name:1.$index"
-  tmux send-keys -t "$session_name:1.$index" "ping ${ip}"
+  tmux send-keys -t "$session_name:1.$index" "ping $ip"
   tmux send-keys -t "$session_name:1.$index" $'\n'
   index=$((index + 1))
 done

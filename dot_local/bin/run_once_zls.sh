@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 # vi: ft=sh:ts=2:sw=2
 
+exit
+
 set -euo pipefail
 
 readonly url="https://github.com/zigtools/zls/"
-readonly bin_dir="${HOME}/.local/bin"
+readonly bin_dir="$HOME/.local/bin"
 readonly git_dir="/tmp/zigtools-zls"
 
 if [[ -d "$git_dir/.git" ]]; then
@@ -15,7 +17,7 @@ else
   git clone --recurse-submodules "$url" "$git_dir"
 fi
 
-cd "${git_dir}"
+cd "$git_dir"
 
 zig build -Doptimize=ReleaseSafe
 

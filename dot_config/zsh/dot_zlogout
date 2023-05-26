@@ -3,4 +3,4 @@
 
 clear
 
-echo "$USER@$(hostname) logged out at $(date -Iseconds)"
+echo "$USER@$(hostname) logged out at $(date +'%Y-%m-%d %H:%M:%S')"

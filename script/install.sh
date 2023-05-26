@@ -66,7 +66,6 @@ asdf install
 [[ "$os_release" == "debian" ]] && {
   cargo install lsd
   cargo install bat
-  cargo install
 }
 
 CHANGE_SHELL="Change shell"

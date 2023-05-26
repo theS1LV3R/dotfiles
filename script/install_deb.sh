@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 source common.sh
 IFS=$'\n\t'
 
@@ -34,9 +33,11 @@ set +euo pipefail
 . "$HOME/.asdf/asdf.sh"
 set -euo pipefail
 
-tmpdir=$(mktemp -d)
-origdir=$PWD
-cd "$tmpdir"
-wget https://github.com/null-dev/firefox-profile-switcher-connector/releases/download/v0.1.1/linux-x64.deb
-sudo dpkg -i linux-x64.deb
-cd "$origdir"
+if command_exists firefox || command_exists firefox-developer-edition; then
+    tmpdir=$(mktemp -d)
+    origdir=$PWD
+    cd "$tmpdir"
+    wget https://github.com/null-dev/firefox-profile-switcher-connector/releases/download/v0.1.1/linux-x64.deb
+    sudo dpkg -i linux-x64.deb
+    cd "$origdir"
+fi

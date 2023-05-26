@@ -4,7 +4,11 @@ yarn 1.22.19
 golang 1.20
 rust 1.68.2
 zig master
+{{ if (ne .chezmoi.arch "arm64") -}}
+# Deno only works on x86_64 machines
+# https://deno.com/manual/getting_started/installation
 deno 1.30.3
+{{ end -}}
 lazygit latest
 java system
 {{ if .isdebian -}}

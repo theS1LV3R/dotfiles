@@ -4,7 +4,6 @@
 --     open_on_setup = true,
 --     open_on_setup_file = true
 -- }
-
 -- discord presence
 require("presence"):setup{
     auto_update = true,
@@ -15,3 +14,5 @@ require("presence"):setup{
 }
 
 require("trouble").setup()
+
+vim.o.background = 'dark'

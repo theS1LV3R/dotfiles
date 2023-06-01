@@ -59,6 +59,8 @@ return require("packer").startup(function(use)
         }
     }
 
+    use 'ellisonleao/gruvbox.nvim' -- Color theme -- https://github.com/ellisonleao/gruvbox.nvim
+
     if packer_bootstrap then
         require("packer").sync()
     end

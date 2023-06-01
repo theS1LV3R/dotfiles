@@ -25,6 +25,9 @@ export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
 export KDEHOME="$XDG_CONFIG_HOME/kde"
 export PYTHONSTARTUP="$XDG_CONFIG_HOME/python/pythonrc"
 export PARALLEL_HOME="$XDG_CONFIG_HOME/parallel"
+export STREAMDECK_UI_CONFIG="$XDG_CONFIG_HOME/streamdeck-ui.json"
+export AWS_SHARED_CREDENTIALS_FILE="$XDG_CONFIG_HOME/aws/credentials"
+export AWS_CONFIG_FILE="$XDG_CONFIG_HOME/aws/config"
 
 #! XDG_CACHE_HOME
 export CUDA_CACHE_PATH="$XDG_CACHE_HOME/nv"
@@ -42,7 +45,7 @@ export PATH="./node_modules/.bin:$PATH"
 
 #! Minikube
 export MINIKUBE_HOME="$XDG_DATA_HOME/minikube"
-export MINIKUBE_SUBNET="10.246.0.1/16"
+export MINIKUBE_SUBNET="10.240.30.1/24"
 export MINIKUBE_DRIVER=docker
 export MINIKUBE_ROOTLESS=false
 
@@ -61,17 +64,6 @@ export DOTNET_CLI_TELEMETRY_OPTOUT="true"
 export STORYBOOK_DISABLE_TELEMETRY=1
 export NEXT_TELEMETRY_DISABLED=1
 
-#! Misc
-# shellcheck disable=SC2016 # Expressions don't expand in single quotes, use double quotes for that.
-export VIMINIT='let $MYVIMRC = !has("nvim") ? "$XDG_CONFIG_HOME/vim/vimrc" : "$XDG_CONFIG_HOME/nvim/init.lua" | so $MYVIMRC'
-
-export AWS_SHARED_CREDENTIALS_FILE="$XDG_CONFIG_HOME/aws/credentials"
-export AWS_CONFIG_FILE="$XDG_CONFIG_HOME/aws/config"
-
-# shellcheck disable=SC2155
-# Declare and assign separately to avoid masking return values.
-export GPG_TTY=$(tty) # When making commits during SSH, so GPG uses the TTY and doesnt break
-
 #! ASDF
 export ASDF_CONFIG_FILE="$XDG_CONFIG_HOME/asdf/asdfrc"
 export ASDF_DATA_DIR="$XDG_DATA_HOME/asdf"
@@ -79,6 +71,16 @@ export ASDF_PYTHON_DEFAULT_PACKAGES_FILE="$XDG_CONFIG_HOME/asdf/default-python-p
 export ASDF_NPM_DEFAULT_PACKAGES_FILE="$XDG_CONFIG_HOME/asdf/default-npm-packages"
 export ASDF_GEM_DEFAULT_PACKAGES_FILE="$XDG_CONFIG_HOME/asdf/default-gems"
 export ASDF_GOLANG_DEFAULT_PACKAGES_FILE="$XDG_CONFIG_HOME/asdf/default-go-packages"
+
+#! Misc
+# shellcheck disable=SC2016 # Expressions don't expand in single quotes, use double quotes for that.
+export VIMINIT='let $MYVIMRC = !has("nvim") ? "$XDG_CONFIG_HOME/vim/vimrc" : "$XDG_CONFIG_HOME/nvim/init.lua" | so $MYVIMRC'
+
+# shellcheck disable=SC2155
+# Declare and assign separately to avoid masking return values.
+export GPG_TTY=$(tty) # When making commits during SSH, so GPG uses the TTY and doesnt break
+
+export MANPATH="$XDG_DATA_HOME/man:$MANPATH"
 
 # https://github.com/alacritty/alacritty/issues/3465
 export WINIT_X11_SCALE_FACTOR=1

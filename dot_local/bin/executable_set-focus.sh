@@ -3,12 +3,17 @@
 # shellcheck source=executable___common.sh
 source "$HOME/.local/bin/__common.sh"
 
-readonly DEVICE="${DEVICE:-/dev/video2}"
 readonly NOTIFICATION_TIME="${NOTIFICATION_TIME:-3}"
+DEVICE="${DEVICE:-}"
 
-readonly ARG="${1:-'No args provided'}"
+if [[ -z "$DEVICE" ]]; then
+    DEVICE=$(v4l2-ctl --list-devices | grep "Logi 4K Stream Edition" -A1 | tail -n1 | awk '{ print $1 }')
+fi
+
+readonly ARG="${1:-}"
 ABSOLUTE=0
 AUTO=0
+PRINT_DATA=0
 
 case "$ARG" in
 auto) {
@@ -25,8 +30,24 @@ close) {
     AUTO=0
 } ;;
 
+"") {
+    PRINT_DATA=1
+} ;;
+
 *) echo "Unknown arg: $ARG" && exit 0 ;;
 esac
+
+if [[ $PRINT_DATA == 1 ]]; then
+    info=$(v4l2-ctl -d "$DEVICE" --all)
+
+    focus_automatic_continuous=$(echo "$info" | grep "focus_automatic_continuous" | awk '{ print $6 }')
+    focus_absolute=$(echo "$info" | grep "focus_absolute" | awk '{ print $9 }')
+
+    echo "Autofocus: $focus_automatic_continuous"
+    echo "Focus: $focus_absolute"
+
+    exit 0
+fi
 
 v4l2-ctl -d "$DEVICE" -c focus_automatic_continuous="$AUTO"
 [[ $AUTO == 0 ]] && v4l2-ctl -d "$DEVICE" -c focus_absolute="$ABSOLUTE"

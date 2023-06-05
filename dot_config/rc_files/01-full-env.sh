@@ -16,6 +16,7 @@ export GRADLE_USER_HOME="$XDG_DATA_HOME/gradle"
 export NODE_REPL_HISTORY="$XDG_DATA_HOME/node_repl_history"
 export ANSIBLE_HOME="$XDG_DATA_HOME/ansible"
 export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
+export SQLITE_HISTORY="$XDG_CACHE_HOME/sqlite_history"
 
 #! XDG_CONFIG_HOME
 export WGETRC="$XDG_CONFIG_HOME/wgetrc"
@@ -50,9 +51,12 @@ export MINIKUBE_DRIVER=docker
 export MINIKUBE_ROOTLESS=false
 
 #! Java stuff
-export _JAVA_OPTIONS="-Djava.util.prefs.userRoot=$XDG_CONFIG_HOME/java -Dawt.useSystemAAFontSettings=on -Dswing.aatext=true"
-export GRADLE_OPTS="-Djava.io.tmpdir=$XDG_CACHE_HOME/gradle"
-export MAVEN_OPTS="-Dmaven.repo.local=$XDG_DATA_HOME/.m2/repository"
+export _JAVA_OPTIONS="\
+-Djava.util.prefs.userRoot=$XDG_CONFIG_HOME/java \
+-Dawt.useSystemAAFontSettings=on \
+-Dswing.aatext=true \
+-Dmaven.repo.local=$XDG_DATA_HOME/maven/repository \
+-Djava.io.tmpdir=$XDG_CACHE_HOME/java"
 
 #! Postgres stuff
 export PSQL_HISTORY="$XDG_DATA_HOME/psql_history"
@@ -76,9 +80,9 @@ export ASDF_GOLANG_DEFAULT_PACKAGES_FILE="$XDG_CONFIG_HOME/asdf/default-go-packa
 # shellcheck disable=SC2016 # Expressions don't expand in single quotes, use double quotes for that.
 export VIMINIT='let $MYVIMRC = !has("nvim") ? "$XDG_CONFIG_HOME/vim/vimrc" : "$XDG_CONFIG_HOME/nvim/init.lua" | so $MYVIMRC'
 
-# shellcheck disable=SC2155
-# Declare and assign separately to avoid masking return values.
-export GPG_TTY=$(tty) # When making commits during SSH, so GPG uses the TTY and doesnt break
+# shellcheck disable=SC2155 # Declare and assign separately to avoid masking return values.
+# When making commits during SSH, so GPG uses the TTY and doesnt break
+export GPG_TTY=$(tty)
 
 export MANPATH="$XDG_DATA_HOME/man:$MANPATH"
 

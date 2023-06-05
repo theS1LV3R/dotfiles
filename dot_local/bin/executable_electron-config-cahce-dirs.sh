@@ -5,7 +5,6 @@ source "$HOME/.local/bin/__common.sh"
 
 search_dirs=(
     "$XDG_CONFIG_HOME"
-    "$XDG_DATA_HOME"
     "$HOME/.vscode"
 )
 

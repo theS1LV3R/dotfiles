@@ -28,3 +28,21 @@ log_error() { echo -e "${RED}[$(timestamp) ERROR]${NC} $1" &>/dev/stderr; }
 log_warn() { echo -e "${YELLOW}[$(timestamp) WARN]${NC} $1"; }
 log_info() { echo -e "${GREEN}[$(timestamp) INFO]${NC} $1"; }
 log_ask() { echo -e "${BLUE}[$(timestamp) ASK]${NC} $1"; }
+
+notify() {
+  _icon=$1
+  _time=$2
+  _name=$3
+  _message=$4
+
+  notify-send \
+    --icon="$_icon" \
+    --urgency="critical" \
+    --wait \
+    --app-name="$_name" \
+    "$_message" 2>/dev/null &
+  notification_id=$!
+
+  sleep "$_time"
+  kill -INT "$notification_id"
+}

@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 source common.sh
-IFS=$'\n\t'
 
 IFS=' ' read -r -a packages <<<"$*"
 
@@ -37,10 +36,21 @@ set -euo pipefail
 log_info "Updating asdf"
 asdf update
 
-if installed firefox || installed firefox-developer-edition; then
+firefox-profile-switcher-connector-install() {
     log_info "Installing firefox-profile-switcher-connector"
+
+    if [[ $(uname -m) != "x86_64" ]]; then
+        log_warn "Not x86_64, not installing "
+        return
+    fi
+
+    if ! installed firefox && ! installed firefox-developer-edition; then
+        log_info "Firefox not detected, not installing"
+        return
+    fi
 
     tmpdir=$(mktemp -d)
     wget -P "$tmpdir" https://github.com/null-dev/firefox-profile-switcher-connector/releases/download/v0.1.1/linux-x64.deb
     sudo dpkg -i "$tmpdir/linux-x64.deb"
-fi
+}
+firefox-profile-switcher-connector-install

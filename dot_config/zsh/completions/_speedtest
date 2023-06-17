@@ -1,0 +1,62 @@
+#compdef speedtest
+# shellcheck disable=all
+# vi: ft=zsh
+
+_speedtest() {
+    local -a _speedtest_options
+
+    _speedtest_output_formats=(
+        'human-readable'
+        'csv'
+        'tsv'
+        'json'
+        'jsonl'
+        'json-pretty'
+    )
+
+    _speedtest_options=(
+        "-h[Print usage information]:_no_arguments"
+        "--help[Print usage information]:_no_arguments"
+        "-V[Print version number]:_no_arguments"
+        "-L[List nearest servers]:_no_arguments"
+        "-s+[Specify a server from the server list using its id]:server id"
+        "-I+[Attempt to bind to the specified interface when connecting to servers]"
+        "-i+[Attempt to bind to the specified IP address when connecting to servers]"
+        "-o+[Specify a server, from the server list, using its host\'s fully qualified domain name]:server host"
+        "-p+[Enable or disable progress bar]:yes or no"
+        "-P+[Number of decimals to use]:decimal precision (0-8)"
+        "-f+[Output format]:output format:(human-readable csv tsv json jsonl json-pretty)"
+        "--progress-update-interval+[Progress update interval]:interval (100-1000 milliseconds)"
+        "-u+[Output unit for displaying speeds]:unit"
+        "--selection-details[Show server selection details]"
+        "--ca-certificate+[CA Certificate bundle path]:path"
+        "-v[Logging verbosity. Specify multiple times for higher verbosity]"
+        "--output-header[Show output header for CSV and TSV formats]:_no_arguments"
+    )
+
+    _speedtest_exclusive_options=(
+        '-a[Shortcut for -u auto-decimal-bits]'
+        '-A[Shortcut for -u auto-decimal-bytes]'
+        '-b[Shortcut for -u auto-binary-bits]'
+        '-B[Shortcut for -u auto-binary-bytes]'
+    )
+
+    _speedtest_exclusive_option_found=false
+
+    for option in ${words[@]}; do
+        case $option in
+        -a | -A | -b | -B)
+            _speedtest_exclusive_option_found=true
+            break
+            ;;
+        esac
+    done
+
+    if ! $_speedtest_exclusive_option_found; then
+        _speedtest_options+=($_speedtest_exclusive_options)
+    fi
+
+    _arguments -s $_speedtest_options
+}
+
+_speedtest

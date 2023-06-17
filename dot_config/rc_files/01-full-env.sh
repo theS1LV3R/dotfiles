@@ -55,7 +55,6 @@ export _JAVA_OPTIONS="\
 -Djava.util.prefs.userRoot=$XDG_CONFIG_HOME/java \
 -Dawt.useSystemAAFontSettings=on \
 -Dswing.aatext=true \
--Dmaven.repo.local=$XDG_DATA_HOME/maven/repository \
 -Djava.io.tmpdir=$XDG_CACHE_HOME/java"
 
 #! Postgres stuff

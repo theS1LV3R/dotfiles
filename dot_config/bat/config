@@ -1,0 +1,2 @@
+--theme="Visual Studio Dark+"
+--map-syntax *.code-workspace:JSON

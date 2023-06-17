@@ -9,10 +9,15 @@ case $- in
 *) return ;;
 esac
 
+# shellcheck source=dot_config/rc_files/00-xdg-env.sh
+source "$HOME/.config/rc_files/00-xdg-env.sh"
+
 export BASHRC_FILES="$XDG_CONFIG_HOME/bashrc.d"
 export RC_FILES="$XDG_CONFIG_HOME/rc_files"
 
+# shellcheck source=dot_config/bashrc.d/shopt.sh
 source "$BASHRC_FILES/shopt.sh"
+# shellcheck source=dot_config/bashrc.d/completion.sh
 source "$BASHRC_FILES/completion.sh"
 
 for file in "$RC_FILES"/*.sh; do

@@ -1,0 +1,14 @@
+#compdef certcheck
+# vi: ft=zsh
+# shellcheck shell=bash
+
+_certcheck() {
+    _arguments \
+        '(-h --help)'{-h,--help}'[Show help message and exit]:_no_arguments' \
+        '(-v --verbose)'{-v,--verbose}'[Verbose output]' \
+        '(-p --port)'{-p,--port=}'[The port to use for resolution]:port:' \
+        '(-t --type)'{-t,--type=}'[The type of server to be tested]:type:(http https smtp)' \
+        ':The hostname to be resolved:_hosts'
+}
+
+_certcheck

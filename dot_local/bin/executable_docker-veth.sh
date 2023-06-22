@@ -5,13 +5,6 @@ usage() {
 
     $0  Show the veth interface associated of containers
 
-    Examples:
-
-    $0 # shows all containers
-    $0 --filter "name=nginx" # filter containers
-
-    See docker ps --help docs for more info on filters
-
 HELP_USAGE
 }
 

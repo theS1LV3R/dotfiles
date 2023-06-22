@@ -125,3 +125,5 @@ ipinfo() {
 optdeps() {
   pacman -Qe | awk '{print $1}' | xargs pacman -Qi | awk '/^Name/ {name=$3} /^Optional Deps/ && !/None/ {print name ":"; sub(/^Optional Deps\s*:\s*/, "", $0); gsub(/,\s*/, "\n  ", $0); print "  " $0}'
 }
+
+urldecode() { : "${*//+/ }"; echo -e "${_//%/\\x}"; }

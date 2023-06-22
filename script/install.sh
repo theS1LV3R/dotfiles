@@ -15,11 +15,11 @@ _install() {
   filename="install_$1.sh"
 
   # Neovim not included - Debian uses asdf
-  common_packages="unzip zsh tmux gcc neofetch curl wget net-tools vim"
+  export common_packages="unzip zsh tmux gcc neofetch curl wget net-tools vim python"
+  export python_packages="httpx h2 dnspython cryptography"
 
   log_info "Running ./$filename"
-  # shellcheck disable=SC1090
-  source "$filename" "$common_packages"
+  "./$filename"
 }
 
 case "$os_release" in

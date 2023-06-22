@@ -2,7 +2,7 @@
 
 source common.sh
 
-IFS=' ' read -r -a packages <<<"$*"
+IFS=' ' read -r -a packages <<<"$common_packages"
 
 packages+=(
     base-devel
@@ -13,6 +13,10 @@ packages+=(
     asdf-vm                            # Version management
     firefox-profile-switcher-connector # Firefox extension allowing better profile switching
 )
+
+while IFS=' ' read -r python_package; do
+    packages+=("python-$python_package")
+done <<<"$python_packages"
 
 aur_install() {
     orig_dir="$PWD"

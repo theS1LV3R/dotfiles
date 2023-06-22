@@ -4,10 +4,18 @@ source common.sh
 
 IFS=' ' read -r -a packages <<<"$*"
 
-packages+=()
+packages+=(
+    aptitude
+    python3
+    python3-pip
+)
 
 sudo apt update
 sudo apt install -y "${packages[@]}"
+
+while IFS=' ' read -r python_package; do
+    pip3 --user install "$python_package"
+done <<<"$python_packages"
 
 if ! installed chezmoi; then
     bin_dir="$HOME/.local/bin"

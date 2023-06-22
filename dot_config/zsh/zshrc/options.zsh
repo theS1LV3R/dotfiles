@@ -3,9 +3,7 @@
 
 # why zsh only?
 # - setopt is a zsh command
-# - zsh specific HISTFILE
 
-setopt AUTO_CD             # change directory just by typing its name
 setopt AUTO_PUSHD          # automatically push to the directory stack
 setopt PUSHD_IGNORE_DUPS   # don't push the same directory twice
 setopt CORRECT             # auto correct mistakes

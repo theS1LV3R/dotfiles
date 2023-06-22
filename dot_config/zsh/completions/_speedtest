@@ -3,60 +3,87 @@
 # vi: ft=zsh
 
 _speedtest() {
-    local -a _speedtest_options
 
-    _speedtest_output_formats=(
-        'human-readable'
-        'csv'
-        'tsv'
-        'json'
-        'jsonl'
-        'json-pretty'
+    local context state state_descr line
+    local -a _options
+
+    debug() { echo "$@" >>"$HOME/.cache/speedtest-autocomp-debug"; }
+
+    interfaces=$(ip -brief addr | awk '{ print $1 }' | tr '\n' ' ')
+    ips="$(ip -o addr show | awk '{split($4, a, "/"); print "{\"ip\":\"" a[1] "\",\"interface\":\"" $2 "\"}"}' | jq -sr '.[] | "\"\(.ip)\""' | tr '\n' ' ')"
+
+    debug $ips
+
+    units="bps\\:'bits per second'
+        kbps\\:'kilobits per second (1 kilobit = 1000 bits)'
+        Mbps\\:'megabits per second (1 megabit = 1000 kilobits)'
+        Gbps\\:'gigabits per second (1 gigabit = 1000 megabits)'
+        Bps\\:'bytes per second (1 byte = 8 bits)'
+        kBps\\:'kilobytes per second (1 kilobyte = 1000 bytes)'
+        MBps\\:'megabytes per second (1 megabyte = 1000 kilobytes)'
+        GBps\\:'gigabytes per second (1 gigabyte = 1000 megabytes)'
+        kibps\\:'kibibits per second (1 kibibit = 1024 bits)'
+        Mibps\\:'mebibits per second (1 mebibit = 1024 kibibits)'
+        Gibps\\:'gibibits per second (1 gibibit = 1024 mebibits)'
+        kiB/s\\:'kibibytes per second (1 kibibyte = 1024 bytes)'
+        MiB/s\\:'mebibytes per second (1 mebibyte = 1024 kibibytes)'
+        GiB/s\\:'gibibytes per second (1 gibibyte = 1024 mebibytes)'
+        auto-binary-bits\\:'auto-scaled bits per second using binary prefixes'
+        auto-binary-bytes\\:'auto-scaled bytes per second using binary prefixes'
+        auto-decimal-bits\\:'auto-scaled bits per second using decimal prefixes'
+        auto-decimal-bytes\\:'auto-scaled bytes per second using decimal prefixes'"
+    units=$(echo "$units" | tr '\n' ' ')
+
+    _options=(
+        '(-h --help)'{-h,--help}'[Print usage information]:_no_arguments'
+        '(-V --version)'{-V,--version}'[Print version number]:_no_arguments'
+        '(-L --servers)'{-L,--servers}'[List nearest servers]:_no_arguments'
+        '(-I --interface)'{-I,--interface=}"[Attempt to bind to the specified interface when connecting to servers]:interface:( $interfaces )"
+        '(-i --ip)'{-i,--ip=}"[Attempt to bind to the specified IP address when connecting to servers]:ip:"
+        '(-p --progress)'{-p,--progress=}'[Enable or disable progress bar]:progress_bar:(yes no)'
+        '(-P --precision)'{-P,--precision=}'[Number of decimals to use]:precision:(0 1 2 3 4 5 6 7 8)'
+        '--progress-update-interval=[Progress update interval]'
+        '--selection-details[Show server selection details]'
+        '--ca-certificate=[CA Certificate bundle path]:ca_certificate:_files'
+        '*-v[Logging verbosity. Specify multiple times for higher verbosity]'
+        '--output-header[Show output header for CSV and TSV formats]:_no_arguments'
+        '(-f --format)'{-f,--format=}'[Output format]:format:(human-readable csv tsv json jsonl json-pretty)'
     )
 
-    _speedtest_options=(
-        "-h[Print usage information]:_no_arguments"
-        "--help[Print usage information]:_no_arguments"
-        "-V[Print version number]:_no_arguments"
-        "-L[List nearest servers]:_no_arguments"
-        "-s+[Specify a server from the server list using its id]:server id"
-        "-I+[Attempt to bind to the specified interface when connecting to servers]"
-        "-i+[Attempt to bind to the specified IP address when connecting to servers]"
-        "-o+[Specify a server, from the server list, using its host\'s fully qualified domain name]:server host"
-        "-p+[Enable or disable progress bar]:yes or no"
-        "-P+[Number of decimals to use]:decimal precision (0-8)"
-        "-f+[Output format]:output format:(human-readable csv tsv json jsonl json-pretty)"
-        "--progress-update-interval+[Progress update interval]:interval (100-1000 milliseconds)"
-        "-u+[Output unit for displaying speeds]:unit"
-        "--selection-details[Show server selection details]"
-        "--ca-certificate+[CA Certificate bundle path]:path"
-        "-v[Logging verbosity. Specify multiple times for higher verbosity]"
-        "--output-header[Show output header for CSV and TSV formats]:_no_arguments"
+    _server=(
+        + '(server)'
+        {-s,--server-id=}"[Specify a server from the server list using its id]:server_id:->server_id"
+        {-o,--host=}"[Specify a server, from the server list, using its hosts fully qualified domain name]:server_name:->server_name"
     )
 
-    _speedtest_exclusive_options=(
-        '-a[Shortcut for -u auto-decimal-bits]'
-        '-A[Shortcut for -u auto-decimal-bytes]'
-        '-b[Shortcut for -u auto-binary-bits]'
-        '-B[Shortcut for -u auto-binary-bytes]'
+    _unit=(
+        + '(unit)'
+        {-u,--unit=}"[Output unit for displaying speeds]:unit:(($units))"
+        -a'[Shortcut for -u auto-decimal-bits]'
+        -A'[Shortcut for -u auto-decimal-bytes]'
+        -b'[Shortcut for -u auto-binary-bits]'
+        -B'[Shortcut for -u auto-binary-bytes]'
     )
 
-    _speedtest_exclusive_option_found=false
-
-    for option in ${words[@]}; do
-        case $option in
-        -a | -A | -b | -B)
-            _speedtest_exclusive_option_found=true
-            break
-            ;;
-        esac
-    done
-
-    if ! $_speedtest_exclusive_option_found; then
-        _speedtest_options+=($_speedtest_exclusive_options)
+    if [[ "$state" =~ "server_id|server_name" ]]; then
+        servers="$(speedtest -f json -L | jq '.servers' 2>/dev/null)"
     fi
 
-    _arguments -s $_speedtest_options
+    _arguments -C -s \
+        $_options \
+        $_server \
+        $_unit
+
+    case "$state" in
+    server_id)
+        IFS=$'\n' server_id_name=($(echo $servers | jq -r '.[] | "\(.id)[\(.name)]"'))
+        _values 'server_id' $server_id_name
+        ;;
+    server_name)
+        IFS=$'\n' server_host_name=($(echo $servers | jq -r '.[] | "\(.host)[\(.name)]"'))
+        _values 'server_id' $server_host_name
+        ;;
+    esac
 }
 
 _speedtest

@@ -1,8 +1,13 @@
-# vim: set ft=sshconfig
+# vim: set ft=ssh_config
 Include config.d/*.conf
 
 
 # ADD CONFIG OVER THIS LINE
+
+Host *.sslipio
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
+
 Host *
     AddKeysToAgent ask
     ServerAliveInterval 60

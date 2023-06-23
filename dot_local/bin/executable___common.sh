@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2311,SC2312
-# vi: ft=sh:ts=2:sw=2
+# vi: ft=bash:ts=4:sw=4
 
+# shellcheck disable=SC2311,SC2312
 # SC2311 - Bash implicitly disabled set -e for this function invocation because it's inside a command substitution.
 # SC2312 - Consider invoking this command separately to avoid masking its return value (or use '|| true' to ignore).
 

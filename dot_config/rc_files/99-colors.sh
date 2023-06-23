@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# vi: ft=sh
+# vi: ft=bash:ts=4:sw=4
 
 # enable color support of ls, less and man
 if [[ -x /usr/bin/dircolors ]]; then

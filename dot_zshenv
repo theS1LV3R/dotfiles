@@ -1,4 +1,5 @@
-# vi: ft=zsh
+#!/usr/bin/env zsh
+# vi: ft=zsh:ts=4:sw=4
 # shellcheck shell=bash
 
 # In order:

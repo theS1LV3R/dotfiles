@@ -1,4 +1,5 @@
-# vi: ft=sh
+#!/usr/bin/env bash
+# vi: ft=bash:ts=4:sw=4
 # This file is written by xdg-user-dirs-update
 # If you want to change or add directories, just edit the line you're
 # interested in. All local changes will be retained on the next run.

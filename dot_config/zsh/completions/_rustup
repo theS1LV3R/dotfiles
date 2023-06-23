@@ -1,6 +1,9 @@
 #compdef rustup
-# vi: ft=zsh
-# shellcheck shell=bash
+# vi: ft=zsh:ts=4:sw=4
+# shellcheck shell=bash disable=SC2249,SC1087
+# SC2249 - Consider adding a default *) case, even if it just exits with error.
+# SC1087 - Use braces when expanding arrays, e.g. ${array[idx]} (or ${var}[.. to quiet).
+
 
 autoload -U is-at-least
 

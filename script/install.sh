@@ -50,11 +50,12 @@ asdf install
 
 log_info "Performing misc actions"
 
+TMUX_COPY_BACKEND="Enable tmux-copy-backend.socket"
 CHANGE_SHELL="Change shell"
 SUDOERSD_FILES="/etc/sudoers.d files"
 PODMAN_DOCKER="Podman 'nodocker' file"
 
-options="$(gum choose --no-limit --selected="All" "All" "$CHANGE_SHELL" "$SUDOERSD_FILES" "$PODMAN_DOCKER")"
+options="$(gum choose --no-limit --selected="All" "All" "$CHANGE_SHELL" "$SUDOERSD_FILES" "$PODMAN_DOCKER" "$TMUX_COPY_BACKEND")"
 
 if [[ $options =~ "^All$" ]] || [[ $options =~ ^$CHANGE_SHELL$ ]]; then
   log_verbose "$CHANGE_SHELL"
@@ -80,6 +81,13 @@ if [[ $options =~ "^All$" ]] || [[ $options =~ ^$PODMAN_DOCKER$ ]]; then
 
   mkdir -p "$HOME/.local/share/containers"
   touch "$HOME/.local/share/containers/nodocker"
+fi
+
+if [[ $options =~ "^All$" ]] || [[ $options =~ ^$TMUX_COPY_BACKEND$ ]]; then
+  log_verbose "$TMUX_COPY_BACKEND"
+
+  systemctl --user daemon-reload
+  systemctl --user enable --now tmux-copy-backend.socket
 fi
 
 log_info 'Done :)'

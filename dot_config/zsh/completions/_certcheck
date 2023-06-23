@@ -1,5 +1,5 @@
 #compdef certcheck
-# vi: ft=zsh
+# vi: ft=zsh:ts=4:sw=4
 # shellcheck shell=bash
 
 _certcheck() {

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# vi: ft=sh
+# vi: ft=bash:ts=4:sw=4
 
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.cache"

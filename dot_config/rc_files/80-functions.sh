@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# vi: ft=sh
+# vi: ft=bash:ts=4:sw=4
 
 ssh() {
   emulate -L zsh

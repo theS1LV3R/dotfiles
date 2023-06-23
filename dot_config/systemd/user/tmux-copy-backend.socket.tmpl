@@ -1,0 +1,13 @@
+# vi: ft=systemd-unit-file
+
+[Unit]
+Description=Network copy backend for tmux
+Documentation=https://medium.com/hackernoon/dd3c51bca1fa
+
+[Socket]
+ListenStream={{ .tmuxCopyBackendPort }}
+Accept=yes
+CollectMode=inactive-or-failed
+
+[Install]
+WantedBy=sockets.target

@@ -1,27 +1,27 @@
 #!/usr/bin/env bash
-# vi: ft=sh
+# vi: ft=bash:ts=4:sw=4
 # shellcheck shell=bash disable=SC2139
 # SC2139 - This expands when defined, not when used. Consider escaping.
 
 checkexists() {
-  command -v "$1" &>/dev/null
+    command -v "$1" &>/dev/null
 }
 
 enhanced_aliases=(
-  "vim nvim"
-  "ls lsd"
-  "ipcalc sipcalc"
-  "jq yq"
-  "cat bat"
+    "vim nvim"
+    "ls lsd"
+    "ipcalc sipcalc"
+    "jq yq"
+    "cat bat"
 )
 
 for alias in "${enhanced_aliases[@]}"; do
-  orig=$(cut -d' ' -f1 <<<"$alias")
-  new=$(cut -d' ' -f2 <<<"$alias")
+    orig=$(cut -d' ' -f1 <<<"$alias")
+    new=$(cut -d' ' -f2 <<<"$alias")
 
-  checkexists "$new" || continue
-  alias "b$orig"="$(command -v "$orig")"
-  alias "$orig"="$new"
+    checkexists "$new" || continue
+    alias "b$orig"="$(command -v "$orig")"
+    alias "$orig"="$new"
 done
 
 alias pcat='bat --paging=never -p'
@@ -35,32 +35,32 @@ alias l='ls -F'
 alias lah='ls -lah'
 
 colorauto_commands=(
-  lsd
-  dir
-  vdir
-  grep
-  fgrep
-  egrep
-  diff
-  ip
+    lsd
+    dir
+    vdir
+    grep
+    fgrep
+    egrep
+    diff
+    ip
 )
 
 for command in "${colorauto_commands[@]}"; do
-  alias "$command"="$command --color=auto"
+    alias "$command"="$command --color=auto"
 done
 
 # Systemctl aliases
 systemctl_aliases=(
-  start
-  restart
-  stop
-  status
-  enable
-  disable
-  reload
+    start
+    restart
+    stop
+    status
+    enable
+    disable
+    reload
 )
 for alias in "${systemctl_aliases[@]}"; do
-  alias "$alias"="sudo systemctl $alias"
+    alias "$alias"="sudo systemctl $alias"
 done
 
 alias jwt="jq -R 'split(\".\") | select(length > 0) | .[0],.[1] | @base64d | fromjson'" # Splits a jwt string, and returns the header and payload

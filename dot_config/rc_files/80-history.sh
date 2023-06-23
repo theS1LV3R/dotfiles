@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# vi: ft=sh
+# vi: ft=bash:ts=4:sw=4
 
 [[ -n "$ZSH_VERSION" ]] && export HISTFILE="$XDG_DATA_HOME/.zsh_history" # The file to save the history in when an interactive shell exits.  If unset, the history is not saved.
 [[ -n "$BASH_VERSION" ]] && export HISTFILE="$XDG_DATA_HOME/bash/history"

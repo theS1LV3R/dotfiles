@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# vi: ft=sh
+# vi: ft=bash:ts=4:sw=4
 
 # Sources for a lot of these:
 #   https://www.reddit.com/r/linux/comments/uouh7p/ - XDG ninja

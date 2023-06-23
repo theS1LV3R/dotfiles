@@ -92,4 +92,4 @@ CLIP_POS=$(xrandr | grep "$DIS_NAME" | awk '{ print $3 }')
 log_info "Display position: $CLIP_POS"
 
 log_warn "Display active. CTRL+C to exit"
-read
+read -r

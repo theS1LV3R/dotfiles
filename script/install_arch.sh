@@ -12,6 +12,7 @@ packages+=(
     lsd                                # Better ls command
     asdf-vm                            # Version management
     firefox-profile-switcher-connector # Firefox extension allowing better profile switching
+    pkgfile                            # For command-not-found
 )
 
 while IFS=' ' read -r python_package; do
@@ -46,3 +47,9 @@ paru -Sy --noconfirm --needed "${packages[@]}"
 
 log_info "Initializing chezmoi"
 chezmoi init --apply theS1LV3R
+
+log_info "Enabling pkgfile-update.timer"
+sudo systemctl enable pkgfile-update.timer
+
+log_info "Running pkgfile-update.service"
+sudo systemctl start pkgfile-update.service

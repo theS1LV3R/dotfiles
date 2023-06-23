@@ -5,13 +5,14 @@ source common.sh
 IFS=' ' read -r -a packages <<<"$*"
 
 packages+=(
-    aptitude
     python3
     python3-pip
+    command-not-found
 )
 
 sudo apt update
-sudo apt install -y "${packages[@]}"
+sudo apt install aptitude
+sudo aptitude install -y "${packages[@]}"
 
 while IFS=' ' read -r python_package; do
     pip3 --user install "$python_package"

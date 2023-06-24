@@ -9,9 +9,12 @@ autoload -U compinit && compinit -d ~/.cache/zcompdump
 autoload -U bashcompinit && bashcompinit -d ~/.cache/zbashcompdump
 autoload -U add-zsh-hook
 
-export SCRIPTS_DIR="$HOME/.config/zsh"
-export ZSH_SCRIPTS=$SCRIPTS_DIR/zshrc
-export RC_FILES="$XDG_CONFIG_HOME/rc_files"
+# shellcheck source=../rc_files/00-xdg-env.sh
+source /dev/null # Effectively a noop, only here for shellcheck. It gets sourced from .zshenv
+
+SCRIPTS_DIR="$HOME/.config/zsh"
+ZSH_SCRIPTS=$SCRIPTS_DIR/zshrc
+RC_FILES="$XDG_CONFIG_HOME/rc_files"
 
 # shellcheck disable=SC2206
 # We cant quote the $fpath, it breaks zsh _hard_
@@ -36,7 +39,7 @@ for file in "$RC_FILES"/*.sh; do
     source "$file"
 done
 
-unset ZSH_SCRIPTS RC_FILES
+unset SCRIPTS_DIR ZSH_SCRIPTS RC_FILES
 
 # Zi options
 declare -A ZI

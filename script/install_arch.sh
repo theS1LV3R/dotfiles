@@ -15,9 +15,10 @@ packages+=(
     pkgfile                            # For command-not-found
 )
 
-while IFS=' ' read -r python_package; do
-    packages+=("python-$python_package")
+while IFS=' ' read -r package; do
+    packages+=("python-$package")
 done <<<"$python_packages"
+unset package
 
 aur_install() {
     orig_dir="$PWD"

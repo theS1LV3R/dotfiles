@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# shellcheck shell=bash
+# vi: ft=bash:ts=4:sw=4
 
 # shellcheck source=executable___common.sh
 source "$HOME/.local/bin/__common.sh"
@@ -11,29 +13,15 @@ if [[ -z "$DEVICE" ]]; then
 fi
 
 readonly ARG="${1:-}"
-ABSOLUTE=0
+ABSOLUTE=
 AUTO=0
-PRINT_DATA=0
+PRINT_DATA=
 
 case "$ARG" in
-auto) {
-    AUTO=1
-} ;;
-
-far) {
-    ABSOLUTE=0
-    AUTO=0
-} ;;
-
-close) {
-    ABSOLUTE=200
-    AUTO=0
-} ;;
-
-"") {
-    PRINT_DATA=1
-} ;;
-
+auto) AUTO=1 ;;
+far) ABSOLUTE=0 ;;
+close) ABSOLUTE=200 ;;
+"") PRINT_DATA=1 ;;
 *) echo "Unknown arg: $ARG" && exit 0 ;;
 esac
 
@@ -53,7 +41,12 @@ v4l2-ctl -d "$DEVICE" -c focus_automatic_continuous="$AUTO"
 [[ $AUTO == 0 ]] && v4l2-ctl -d "$DEVICE" -c focus_absolute="$ABSOLUTE"
 
 if [[ $NOTIFICATION_TIME -gt 0 ]]; then
-    notify-send --icon="camera" --urgency="critical" --wait --app-name="Webcam" "Set focus: $ARG" &
+    notify-send \
+        --app-name="Webcam" \
+        --icon="camera" \
+        --urgency="critical" \
+        --wait \
+        "Set focus: $ARG" &
     notification_id=$!
 
     sleep "$NOTIFICATION_TIME"

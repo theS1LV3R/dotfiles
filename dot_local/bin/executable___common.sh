@@ -15,10 +15,10 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 pager() {
-  if [[ $(echo "$@" | wc -l) -gt $(tput lines) ]]; then
-    echo "$@" | less -R
-  fi
-  echo -e "$@"
+    if [[ $(echo "$@" | wc -l) -gt $(tput lines) ]]; then
+        echo "$@" | less -R
+    fi
+    echo -e "$@"
 }
 
 timestamp() { date +'%Y-%m-%d %H:%M:%S'; }
@@ -30,19 +30,19 @@ log_info() { echo -e "${GREEN}[$(timestamp) INFO]${NC} $1"; }
 log_ask() { echo -e "${BLUE}[$(timestamp) ASK]${NC} $1"; }
 
 notify() {
-  _icon=$1
-  _time=$2
-  _name=$3
-  _message=$4
+    _icon=$1
+    _time=$2
+    _name=$3
+    _message=$4
 
-  notify-send \
-    --icon="$_icon" \
-    --urgency="critical" \
-    --wait \
-    --app-name="$_name" \
-    "$_message" 2>/dev/null &
-  notification_id=$!
+    notify-send \
+        --icon="$_icon" \
+        --urgency="critical" \
+        --wait \
+        --app-name="$_name" \
+        "$_message" 2>/dev/null &
+    notification_id=$!
 
-  sleep "$_time"
-  kill -INT "$notification_id"
+    sleep "$_time"
+    kill -INT "$notification_id"
 }

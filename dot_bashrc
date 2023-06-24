@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# shellcheck shell=bash
+# vi: ft=bash:ts=4:sw=4
+
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -12,8 +15,8 @@ esac
 # shellcheck source=dot_config/rc_files/00-xdg-env.sh
 source "$HOME/.config/rc_files/00-xdg-env.sh"
 
-export BASHRC_FILES="$XDG_CONFIG_HOME/bashrc.d"
-export RC_FILES="$XDG_CONFIG_HOME/rc_files"
+BASHRC_FILES="$XDG_CONFIG_HOME/bashrc.d"
+RC_FILES="$XDG_CONFIG_HOME/rc_files"
 
 # shellcheck source=dot_config/bashrc.d/shopt.sh
 source "$BASHRC_FILES/shopt.sh"
@@ -24,6 +27,8 @@ for file in "$RC_FILES"/*.sh; do
     # shellcheck source=/dev/null
     source "$file"
 done
+
+unset BASHRC_FILES RC_FILES
 
 # set variable identifying the chroot you work in (used in the prompt below)
 if [[ -z "${debian_chroot:-}" ]] && [[ -r /etc/debian_chroot ]]; then

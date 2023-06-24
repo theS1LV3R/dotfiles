@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck shell=bash
 # vi: ft=bash:ts=4:sw=4
 
 export XDG_CONFIG_HOME="$HOME/.config"

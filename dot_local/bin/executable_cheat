@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck shell=bash
 # vi: ft=bash:ts=4:sw=4
 
 # shellcheck source=executable___common.sh
@@ -11,28 +12,25 @@ mkdir -p "$cachedir"
 
 # -c = count
 # -w = final timeout
-ping -c 1 -w 1 cheat.sh &>/dev/null
-exitstatus=$?
+if ! ping -c 1 -w 1 cheat.sh &>/dev/null; then
+    log_warn "Unable to connect to cheat.sh, please check your internet connection."
 
-if [[ $exitstatus -ne 0 ]]; then
-  log_warn "Unable to connect to cheat.sh, please check your internet connection."
-
-  if [[ -f "$cachedir/$*" ]]; then
-    log_info "Using cached version. Last updated: $(stat -c %y "$cachedir/$*" || true)"
-    pager "$cachedir/$*"
-    exit 0
-  else
-    log_error "Page requested not in cache."
-    exit 1
-  fi
+    if [[ -f "$cachedir/$*" ]]; then
+        log_info "Using cached version. Last updated: $(stat -c %y "$cachedir/$*" || true)"
+        pager "$cachedir/$*"
+        exit 0
+    else
+        log_error "Page requested not in cache."
+        exit 1
+    fi
 fi
 
 log_info "Opening $url"
 page=$(curl -s "$url")
 
 if ! echo "$page" | grep -ivq "Unknown topic."; then
-  pager "$page"
-  exit 1
+    pager "$page"
+    exit 1
 fi
 
 echo "$page" >"$cachedir/$*"

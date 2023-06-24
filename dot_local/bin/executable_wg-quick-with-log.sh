@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# shellcheck shell=bash
+# vi: ft=bash:ts=4:sw=4
 
 # shellcheck source=executable___common.sh
 source "$HOME/.local/bin/__common.sh"
@@ -21,8 +23,7 @@ if [[ $pkexec_exitcode -gt 0 ]]; then
     if [[ $(tty) != "not a tty" ]]; then
         echo "$pkexec_output"
     else
-        notify network-vpn "$NOTIFICATION_TIME" Wireguard "Failed changing wireguard connection: \
-$pkexec_output"
+        notify network-vpn "$NOTIFICATION_TIME" Wireguard "Failed changing wireguard connection: $pkexec_output"
     fi
     exit "$pkexec_exitcode"
 fi

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # shellcheck shell=bash
+# vi: ft=bash:ts=4:sw=4
 
 # shellcheck disable=SC1091,SC2154
 # SC1091 - Not following: (error message here)
@@ -14,6 +15,6 @@ exitzero() {
 }
 
 [[ -n "$ZSH_VERSION" ]] && {
-    precmd() { print -Pn "\e]2;%n@%M:%~\a"; } # title bar prompt
+    precmd() { print -Pn "\033]2;%n@%M:%~\a"; } # title bar prompt
     add-zsh-hook zshexit exitzero
 }

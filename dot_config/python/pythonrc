@@ -93,7 +93,7 @@ config = SimpleNamespace(
     HISTSIZE=-1,
     EDITOR=os.getenv('EDITOR', 'vim'),
     SHELL=os.getenv('SHELL', '/bin/zsh'),
-    EDIT_CMD=r'\e',
+    EDIT_CMD=r'\033',
     SH_EXEC='!',
     DOC_CMD='?',
     DOC_URL="https://docs.python.org/{sys.version_info.major}/search.html?q={term}",

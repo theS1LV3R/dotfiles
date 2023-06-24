@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck shell=bash
 # vi: ft=bash:ts=4:sw=4
 
 # shellcheck source=executable___common.sh
@@ -14,8 +15,8 @@ name="$(gum input --prompt 'Name of client (used in filename): ' --placeholder '
 ip="$(gum input --prompt 'Wireguard IP client should get: ' --value "$subnet.")"
 
 if ! command -v wg &>/dev/null; then
-  log_error '"wg" not installed, install it and try again'
-  exit 1
+    log_error '"wg" not installed, install it and try again'
+    exit 1
 fi
 
 privkey=$(wg genkey)

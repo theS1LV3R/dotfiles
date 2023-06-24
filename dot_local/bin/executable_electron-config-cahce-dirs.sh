@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# shellcheck shell=bash
+# vi: ft=bash:ts=4:sw=4
 
 # shellcheck source=executable___common.sh
 source "$HOME/.local/bin/__common.sh"

@@ -1,44 +1,48 @@
+#!/usr/bin/env bash
 # shellcheck shell=bash
 # vi: ft=bash:ts=4:sw=4
 
+# shellcheck source=executable___common.sh
+source "$HOME/.local/bin/__common.sh"
+
 echo "TEXT COLOR"
-echo -e "\033[0mNC (No color)"
-echo -e "\033[1;37mWHITE\t\033[0;30mBLACK"
-echo -e "\033[0;34mBLUE\t\033[1;34mLIGHT_BLUE"
-echo -e "\033[0;32mGREEN\t\033[1;32mLIGHT_GREEN"
-echo -e "\033[0;36mCYAN\t\033[1;36mLIGHT_CYAN"
-echo -e "\033[0;31mRED\t\033[1;31mLIGHT_RED"
-echo -e "\033[0;35mPURPLE\t\033[1;35mLIGHT_PURPLE"
-echo -e "\033[0;33mYELLOW\t\033[1;33mLIGHT_YELLOW"
-echo -e "\033[1;30mGRAY\t\033[0;37mLIGHT_GRAY"
+printf "\033[0mNC (No color)\n"
+printf "\033[0;30mGRAY    \033[1;37mLIGHT_GRAY\n"
+printf "\033[0;31mRED     \033[1;31mLIGHT_RED\n"
+printf "\033[0;32mGREEN   \033[1;32mLIGHT_GREEN\n"
+printf "\033[0;33mYELLOW  \033[1;33mLIGHT_YELLOW\n"
+printf "\033[0;34mBLUE    \033[1;34mLIGHT_BLUE\n"
+printf "\033[0;35mPURPLE  \033[1;35mLIGHT_PURPLE\n"
+printf "\033[0;36mCYAN    \033[1;36mLIGHT_CYAN\n"
+printf "\033[0;37mWHITE   \033[1;30mBLACK\n"
 
-echo ""
+printf "\033[0m\n\n"
 
-echo "TEXT STYLE"
-for i in {0..8}; do
-  case $i in
-  0) style="Normal" ;;
-  1) style="Bold" ;;
-  2) style="Dim" ;;
-  3) style="Italic" ;;
-  4) style="Underlined" ;;
-  5) style="Blinking (non-standard)" ;;
-  6) style="Inverted (non-standard)" ;;
-  7) style="Hidden (non-standard)" ;;
-  8) style="Strikethrough (non-standard)" ;;
-  *) return ;; # How did we get here
-  esac
-  echo -e "\n$i - $style:"
-  for j in {30..37}; do
-    for k in {40..47}; do
-      # Print a colored block with the current style and colors
-      # i = style
-      # j = foreground
-      # k = background
-      echo -ne "\e[$i;$j;$k""m\\\e[$i;$j;$k""m\e[0;37;40m \u001b[0m"
+echo -n "TEXT STYLE"
+for style_index in {0..8}; do
+    case $style_index in
+    0) style="Normal" ;;
+    1) style="Bold" ;;
+    2) style="Dim" ;;
+    3) style="Italic" ;;
+    4) style="Underlined" ;;
+    5) style="Blinking (non-standard)" ;;
+    6) style="Inverted (non-standard)" ;;
+    7) style="Hidden (non-standard)" ;;
+    8) style="Strikethrough (non-standard)" ;;
+    *) return ;; # How did we get here
+    esac
+    echo -e "\n$style_index - $style:"
+    for fg in {30..37}; do
+        for bg in {40..47}; do
+            # Print a colored block with the current style and colors
+            # i = style
+            # j = foreground
+            # k = background
+            echo -ne "\033[$style_index;$fg;$bg""m\\\033[$style_index;$fg;$bg""m\033[0;37;40m \u001b[0m"
+        done
+        echo # Print a new line after each row
     done
-    echo # Print a new line after each row
-  done
 done
 
 echo
@@ -47,13 +51,13 @@ echo
 echo "XTERM COLORS"
 # Print out a table of 256 different color codes
 for i in {0..257}; do
-  if ((i < 2)); then
-    printf "  ---  "
-  else
-    if ((i % 6 == 0)); then
-      printf "\n"
+    if ((i < 2)); then
+        printf "  ---  "
+    else
+        if ((i % 6 == 0)); then
+            printf "\n"
+        fi
+        # Print a colored block with the current xterm color
+        printf "\033[48;5;%sm  %03d  \033[0m" "$((i - 2))" "$((i - 2))"
     fi
-    # Print a colored block with the current xterm color
-    printf "\033[48;5;%sm  %03d  \033[0m" "$((i - 2))" "$((i - 2))"
-  fi
 done

@@ -12,8 +12,6 @@ _speedtest() {
     interfaces=$(ip -brief addr | awk '{ print $1 }' | tr '\n' ' ')
     ips="$(ip -o addr show | awk '{split($4, a, "/"); print "{\"ip\":\"" a[1] "\",\"interface\":\"" $2 "\"}"}' | jq -sr '.[] | "\"\(.ip)\""' | tr '\n' ' ')"
 
-    debug $ips
-
     units="bps\\:'bits per second'
         kbps\\:'kilobits per second (1 kilobit = 1000 bits)'
         Mbps\\:'megabits per second (1 megabit = 1000 kilobits)'

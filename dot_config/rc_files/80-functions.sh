@@ -104,7 +104,7 @@ ipinfo() {
     fi
 
     gum spin --title="Getting IP information..." \
-        -- curl -u $IPINFO_API_TOKEN: -s "https://ipinfo.io/$ip/json" | jq
+        -- curl -u "$IPINFO_API_TOKEN:" -s "https://ipinfo.io/$ip/json" | jq
 
     # /me endpoint is undocumented, got it from an email to IPinfo:
     # Hello Zoe,
@@ -116,7 +116,7 @@ ipinfo() {
     # Cheers,
     # Cornelius
     usage=$(gum spin --title="Getting IPinfo usage..." \
-        -- curl -u $IPINFO_API_TOKEN: -s "https://ipinfo.io/me" | jq '.requests|.month,.limit' | paste -s -d'/')
+        -- curl -u "$IPINFO_API_TOKEN:" -s "https://ipinfo.io/me" | jq '.requests|.month,.limit' | paste -s -d'/')
     echo "Usage this month: $usage"
 
     unset GUM_SPIN_SPINNER

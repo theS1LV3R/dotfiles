@@ -15,7 +15,8 @@ sudo apt install aptitude
 sudo aptitude install -y "${packages[@]}"
 
 while IFS=' ' read -r package; do
-    pip3 --user install "$package"
+    [[ -z "$package" ]] && continue
+    pip3 install --user "$package"
 done <<<"$python_packages"
 unset package
 

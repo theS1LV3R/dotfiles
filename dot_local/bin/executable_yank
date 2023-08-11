@@ -65,7 +65,8 @@ esc="\033Ptmux;\033$esc\033\\"
 # resolve target terminal to send escape sequence
 # if we are on remote machine, send directly to SSH_TTY to transport escape sequence
 # to terminal on local machine, so data lands in clipboard on our local machine
-pane_active_tty=$(tmux list-panes -F "#{pane_active} #{pane_tty}" | awk '$1=="1" { print $2 }')
+pane_active_tty=$(tmux list-panes -F "#{pane_active} #{pane_tty}" | awk '$1=="1" { print $2 }' 2>/dev/null || true)
 target_tty="${SSH_TTY:-$pane_active_tty}"
+target_tty="${target_tty:-$(tty)}"
 
 printf '%s' "$esc" >"$target_tty"

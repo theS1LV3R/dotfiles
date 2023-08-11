@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# shellcheck shell=bash
+# vi: ft=bash:ts=4:sw=4
+
+# shellcheck source=executable___common.sh
+source "$HOME/.local/bin/__common.sh"
+
+# Splits a jwt string, and returns the header and payload
+if [[ $# -ne 0 ]]; then
+    input="$1"
+elif [[ -p /dev/stdin ]]; then
+    input=$(read -r)
+fi
+
+if [[ -z "${input:-}" ]]; then
+    echo "Missing input"
+    exit
+fi
+
+IFS='.' read -ra parts <<<"$input"
+header="${parts[0]}"
+body="${parts[1]}"
+signature="${parts[2]}"
+
+echo -e "${BOLD}Header${NC}"
+
+echo "$header" | jq -R '. | @base64d | fromjson' 2>/dev/null || {
+    echo "Header seems to not be valid json, outputting raw"
+    echo "$header"
+}
+
+echo -e "\n${BOLD}Body${NC}"
+
+echo "$body" | jq -R '. | @base64d | fromjson' 2>/dev/null || {
+    echo "Body seems to not be valid json, outputting raw"
+    echo "$body"
+}
+
+echo -e "\n${BOLD}Signature${NC}"
+echo "$signature"

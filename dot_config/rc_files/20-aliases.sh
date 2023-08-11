@@ -63,7 +63,6 @@ for alias in "${systemctl_aliases[@]}"; do
     alias "$alias"="sudo systemctl $alias"
 done
 
-alias jwt="jq -R 'split(\".\") | select(length > 0) | .[0],.[1] | @base64d | fromjson'" # Splits a jwt string, and returns the header and payload
 alias c="clear -x"                                                                      # Do not clear scrollback
 alias define="dict"
 alias hostname="hostnamectl hostname"

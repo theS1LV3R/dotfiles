@@ -15,7 +15,7 @@ _install() {
   filename="install_$1.sh"
 
   # Neovim not included - Debian uses asdf
-  export common_packages="bridge-utils unzip zsh tmux gcc neofetch curl wget net-tools vim python"
+  export common_packages="entr bridge-utils unzip zsh tmux gcc neofetch curl wget net-tools vim python"
   export python_packages="httpx h2 dnspython cryptography"
 
   log_info "Running ./$filename"
@@ -60,7 +60,7 @@ PODMAN_DOCKER="Podman 'nodocker' file"
 
 options="$(gum choose --no-limit --selected="All" "All" "$CHANGE_SHELL" "$SUDOERSD_FILES" "$PODMAN_DOCKER" "$TMUX_COPY_BACKEND")"
 
-if [[ $options =~ "^All$" ]] || [[ $options =~ ^$CHANGE_SHELL$ ]]; then
+if [[ $options == "All" ]] || [[ $options =~ ^$CHANGE_SHELL$ ]]; then
   log_verbose "$CHANGE_SHELL"
 
   zsh_bin=$(command -v zsh)
@@ -73,20 +73,20 @@ if [[ $options =~ "^All$" ]] || [[ $options =~ ^$CHANGE_SHELL$ ]]; then
   sudo chsh -s "$zsh_bin" "$USER"
 fi
 
-if [[ $options =~ "^All$" ]] || [[ $options =~ ^$SUDOERSD_FILES$ ]]; then
+if [[ $options == "All" ]] || [[ $options =~ ^$SUDOERSD_FILES$ ]]; then
   log_verbose "$SUDOERSD_FILES"
 
   sudo cp -r ../misc/sudoers.d/* /etc/sudoers.d/
 fi
 
-if [[ $options =~ "^All$" ]] || [[ $options =~ ^$PODMAN_DOCKER$ ]]; then
+if [[ $options == "All" ]] || [[ $options =~ ^$PODMAN_DOCKER$ ]]; then
   log_verbose "$PODMAN_DOCKER"
 
   mkdir -p "$HOME/.local/share/containers"
   touch "$HOME/.local/share/containers/nodocker"
 fi
 
-if [[ $options =~ "^All$" ]] || [[ $options =~ ^$TMUX_COPY_BACKEND$ ]]; then
+if [[ $options == "All" ]] || [[ $options =~ ^$TMUX_COPY_BACKEND$ ]]; then
   log_verbose "$TMUX_COPY_BACKEND"
 
   systemctl --user daemon-reload

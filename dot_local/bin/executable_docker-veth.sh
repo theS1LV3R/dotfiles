@@ -13,7 +13,7 @@ usage() {
 HELP_USAGE
 }
 
-case "$1" in
+case "${1:-}" in
 -h | --help)
     usage
     exit 0

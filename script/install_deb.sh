@@ -2,6 +2,8 @@
 
 source common.sh
 
+set -x
+
 IFS=' ' read -r -a packages <<<"$*"
 
 packages+=(
@@ -16,7 +18,7 @@ sudo apt install aptitude
 while IFS=' ' read -r package; do
     [[ -z "$package" ]] && continue
 
-    if ! pip3 install --user "$package"; then
+    if ! pip3 install --user "$package" 2>/dev/null; then
         packages+=("python-$package")
     fi
 done <<<"$python_packages"

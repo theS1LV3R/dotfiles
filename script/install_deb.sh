@@ -4,8 +4,6 @@ source common.sh
 
 export DEBIAN_FRONTEND=noninteractive
 
-set -x
-
 IFS=' ' read -r -a packages <<<"$common_packages"
 IFS=' ' read -r -a pypacks <<<"$python_packages"
 

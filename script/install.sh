@@ -44,8 +44,11 @@ asdf install
 [[ "$os_release" == "debian" ]] && {
   # These are in the AUR on arch, so we dont need to manually install them there
   log_info "Installing cargo packages"
-  cargo install lsd
-  cargo install bat
+  rust_packages=(lsd bat)
+  for pkg in "${rust_packages[@]}"; do
+    log_info "Installing: $pkg"
+    cargo install "$pkg"
+  done
 }
 
 log_info "Performing misc actions"

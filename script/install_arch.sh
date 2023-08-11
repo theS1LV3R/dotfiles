@@ -3,6 +3,7 @@
 source common.sh
 
 IFS=' ' read -r -a packages <<<"$common_packages"
+IFS=' ' read -r -a pypacks <<<"$python_packages"
 
 packages+=(
     base-devel
@@ -15,9 +16,9 @@ packages+=(
     pkgfile                            # For command-not-found
 )
 
-while IFS=' ' read -r package; do
+for package in "${pypacks[@]}"; do
     packages+=("python-$package")
-done <<<"$python_packages"
+done
 unset package
 
 aur_install() {

@@ -21,7 +21,7 @@ while IFS=' ' read -r package; do
     if ! pip3 install --user "$package" 2>/dev/null; then
         packages+=("python-$package")
     fi
-done <<<"$python_packages"
+done <<<$python_packages
 unset package
 
 for package in "${packages[@]}"; do

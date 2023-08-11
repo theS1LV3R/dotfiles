@@ -12,13 +12,19 @@ packages+=(
 
 sudo apt update
 sudo apt install aptitude
-sudo aptitude install -y "${packages[@]}"
 
 while IFS=' ' read -r package; do
     [[ -z "$package" ]] && continue
-    pip3 install --user "$package"
+
+    if ! pip3 install --user "$package"; then
+        packages+=("python-$package")
+    fi
 done <<<"$python_packages"
 unset package
+
+for package in "${packages[@]}"; do
+    sudo aptitude install -y "$package"
+done
 
 if ! installed chezmoi; then
     bin_dir="$HOME/.local/bin"

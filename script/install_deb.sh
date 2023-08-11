@@ -18,7 +18,7 @@ sudo apt install aptitude
 
 for package in "${pypacks[@]}"; do
     if ! pip3 install --user "$package" 2>/dev/null; then
-        packages+=("python-$package")
+        packages+=("python3-$package")
     fi
 done
 unset package

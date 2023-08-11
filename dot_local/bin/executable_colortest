@@ -52,12 +52,14 @@ echo "XTERM COLORS"
 # Print out a table of 256 different color codes
 for i in {0..257}; do
     if ((i < 2)); then
+        # Add a buffer for the first two to make the color tables aligned
         printf "  ---  "
-    else
-        if ((i % 6 == 0)); then
-            printf "\n"
-        fi
-        # Print a colored block with the current xterm color
-        printf "\033[48;5;%sm  %03d  \033[0m" "$((i - 2))" "$((i - 2))"
+        continue
     fi
+
+    if ((i % 6 == 0)); then
+        printf "\n"
+    fi
+    # Print a colored block with the current xterm color
+    printf "\033[48;5;%sm  %03d  \033[0m" "$((i - 2))" "$((i - 2))"
 done

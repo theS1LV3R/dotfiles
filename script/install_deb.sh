@@ -2,6 +2,8 @@
 
 source common.sh
 
+export DEBIAN_FRONTEND=noninteractive
+
 set -x
 
 IFS=' ' read -r -a packages <<<"$common_packages"
@@ -14,6 +16,7 @@ packages+=(
 )
 
 sudo apt update
+sudo apt upgrade -y
 sudo apt install aptitude
 
 for package in "${pypacks[@]}"; do

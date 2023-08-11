@@ -4,7 +4,8 @@ source common.sh
 
 set -x
 
-IFS=' ' read -r -a packages <<<"$*"
+IFS=' ' read -r -a packages <<<"$common_packages"
+IFS=' ' read -r -a pypacks <<<"$python_packages"
 
 packages+=(
     python3
@@ -15,17 +16,15 @@ packages+=(
 sudo apt update
 sudo apt install aptitude
 
-while IFS=' ' read -r package; do
-    [[ -z "$package" ]] && continue
-
+for package in "${pypacks[@]}"; do
     if ! pip3 install --user "$package" 2>/dev/null; then
         packages+=("python-$package")
     fi
-done <<<$python_packages
+done
 unset package
 
 for package in "${packages[@]}"; do
-    sudo aptitude install -y "$package"
+    sudo aptitude install -y "$package" || true
 done
 
 if ! installed chezmoi; then

@@ -51,6 +51,15 @@ asdf install
   done
 }
 
+zi_install() {
+  log_info "Installing ZI"
+  source ../dot_config/rc_files/11-zi-env.sh
+
+  mkdir -p "${ZI[BIN_DIR]}"
+  git clone https://github.com/z-shell/zi.git "${ZI[BIN_DIR]}"
+}
+zi_install
+
 log_info "Performing misc actions"
 
 TMUX_COPY_BACKEND="Enable tmux-copy-backend.socket"

@@ -41,12 +41,6 @@ done
 
 unset SCRIPTS_DIR ZSH_SCRIPTS RC_FILES
 
-# Zi options
-declare -A ZI
-
-ZI[HOME_DIR]="$HOME/.local/share/zi"
-ZI[BIN_DIR]="${ZI[HOME_DIR]}/bin"
-
 source "${ZI[HOME_DIR]}/bin/zi.zsh"
 autoload -Uz _zi
 (( ${+_comps} )) && _comps["zi"]=_zi

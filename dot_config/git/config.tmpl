@@ -8,7 +8,7 @@
     name = {{ .name }}
     email = {{ .email }}
 {{- if .gitgpgsign  }}
-    signingkey = 85FA2FC2D8035859AE77FF6E636660BB3A5C2F87
+    signingkey = {{ .gitsignkey }}
 
 [commit]
     gpgsign = true
@@ -38,6 +38,9 @@
 
 [includeIf "gitdir:~/kode/machina/"]
     path = ~/kode/machina/.gitconfig
+
+[includeIf "gitdir:~/kode/personal"]
+    path = ~/kode/personal/.gitconfig
 
 [alias]
     lg1 = log --color --graph --pretty=format:'%Cred%h%Creset %Cgreen(%cr) %C(bold blue)<%an>%Creset -%C(yellow)%d%Creset %s' --abbrev-commit

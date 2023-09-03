@@ -51,7 +51,12 @@ log_info "Initializing chezmoi"
 chezmoi init --apply theS1LV3R
 
 log_info "Enabling pkgfile-update.timer"
-sudo systemctl enable pkgfile-update.timer
+sudo systemctl enable --now pkgfile-update.timer
 
 log_info "Running pkgfile-update.service"
 sudo systemctl start pkgfile-update.service
+
+log_info "Configuring and enabling reflector"
+paru -Sy --noconfirm --needed reflector
+sudo cp ../misc/reflector.conf /etc/xdg/reflector/reflector.conf
+sudo systemctl enable --now reflector

@@ -1,10 +1,19 @@
+{{ $gitusername := promptString "Git username" "theS1LV3R" | quote }}
+{{ $gitemail := promptString "Email" "me@s1lv3r.codes" | quote }}
+{{ $gitgpgsign := promptBool "Enable git gpg signing" }}
+
+{{ $gitsignkey := "" }}
+{{- if eq $gitgpgsign true }}
+  {{ $gitsignkey = promptString "Git signing key" "85FA2FC2D8035859AE77FF6E636660BB3A5C2F87"  }}
+{{- end }}
 ---
 sourceDir: "{{ .chezmoi.sourceDir }}"
 
 data:
-  name: {{ promptString "Git username" "theS1LV3R" | quote }}
-  email: {{ promptString "Email" "me@s1lv3r.codes" | quote }}
-  gitgpgsign: {{ promptBool "Enable git gpg signing" }}
+  name: {{ $gitusername }}
+  email: {{ $gitemail }}
+  gitgpgsign: {{ $gitgpgsign }}
+  gitsignkey: {{ $gitsignkey }}
   codespaces: {{ env "CODESPACES" | not | not }}
   tmuxCopyBackendPort: 30594
 

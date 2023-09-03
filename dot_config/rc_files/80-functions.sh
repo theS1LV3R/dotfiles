@@ -93,10 +93,13 @@ ipinfo() {
     export GUM_SPIN_SHOW_OUTPUT="true"
 
     ip=${1:-''}
+    ip6=''
 
     if [[ -z "$ip" ]]; then
-        ip=$(gum spin --title="Getting own public IP..." \
-            -- curl -s "https://ifconfig.me")
+        ip=$(gum spin --title="Getting own public IP (v4)..." \
+            -- curl -4s "https://ifconfig.co")
+        ip6=$(gum spin --title="Getting own public IP (v6)..." \
+            -- curl -6s "https://ifconfig.co")
     fi
 
     if [[ -z "$IPINFO_API_TOKEN" ]]; then
@@ -104,9 +107,14 @@ ipinfo() {
     fi
 
     gum spin --title="Getting IP information..." \
-        -- curl -u "$IPINFO_API_TOKEN:" -s "https://ipinfo.io/$ip/json" | jq
+        -- curl -su "$IPINFO_API_TOKEN:" "https://ipinfo.io/$ip/json" | jq
 
-    # /me endpoint is undocumented, got it from an email to IPinfo:
+    if [[ "$ip6" != "" ]]; then
+        gum spin --title="Getting IP information (v6)..." \
+            -- curl -su "$IPINFO_API_TOKEN:" "https://ipinfo.io/$ip6/json" | jq
+    fi
+
+    # `/me` endpoint is undocumented, got it from an email to IPinfo:
     # Hello Zoe,
     # Thanks for reaching out and getting in touch!
     # We have an undocumented endpoint that you can use to conveniently grab limited data about your quota usage information.
@@ -116,7 +124,7 @@ ipinfo() {
     # Cheers,
     # Cornelius
     usage=$(gum spin --title="Getting IPinfo usage..." \
-        -- curl -u "$IPINFO_API_TOKEN:" -s "https://ipinfo.io/me" | jq '.requests|.month,.limit' | paste -s -d'/')
+        -- curl -su "$IPINFO_API_TOKEN:" "https://ipinfo.io/me" | jq '.requests|.month,.limit' | paste -s -d'/')
     echo "Usage this month: $usage"
 
     unset GUM_SPIN_SPINNER
@@ -130,4 +138,13 @@ optdeps() {
 urldecode() {
     : "${*//+/ }"
     echo -e "${_//%/\\x}"
+}
+
+torrent() {
+    aria2c \
+        --follow-torrent=mem \
+        --file-allocation=none \
+        --force-sequential=false \
+        --seed-time=0 \
+        "$1"
 }

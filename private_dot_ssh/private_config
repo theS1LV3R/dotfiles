@@ -1,8 +1,7 @@
 # vim: set ft=ssh_config
 Include config.d/*.conf
 
-
-# ADD CONFIG OVER THIS LINE
+# DO NOT MODIFY - CHEZMOI MANAGED
 
 Host *.sslipio
     StrictHostKeyChecking no
@@ -11,3 +10,4 @@ Host *.sslipio
 Host *
     AddKeysToAgent ask
     ServerAliveInterval 60
+    IdentitiesOnly yes

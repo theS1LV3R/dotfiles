@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# vi: ft=bash
+
+# Edited from the spicetify install script (https://raw.githubusercontent.com/spicetify/spicetify-marketplace/main/resources/install.sh)
+# which was edited from the Denoland install script (https://github.com/denoland/deno_install)
+
+set -euo pipefail
+
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+timestamp() { date +'%Y-%m-%d %H:%M:%S'; }
+base_log() { echo -e "$1[$(timestamp) $2]$NC $3"; }
+log() { base_log "$GREEN" "INFO" "$*"; }
+
+# download uri
+readonly releases_uri=https://github.com/spicetify/spicetify-marketplace/releases
+readonly spicetify_config_dir="$HOME/.config/spicetify"
+readonly customapps_dir="$spicetify_config_dir/CustomApps"
+readonly downloaded_zip="$customapps_dir/marketplace-dist.zip"
+readonly marketplace_tmpdir="$customapps_dir/marketplace-tmp"
+
+tag=$(curl -LsH 'Accept: application/json' "$releases_uri/latest" | jq -r '.tag_name')
+readonly tag
+readonly download_uri="$releases_uri/download/$tag/spicetify-marketplace.zip"
+
+log "Resolved version: $tag"
+
+if [[ ! -d "$customapps_dir" ]]; then
+  log "Creating  $customapps_dir"
+  mkdir -p "$customapps_dir"
+fi
+
+log "Downloading $download_uri"
+curl --fail --location --progress-bar --output "$downloaded_zip" "$download_uri"
+cd "$customapps_dir"
+
+log "Extracting to $marketplace_tmpdir"
+unzip -d "$marketplace_tmpdir" -o "$downloaded_zip"
+
+log "Removing old versions"
+rm -rfv "$customapps_dir/spicetify-marketplace/" "$customapps_dir/marketplace/"
+
+log "Moving extracted files to correct location"
+mv -v "$marketplace_tmpdir/spicetify-marketplace-dist" "$customapps_dir/marketplace"
+
+log "Running spicetify stuffs"
+spicetify restore backup apply
+
+log "Cleaning up old stuff"
+rm -rfv "$downloaded_zip" "$marketplace_tmpdir"

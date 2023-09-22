@@ -1,0 +1,3 @@
+{{ if eq .hasGui false }}
+tmux-copy-backend*
+{{ end }}

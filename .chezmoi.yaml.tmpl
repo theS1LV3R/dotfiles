@@ -1,11 +1,16 @@
-{{ $gitusername := promptString "Git username" "theS1LV3R" | quote }}
-{{ $gitemail := promptString "Email" "me@s1lv3r.codes" | quote }}
-{{ $gitgpgsign := promptBool "Enable git gpg signing" }}
+{{- $gitusername := promptString "Git username" "theS1LV3R" | quote -}}
+{{- $gitemail := promptString "Email" "me@s1lv3r.codes" | quote -}}
+{{- $gitgpgsign := promptBool "Enable git gpg signing" false -}}
 
-{{ $gitsignkey := "" }}
-{{- if eq $gitgpgsign true }}
-  {{ $gitsignkey = promptString "Git signing key" "85FA2FC2D8035859AE77FF6E636660BB3A5C2F87"  }}
-{{- end }}
+{{- $gitsignkey := "" -}}
+{{- if eq $gitgpgsign true -}}
+{{-   $gitsignkey = promptString "Git signing key" "85FA2FC2D8035859AE77FF6E636660BB3A5C2F87"  -}}
+{{- end -}}
+
+{{- $hasGui := promptBool "Does the machine have a GUI" false -}}
+
+{{- $ostype := eq .chezmoi.os "linux" | and (.chezmoi.kernel.osrelease | lower | contains "microsoft") | ternary "wsl" .chezmoi.os -}}
+{{- $isdebian := stat "/etc/debian_version" | not | not -}}
 ---
 sourceDir: "{{ .chezmoi.sourceDir }}"
 
@@ -16,15 +21,6 @@ data:
   gitsignkey: {{ $gitsignkey }}
   codespaces: {{ env "CODESPACES" | not | not }}
   tmuxCopyBackendPort: 30594
-
-{{- if (and (eq .chezmoi.os "linux") (.chezmoi.kernel.osrelease | lower | contains "microsoft")) }}
-  ostype: "wsl"
-{{- else }}
-  ostype: "{{ .chezmoi.os }}"
-{{- end }}
-
-{{- if stat "/etc/debian_version"}}
-  isdebian: true
-{{- else }}
-  isdebian: false
-{{- end }}
+  hasGui: {{ $hasGui }}
+  ostype: {{ $ostype }}
+  isdebian: {{ $isdebian }}

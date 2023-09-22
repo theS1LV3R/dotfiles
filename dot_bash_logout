@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-# shellcheck shell=bash
-# vi: ft=bash:ts=4:sw=4
-
-clear
-
-echo "$USER@$(hostname) logged out at $(date +'%Y-%m-%d %H:%M:%S')"

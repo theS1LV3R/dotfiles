@@ -26,10 +26,13 @@ pager() {
 timestamp() { date +'%Y-%m-%d %H:%M:%S'; }
 installed() { command -v "$1" &>/dev/null; }
 
-log_error() { echo -e "${RED}[$(timestamp) ERROR]${NC} $1" &>/dev/stderr; }
-log_warn() { echo -e "${YELLOW}[$(timestamp) WARN]${NC} $1"; }
-log_info() { echo -e "${GREEN}[$(timestamp) INFO]${NC} $1"; }
-log_ask() { echo -e "${BLUE}[$(timestamp) ASK]${NC} $1"; }
+base_log() { echo -e "$1 [$(timestamp) $2] $3$NC"; }
+
+log_error() { base_log "$RED" "ERROR" "$*" &>/dev/stderr; }
+log_warn() { base_log "$YELLOW" "WARN" "$*"; }
+log_info() { base_log "$GREEN" "INFO" "$*"; }
+log_ask() { base_log "$BLUE" "ASK" "$*"; }
+alias log=log_info
 
 notify() {
     _icon=$1

@@ -11,8 +11,8 @@ if ! installed optimus-manager; then
 fi
 
 if optimus-manager --print-mode | grep -iq hybrid; then
-    log_info "Successfully started with offloading"
-    log_info "Running exec"
+    log_info "System is running in hybrid mode, offloading"
+    log_info "Running exec: $*"
     __NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only __GLX_VENDOR_LIBRARY_NAME=nvidia exec "$@"
 else
     log_warn "optimus-manager not in hybrid mode, not offloading"

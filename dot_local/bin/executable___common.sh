@@ -26,7 +26,7 @@ pager() {
 timestamp() { date +'%Y-%m-%d %H:%M:%S'; }
 installed() { command -v "$1" &>/dev/null; }
 
-base_log() { echo -e "$1 [$(timestamp) $2] $3$NC"; }
+base_log() { echo -e "$1[$(timestamp) $2]$NC $3"; }
 
 log_error() { base_log "$RED" "ERROR" "$*" &>/dev/stderr; }
 log_warn() { base_log "$YELLOW" "WARN" "$*"; }

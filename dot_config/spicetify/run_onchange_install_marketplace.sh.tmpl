@@ -58,12 +58,11 @@ rm -rfv "$customapps_dir/spicetify-marketplace/" "$customapps_dir/marketplace/"
 log "Moving extracted files to correct location"
 mv -v "$marketplace_tmpdir/spicetify-marketplace-dist" "$customapps_dir/marketplace"
 
-log "Running spicetify stuffs"
-spicetify restore backup apply || spicetify backup apply
-
-echo "Changing spotify install dir"
-
+echo "Changing spotify install dir permissions"
 sudo chmod a+wr "$spotify_install_dir"
 sudo chmod a+wr "$spotify_install_dir/Apps" -R
+
+log "Running spicetify stuffs"
+spicetify restore backup apply || spicetify backup apply
 
 cleanup

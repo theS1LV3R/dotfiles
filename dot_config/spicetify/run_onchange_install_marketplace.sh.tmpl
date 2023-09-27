@@ -8,9 +8,23 @@ set -euo pipefail
 
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
+
 timestamp() { date +'%Y-%m-%d %H:%M:%S'; }
 base_log() { echo -e "$1[$(timestamp) $2]$NC $3"; }
 log() { base_log "$GREEN" "INFO" "$*"; }
+
+cleanup() {
+  log "Cleaning up old stuff"
+  rm -rfv "$downloaded_zip" "$marketplace_tmpdir"
+}
+
+trap cleanup exit
+
+eval '{{- if eq .isdebian true -}}
+echo "Idk how to install marketplace on debian properly"; exit
+{{- else -}}
+echo
+{{- end -}}'
 
 # download uri
 readonly releases_uri=https://github.com/spicetify/spicetify-marketplace/releases
@@ -18,6 +32,7 @@ readonly spicetify_config_dir="$HOME/.config/spicetify"
 readonly customapps_dir="$spicetify_config_dir/CustomApps"
 readonly downloaded_zip="$customapps_dir/marketplace-dist.zip"
 readonly marketplace_tmpdir="$customapps_dir/marketplace-tmp"
+readonly spotify_install_dir="/opt/spotify"
 
 tag=$(curl -LsH 'Accept: application/json' "$releases_uri/latest" | jq -r '.tag_name')
 readonly tag
@@ -44,7 +59,11 @@ log "Moving extracted files to correct location"
 mv -v "$marketplace_tmpdir/spicetify-marketplace-dist" "$customapps_dir/marketplace"
 
 log "Running spicetify stuffs"
-spicetify restore backup apply
+spicetify restore backup apply || spicetify backup apply
 
-log "Cleaning up old stuff"
-rm -rfv "$downloaded_zip" "$marketplace_tmpdir"
+echo "Changing spotify install dir"
+
+sudo chmod a+wr "$spotify_install_dir"
+sudo chmod a+wr "$spotify_install_dir/Apps" -R
+
+cleanup

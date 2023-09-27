@@ -63,6 +63,7 @@ export _JAVA_OPTIONS="\
 export PSQL_HISTORY="$XDG_DATA_HOME/psql_history"
 export PSQLRC="$XDG_CONFIG_HOME/psql/psqlrc"
 export PGHOST="localhost"
+export PG_COLOR="auto"
 
 #! Disable telemetry
 export DOTNET_CLI_TELEMETRY_OPTOUT="true"
@@ -100,5 +101,6 @@ fi
 
 export EDITOR="nvim"
 export VISUAL="nvim"
+export PAGER="less"
 
 export PROMPT_EOL_MARK=""

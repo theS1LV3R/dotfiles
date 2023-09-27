@@ -1,17 +1,23 @@
 -- vi: ft=sql
 -- https://www.digitalocean.com/community/tutorials/how-to-customize-the-postgresql-prompt-with-psqlrc-on-ubuntu-14-04
+-- https://opensourcedbms.com/dbms/psqlrc-psql-startup-file-for-postgres/
+
 \set QUIET 1
 
 -- https://www.endpointdev.com/blog/2015/02/postgres-onerrorrollback-explained/
 \set ON_ERROR_ROLLBACK interactive
 
+-- Hide internally generated queries
+\set ECHO_HIDDEN ON
+
 -- autocomplete in uppercase
 \set COMP_KEYWORD_CASE upper
 
+-- https://www.postgresql.org/docs/15/app-psql.html#APP-PSQL-PROMPTING
 -- main prompt
-\set PROMPT1 '[%M]:%> %n@%/%R%#%x '
+\set PROMPT1 '(%n@%M:%>) [%/]%R %#%x '
 -- secondary prompt (when unfinished query)
-\set PROMPT2 '[%M] %n@%/%R %# '
+\set PROMPT2 '%#'
 
 -- null values are empty by default, show text instead
 \pset null '[null]'
@@ -19,10 +25,59 @@
 -- show query times
 \timing
 
--- history count
-\set HISTSIZE 2000
+-- unicode encoding
+\encoding unicode
+
+-- history
+\set HISTFILE `echo $XDG_DATA_HOME`/psql_history- :HOST - :DBNAME
+\set HISTSIZE 5000
+\set HISTCONTROL ignoredups
+
+-- Better output format, see https://www.citusdata.com/blog/2017/07/16/customizing-my-postgres-shell-using-psqlrc/
+\x auto
 
 -- verbose error reports
 \set VERBOSITY verbose
 
+-- Administration queries called with `:query`, eg `:menu`
+\set menu '\\i ~/.local/share/chezmoi/dot_config/psql/psqlrc'
+\set settings 'select name, setting,unit,context from pg_settings;'
+\set locks  'SELECT bl.pid AS blocked_pid, a.usename AS blocked_user, kl.pid AS blocking_pid, ka.usename AS blocking_user, a.query AS blocked_statement FROM pg_catalog.pg_locks bl JOIN pg_catalog.pg_stat_activity a ON bl.pid = a.pid JOIN pg_catalog.pg_locks kl JOIN pg_catalog.pg_stat_activity ka ON kl.pid = ka.pid ON bl.transactionid = kl.transactionid AND bl.pid != kl.pid WHERE NOT bl.granted;'
+\set conninfo 'select usename, count(*) from pg_stat_activity group by usename;'
+\set activity 'select datname, pid, usename, application_name,client_addr, client_hostname, client_port, query, state from pg_stat_activity;'
+\set waits 'SELECT pg_stat_activity.pid, pg_stat_activity.query, pg_stat_activity.waiting, now() - pg_stat_activity.query_start AS \"totaltime\", pg_stat_activity.backend_start FROM pg_stat_activity WHERE pg_stat_activity.query !~ \'%IDLE%\'::text AND pg_stat_activity.waiting = true;'
+\set dbsize 'SELECT datname, pg_size_pretty(pg_database_size(datname)) db_size FROM pg_database ORDER BY db_size;'
+\set tablesize 'SELECT nspname || \'.\' || relname AS \"relation\", pg_size_pretty(pg_relation_size(C.oid)) AS "size" FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace) WHERE nspname NOT IN (\'pg_catalog\', \'information_schema\') ORDER BY pg_relation_size(C.oid) DESC LIMIT 40;'
+\set uselesscol 'SELECT nspname, relname, attname, typname, (stanullfrac*100)::int AS null_percent, case when stadistinct >= 0 then stadistinct else abs(stadistinct)*reltuples end AS \"distinct\", case 1 when stakind1 then stavalues1 when stakind2 then stavalues2 end AS \"values\" FROM pg_class c JOIN pg_namespace ns ON (ns.oid=relnamespace) JOIN pg_attribute ON (c.oid=attrelid) JOIN pg_type t ON (t.oid=atttypid) JOIN pg_statistic ON (c.oid=starelid AND staattnum=attnum) WHERE nspname NOT LIKE E\'pg\\\\_%\' AND nspname != \'information_schema\' AND relkind=\'r\' AND NOT attisdropped AND attstattarget != 0 AND reltuples >= 100 AND stadistinct BETWEEN 0 AND 1 ORDER BY nspname, relname, attname;'
+\set uptime 'select now() - pg_postmaster_start_time() AS uptime;'
+\set exit '\\q'
+
+-- Development queries:
+\set sp 'SHOW search_path;'
+\set clear '\\! clear;'
+\set ll '\\! ls -lrt;'
+
 \set QUIET 0
+
+-- Data to show on connection
+\echo '\nCurrent server time : '`date`
+
+\echo '\nAdministrative queries:'
+\echo '    :settings   -- Server Settings'
+\echo '    :conninfo   -- Server connections'
+\echo '    :activity   -- Server activity'
+\echo '    :locks      -- Lock info'
+\echo '    :waits      -- Waiting queires'
+\echo '    :dbsize     -- Database Size'
+\echo '    :tablesize  -- Tables Size'
+\echo '    :uselesscol -- Useless columns'
+\echo '    :uptime     -- Server uptime'
+\echo '    :menu       -- Help Menu'
+\echo '    :exit       -- Exit the shell'
+\echo '    \\h          -- Help with SQL commands'
+\echo '    \\?          -- Help with psql commands'
+
+\echo '\nDevelopment queries:'
+\echo '    :sp         -- Current Search Path'
+\echo '    :clear      -- Clear screen'
+\echo '    :ll         -- List\n'

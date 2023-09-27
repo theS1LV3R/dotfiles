@@ -1,10 +1,15 @@
 {{- $gitusername := promptString "Git username" "theS1LV3R" | quote -}}
 {{- $gitemail := promptString "Email" "me@s1lv3r.codes" | quote -}}
 {{- $gitgpgsign := promptBool "Enable git gpg signing" false -}}
+{{- $machinetype := promptChoice "Type of machine" (list "personal" "work") }}
 
 {{- $gitsignkey := "" -}}
 {{- if eq $gitgpgsign true -}}
-{{-   $gitsignkey = promptString "Git signing key" "85FA2FC2D8035859AE77FF6E636660BB3A5C2F87"  -}}
+{{-   if eq $machinetype "personal" -}}
+{{-     $gitsignkey = "85FA2FC2D8035859AE77FF6E636660BB3A5C2F87" -}}
+{{-   else if eq $machinetype "work" -}}
+{{-     $gitsignkey = "F3500DFD0DC37A1964FEA7EBD2A4BA423E5ABDB0" -}}
+{{-   end -}}
 {{- end -}}
 
 {{- $hasGui := promptBool "Does the machine have a GUI" false -}}

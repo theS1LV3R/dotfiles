@@ -11,3 +11,4 @@ Host *
     AddKeysToAgent ask
     ServerAliveInterval 60
     IdentitiesOnly yes
+    EnableEscapeCommandline yes

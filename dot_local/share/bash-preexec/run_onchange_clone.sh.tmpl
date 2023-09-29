@@ -9,4 +9,8 @@ dir="$HOME/.local/share/bash-preexec"
 rm -rfv "$dir" || true
 mkdir -vp "$dir"
 
-git clone "$repo" "$dir"
+(
+    # Ensures proper working directory
+    cd "$dir"
+    git clone "$repo" .
+)

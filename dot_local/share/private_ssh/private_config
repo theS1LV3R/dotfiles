@@ -1,4 +1,4 @@
-# vim: set ft=ssh_config
+# vim: set syntax=sshconfig:ft=ssh_config
 Include config.d/*.conf
 
 # DO NOT MODIFY - CHEZMOI MANAGED

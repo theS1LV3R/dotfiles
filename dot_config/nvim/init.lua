@@ -5,7 +5,7 @@ require("lsp")
 
 vim.g.airline_powerline_fonts = 1
 
-vim.cmd([[colorscheme gruvbox]])
+vim.cmd [[colorscheme gruvbox]]
 
 vim.opt.number = true
 vim.opt.linebreak = true

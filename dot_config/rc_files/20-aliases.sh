@@ -63,14 +63,13 @@ for alias in "${systemctl_aliases[@]}"; do
     alias "$alias"="sudo systemctl $alias"
 done
 
-alias c="clear -x"                                                                      # Do not clear scrollback
+alias c="clear -x" # Do not clear scrollback
 alias define="dict"
 alias hostname="hostnamectl hostname"
 alias open='xdg-open'
 alias history="history 0" # force zsh to show the complete history
 alias dotfiles="code $(chezmoi source-path)"
 alias ipl="ip -brief a"
-alias less="less -R" # Rendering of color codes
 alias tb='nc termbin.com 9999'
 alias depcycle='comm -23 <(pacman -Qqd | sort -u) <(pacman -Qqe | xargs -n1 pactree -u | sort -u) | comm -23 - <(pacman -Qqttd | sort -u)' # https://www.reddit.com/r/archlinux/comments/ohv6g9/does_pacman_not_resolve_cycles_in_dependency/
 

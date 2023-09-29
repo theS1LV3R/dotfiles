@@ -18,7 +18,6 @@ script
 # Dont copy zsh plugins to home dir
 zsh_plugins
 
-.vscode
 requirements.txt
 
 {{ if eq .hasGui false }}

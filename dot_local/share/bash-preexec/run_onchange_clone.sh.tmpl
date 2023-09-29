@@ -8,8 +8,4 @@ dir="$HOME/.local/share/bash-preexec"
 
 mkdir -p "$dir"
 
-if [[ -d "$dir" ]]; then
-    rm -rf "$dir"
-fi
-
 git clone "$repo" "$dir"

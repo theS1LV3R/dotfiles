@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 # vi: ft=bash
 
+eval '{{- if eq .isdebian true -}}
+echo "Idk how to install marketplace on debian properly"; exit
+{{- else -}}
+echo
+{{- end -}}'
+
 # Edited from the spicetify install script (https://raw.githubusercontent.com/spicetify/spicetify-marketplace/main/resources/install.sh)
 # which was edited from the Denoland install script (https://github.com/denoland/deno_install)
 
@@ -13,26 +19,18 @@ timestamp() { date +'%Y-%m-%d %H:%M:%S'; }
 base_log() { echo -e "$1[$(timestamp) $2]$NC $3"; }
 log() { base_log "$GREEN" "INFO" "$*"; }
 
-cleanup() {
-  log "Cleaning up old stuff"
-  rm -rfv "$downloaded_zip" "$marketplace_tmpdir"
-}
-
-trap cleanup exit
-
-eval '{{- if eq .isdebian true -}}
-echo "Idk how to install marketplace on debian properly"; exit
-{{- else -}}
-echo
-{{- end -}}'
-
-# download uri
 readonly releases_uri=https://github.com/spicetify/spicetify-marketplace/releases
 readonly spicetify_config_dir="$HOME/.config/spicetify"
 readonly customapps_dir="$spicetify_config_dir/CustomApps"
 readonly downloaded_zip="$customapps_dir/marketplace-dist.zip"
 readonly marketplace_tmpdir="$customapps_dir/marketplace-tmp"
 readonly spotify_install_dir="/opt/spotify"
+
+cleanup() {
+  log "Cleaning up old stuff"
+  rm -rfv "$downloaded_zip" "$marketplace_tmpdir"
+}
+trap cleanup exit
 
 tag=$(curl -LsH 'Accept: application/json' "$releases_uri/latest" | jq -r '.tag_name')
 readonly tag

@@ -23,9 +23,9 @@ set  -sa terminal-overrides ',xterm-256color:Tc'  # Set $TERM and enable Termcol
 set  -s  set-clipboard      on                    # Enable clipboard support using OSC-52
 
 #############
-# Clipboard #
+# Keybinds #
 #############
-# -T <key-table> = Specify key table for the binding
+# -T <key-table> = Specify key table for the binding. Default is prefix key table, e.g. ^B + <key>
 bind -T copy-mode-vi Enter              send-keys -X copy-pipe-and-cancel
 bind -T copy-mode    Enter              send-keys -X copy-pipe-and-cancel
 bind -T copy-mode-vi MouseDragEnd1Pane  send-keys -X copy-pipe-no-clear # Copy but don't remove selection

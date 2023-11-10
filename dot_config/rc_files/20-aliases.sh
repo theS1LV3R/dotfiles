@@ -3,6 +3,9 @@
 # shellcheck shell=bash disable=SC2139
 # SC2139 - This expands when defined, not when used. Consider escaping.
 
+# shellcheck source=00-xdg-env.sh
+source /dev/null # Effectively a noop, only here for shellcheck
+
 checkexists() {
     command -v "$1" &>/dev/null
 }

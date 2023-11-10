@@ -2,6 +2,9 @@
 # shellcheck shell=bash
 # vi: ft=bash:ts=4:sw=4
 
+# shellcheck source=00-xdg-env.sh
+source /dev/null # Effectively a noop, only here for shellcheck
+
 ASDF=false
 
 if [[ -f /opt/asdf-vm/asdf.sh ]]; then

@@ -1,38 +1,37 @@
 # vi: ft=tmux:ts=2:sw=2
+# shellcheck disable=all
 
-set -g history-limit 50000              # Set the maximum number of history lines
-set -g buffer-limit 20                  # Number of buffers
-set -g base-index 1                     # base-index is the index of the first window
-setw -g pane-base-index 1               # pane-base-index is the index of the first pane
-set -g display-time 1500                # amount of time for which status line messages and other on-screen indicators are displayed.
-# https://github.com/microsoft/WSL/issues/5931#issuecomment-693419318=
-set -sg escape-time 10                  # Escape time in milliseconds
-set -g default-terminal 'tmux-256color' # Default terminal
-set -g remain-on-exit off               # Close pane when command inside it exits
-set -g set-titles on                    # Set window titles
-set -g focus-events on                  # Focus events
-set -g mouse on                         # Mouse
-set -g cursor-style blinking-bar        # Cursor
+################
+# Tmux options #
+################
+# -g = set a global session option
+# -s = change server (not session) options
+# -a = append to string options
+set  -sg escape-time        10                    # Escape time in milliseconds - See https://github.com/microsoft/WSL/issues/5931
+setw -g  pane-base-index    1                     # pane-base-index is the index of the first pane
+set  -g  history-limit      50000                 # Set the maximum number of history lines
+set  -g  buffer-limit       20                    # Number of buffers
+set  -g  base-index         1                     # base-index is the index of the first window
+set  -g  display-time       1500                  # amount of time for which status line messages and other on-screen indicators are displayed.
+set  -g  default-terminal   'tmux-256color'       # Default terminal
+set  -g  remain-on-exit     off                   # Close pane when command inside it exits
+set  -g  set-titles         on                    # Set window titles
+set  -g  focus-events       on                    # Focus events
+set  -g  mouse              on                    # Mouse
+set  -g  cursor-style       blinking-bar          # Cursor
+set  -sa terminal-overrides ',xterm-256color:Tc'  # Set $TERM and enable Termcolor support
+set  -s  set-clipboard      on                    # Enable clipboard support using OSC-52
 
-set-environment -g TMUX_PLUGIN_MANAGER_PATH '~/.local/share/tmux/plugins'
-
-# Set $TERM and enable Termcolor support
-set -sa terminal-overrides ',xterm-256color:Tc'
-
-#########################################################
-# Clipboard                                             #
-# See: https://unix.stackexchange.com/questions/348913/ #
-#########################################################
-
-bind -T copy-mode-vi Enter send-keys -X copy-pipe-and-cancel "yank" \; send -X clear-selection
-bind -T copy-mode Enter send-keys -X copy-pipe-and-cancel "yank" \; send -X clear-selection
-
-bind -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe "yank" \; send -X clear-selection
-bind -T copy-mode MouseDragEnd1Pane send-keys -X copy-pipe "yank" \; send -X clear-selection
-
-# https://medium.com/hackernoon/dd3c51bca1fa
-set -g @copy_backend_remote_tunnel_port '{{ .tmuxCopyBackendPort }}'
-set -g @copy_use_osc52_fallback 'yes'
+#############
+# Clipboard #
+#############
+# -T <key-table> = Specify key table for the binding
+bind -T copy-mode-vi Enter              send-keys -X copy-pipe-and-cancel
+bind -T copy-mode    Enter              send-keys -X copy-pipe-and-cancel
+bind -T copy-mode-vi MouseDragEnd1Pane  send-keys -X copy-pipe-no-clear # Copy but don't remove selection
+bind -T copy-mode    MouseDragEnd1Pane  send-keys -X copy-pipe-no-clear
+bind -T copy-mode-vi MouseDown1Pane     send-keys -X clear-selection \; select-pane # Clear and select the clicked pane
+bind -T copy-mode    MouseDown1Pane     send-keys -X clear-selection \; select-pane
 
 ######################################
 # tmux-plugins/tmux-prefix-highlight #
@@ -40,7 +39,6 @@ set -g @copy_use_osc52_fallback 'yes'
 set -g @prefix_highlight_prefix_prompt '^b' # Show ^b when in prefix mode
 set -g @prefix_highlight_show_copy_mode 'on' # Show distinct text when in copy mode
 set -g @prefix_highlight_copy_prompt 'copy' # Show "copy" when in copy mode
-
 
 #########################
 # fcsonline/tmux-thumbs #
@@ -57,26 +55,22 @@ set -g @themepack 'powerline/block/gray'
 ###############
 set -g @plugin 'tmux-plugins/tpm'
 
-run-shell 'export ENTR_INOTIFY_WORKAROUND=true'     # entr workaround: https://github.com/eradman/entr
-
 set -g @plugin 'jimeh/tmux-themepack'               # Pack with a lot of themes
 set -g @plugin 'tmux-plugins/tmux-sensible'         # Sensible defaults
 set -g @plugin 'b0o/tmux-autoreload'                # Reload tmux on file changes
-# Slows down loading some insane amount
-# set -g @plugin 'tmux-plugins/tmux-sidebar'          # Sidebar with files
 set -g @plugin 'thewtex/tmux-mem-cpu-load'          # Memory and CPU load
 set -g @plugin 'MunifTanjim/tmux-mode-indicator'    # Mode indicator
 set -g @plugin 'tmux-plugins/vim-tmux-focus-events' # Focus events
-set -g @plugin 'tmux-plugins/tmux-prefix-highlight' # Prefix highlight
+set -g @plugin 'tmux-plugins/tmux-prefix-highlight' # Prefix highligh
+set -g @plugin 'tmux-plugins/tmux-continuum'        # Continuum (save and restore)
 
-set -g @plugin 'tmux-plugins/tmux-continuum' # Continuum (save and restore)
+################################
+# Environment and finalization #
+################################
+set-environment -g TMUX_PLUGIN_MANAGER_PATH '~/.local/share/tmux/plugins' # https://github.com/tmux-plugins/tpm/blob/master/docs/changing_plugins_install_dir.md
+set-environment -g ENTR_INOTIFY_WORKAROUND  true                          # Allow for entr (required by some plugins i believe) to work in WSL environments
 
-
-if "test ! -d ~/.local/share/tmux/plugins/tpm" {
-  display-popup -d 0 'Installing tpm...'
-  run 'git clone https://github.com/tmux-plugins/tpm ~/.local/share/tmux/plugins/tpm/'
-  display-popup -d 0 'Installing tpm plugins...'
-  run '~/.local/share/tmux/plugins/tpm/bin/install_plugins'
-}
+if "test ! -d ~/.local/share/tmux/plugins/tpm" \
+  "display-popup ~/.config/tmux/install_tpm.sh"
 
 run '~/.local/share/tmux/plugins/tpm/tpm'

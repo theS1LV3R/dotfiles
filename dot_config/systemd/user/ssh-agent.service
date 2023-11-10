@@ -3,6 +3,7 @@ Description=SSH key agent
 
 [Service]
 Type=simple
+# %t: Runtime directory root. This is either /run/ (for the system manager) or the path "$XDG_RUNTIME_DIR" resolves to (for user managers).
 Environment=SSH_AUTH_SOCK=%t/ssh-agent.socket
 Environment=DISPLAY=:0
 ExecStart=/usr/bin/ssh-agent -D -a $SSH_AUTH_SOCK -t 48h

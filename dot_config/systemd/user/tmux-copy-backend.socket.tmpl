@@ -5,8 +5,15 @@ Description=Network copy backend for tmux
 Documentation=https://medium.com/hackernoon/dd3c51bca1fa
 
 [Socket]
+# Specify where the socket should listen
 ListenStream={{ .tmuxCopyBackendPort }}
+
+# If yes, a service instance is spawned for each incoming connection and only the connection
+# socket is passed to it. If no, all listening sockets themselves are passed to the started
+# service unit, and only one service unit is spawned for all connections
 Accept=yes
+
+# When to unload the connected service (tmux-copy-backend@.service). Unload it even if it fails.
 CollectMode=inactive-or-failed
 
 [Install]

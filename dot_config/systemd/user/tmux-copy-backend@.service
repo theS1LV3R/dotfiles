@@ -1,0 +1,13 @@
+# vi: ft=systemd-unit-file
+
+[Unit]
+Description=Network copy backend for tmux (Service accepting input)
+
+[Service]
+Type=simple
+# %h: User home directory. This is the home directory of the user running the service manager instance.
+# - In case of the system manager this resolves to "/root".
+# - Note that this setting is not influenced by the User= setting configurable in the [Service] section of the service unit.
+ExecStart=%h/.local/bin/yank
+StandardInput=socket
+StandardOutput=socket

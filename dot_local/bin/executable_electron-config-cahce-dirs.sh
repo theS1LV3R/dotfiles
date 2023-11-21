@@ -5,12 +5,12 @@
 # shellcheck source=executable___common.sh
 source "$HOME/.local/bin/__common.sh"
 
-search_dirs=(
+readonly search_dirs=(
     "$XDG_CONFIG_HOME"
     "$HOME/.vscode"
 )
 
-find_dirs=(
+readonly find_dirs=(
     "Crash Reports"
     "Media Cache"
     "Code Cache"

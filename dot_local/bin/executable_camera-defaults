@@ -5,33 +5,31 @@
 # shellcheck source=executable___common.sh
 source "$HOME/.local/bin/__common.sh"
 
-DEVICE="${DEVICE:-}"
-
-if [[ -z "$DEVICE" ]]; then
+if [[ -z "${DEVICE:-}" ]]; then
     DEVICE=$(v4l2-ctl --list-devices | grep "Logi 4K Stream Edition" -A1 | tail -n1 | awk '{ print $1 }')
 fi
 
-# Bool: 0=False; 1=True;
+# Bool: 0=False; 1=True
 
-args=(
+readonly args=(
     --device "$DEVICE"
 
     --set-ctrl brightness=100
     --set-ctrl contrast=140
     --set-ctrl saturation=130
-    --set-ctrl white_balance_automatic=0 # Bool
     --set-ctrl gain=90
-    --set-ctrl power_line_frequency=1 # 0=Disabled; 1=50Hz; 2=60Hz
+    --set-ctrl power_line_frequency=1           # 0=Disabled; 1=50Hz; 2=60Hz
+    --set-ctrl white_balance_automatic=0        # Bool
     --set-ctrl white_balance_temperature=3600
     --set-ctrl sharpness=130
-    --set-ctrl backlight_compensation=1 # Bool
-    --set-ctrl auto_exposure=1          # 1=Manual; 3=Aperture Priority
+    --set-ctrl backlight_compensation=1         # Bool
+    --set-ctrl auto_exposure=1                  # 1=Manual; 3=Aperture Priority
+    --set-ctrl exposure_dynamic_framerate=0     # Bool
     --set-ctrl exposure_time_absolute=300
-    --set-ctrl exposure_dynamic_framerate=0 # Bool
     --set-ctrl pan_absolute=0
     --set-ctrl tilt_absolute=0
-    # --set-ctrl focus_absolute=0 # Focus can't be set at the same time as focus_automatic_continous
-    --set-ctrl focus_automatic_continuous=1 # Bool
+    # --set-ctrl focus_absolute=0               # Focus can't be set at the same time as focus_automatic_continous
+    --set-ctrl focus_automatic_continuous=1     # Bool
     --set-ctrl zoom_absolute=130
 )
 

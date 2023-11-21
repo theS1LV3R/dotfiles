@@ -14,56 +14,65 @@ import dns.resolver
 import httpx
 from cryptography import x509
 
+logging.basicConfig(encoding='utf-8')
+logger = logging.getLogger(__name__)
 
-log = logging.getLogger()
 
 def indent(text): return textwrap.indent(text, '\t')
 
+
 def parse_arguments(*args):
     parser = argparse.ArgumentParser()
-    parser.add_argument("hostname", type=str, help="The hostname to be resolved")
-    parser.add_argument("-p", "--port", type=int, help="The port to use for resolution")
-    parser.add_argument("-d", "--debug", action="store_true", help="Debug output")
-    parser.add_argument("-t", "--type", help="The type of server to be tested. Used for both SSL and HTTP testing",
-                        default="https", type=str, choices=["http", "https", "smtp"])
-    if args: return parser.parse_args(args)
+
+    parser.add_argument("hostname",      type=str,
+                        help="The hostname to be resolved")
+    parser.add_argument("-p", "--port",  type=int,
+                        help="The port to use for resolution")
+    parser.add_argument("-d", "--debug",
+                        help="Debug output", action="store_true")
+    parser.add_argument("-t", "--type",  type=str,  help="The type of server to be tested. Used for both SSL and HTTP testing",
+                        default="https", choices=["http", "https", "smtp"])
+
+    if args:
+        return parser.parse_args(args)
     return parser.parse_args()
 
 
 def dns_resolution(hostname: str, *args, **kwargs) -> None:
     resolver = dns.resolver.Resolver()
     try:
-        log.debug(f"Resolving CNAME records for {hostname}")
+        logger.debug(f"Resolving CNAME records for {hostname}")
         response = resolver.resolve(hostname, 'CNAME')
         cname = response.rrset.to_text()
         print(indent(cname))
     except dns.resolver.NoAnswer:
-        log.debug("No CNAME records found")
+        logger.debug("No CNAME records found")
 
     try:
-        log.debug(f"Resolving A records for {hostname}")
+        logger.debug(f"Resolving A records for {hostname}")
         a_response = resolver.resolve(hostname, "A")
         a_record = a_response.rrset.to_text()
         print(indent(a_record))
     except dns.resolver.NoAnswer:
-        log.debug("No A records found")
+        logger.debug("No A records found")
 
     try:
-        log.debug(f"Resolving AAAA records for {hostname}")
+        logger.debug(f"Resolving AAAA records for {hostname}")
         aaaa_response = resolver.resolve(hostname, "AAAA")
         aaaa_record = aaaa_response.rrset.to_text()
         print(indent(aaaa_record))
     except dns.resolver.NoAnswer:
-        log.debug("No AAAA records found")
+        logger.debug("No AAAA records found")
+
 
 def ssl_certificate(hostname: str, port: int, *args, **kwargs) -> None:
     if port is None:
         port = 443
-    log.debug(f"Loading SSL certificate for {hostname}:{port}")
+    logger.debug(f"Loading SSL certificate for {hostname}:{port}")
     cert_pem = ssl.get_server_certificate((hostname, port)).encode("utf-8")
     cert = x509.load_pem_x509_certificate(cert_pem)
 
-    log.debug("Extracting parameters")
+    logger.debug("Extracting parameters")
     subject = cert.subject.rfc4514_string().replace("=", " = ")
     issuer = ", ".join(reversed(cert.issuer.rfc4514_string().split(",")))
     valid_from = cert.not_valid_before
@@ -80,18 +89,19 @@ x509 SANs:   {', '.join(sans)}
 Serial:      {cert.serial_number}\
 """))
 
+
 def smtp_ssl_cert(hostname: str, port: int, *args, **kwargs):
-    log.debug("Creating context")
+    logger.debug("Creating context")
     context = ssl.create_default_context()
     context.verify_mode = ssl.CERT_OPTIONAL
 
-    log.debug("Connecting")
+    logger.debug("Connecting")
     with socket.create_connection((hostname, port), timeout=1) as sock:
-        log.debug("Wrapping socket")
+        logger.debug("Wrapping socket")
         with context.wrap_socket(sock, server_hostname=hostname, do_handshake_on_connect=False) as ssock:
-            log.debug("Wrapped, doing handshake")
+            logger.debug("Wrapped, doing handshake")
             ssock.do_handshake()
-            log.debug("Getting peer cert")
+            logger.debug("Getting peer cert")
             cert = ssock.getpeercert()
 
     issuer = f"C = {cert['issuer'][0][0][1]}, OU = {cert['issuer'][1][0][1]}, CN = {cert['issuer'][2][0][1]}"
@@ -105,11 +115,12 @@ Not after:   {cert['notAfter']}
 x509 SANs:   {sans}\
 """))
 
+
 def http_test(hostname: str, port: int, server_type: str, *args, **kwargs) -> None:
-    log.debug("Creating HTTP client using with")
+    logger.debug(
+        f"Creating HTTP client with hostname {hostname}, port {port}, server_type {server_type}")
     with httpx.Client(http2=False, verify=False, follow_redirects=False) as client:
         client.headers["Host"] = hostname
-        log.debug(client)
         res: httpx.Response = client.get(f"{server_type}://{hostname}:{port}")
 
     print(indent(f"""\
@@ -122,42 +133,45 @@ Content-Length:  {res.headers.get('content-length')}\
     if res.is_redirect:
         print(indent(f"Location:        {res.headers.get('location')}"))
 
+
 def smtp_test(hostname: str, port: int, *args, **kwargs) -> None:
-    log.debug("Creating and connecting socket")
+    logger.debug("Creating and connecting socket")
     sock = socket.create_connection((hostname, port), timeout=1)
 
     received_data = ""
     while True:
-        log.debug("Receiving data")
+        logger.debug("Receiving data")
         data = sock.recv(1024).decode()
         if not data:
             break
         received_data += data
         if '\r\n' in received_data:
-            log.debug("Found delimiter")
+            logger.debug("Found delimiter")
             received_data = received_data.split('\r\n')[0]
             break
 
     print(indent(f"SMTP server:\t{received_data}"))
 
+
 def dnssec_test(hostname: str, *args, **kwargs) -> None:
     resolver = dns.resolver.Resolver(configure=True)
     resolver.nameservers = ['1.1.1.1', '2606:4700:4700::1111']
 
-    log.debug("Getting DNSKEY")
+    logger.debug("Getting DNSKEY")
     dnskey_response = resolver.resolve(hostname, dns.rdatatype.DNSKEY)
 
     dnskeys = []
     for dnskey in dnskey_response:
         dnskeys.append(dnskey)
 
-    ds_query = dns.message.make_query(hostname, dns.rdatatype.DS, want_dnssec=True)
+    ds_query = dns.message.make_query(
+        hostname, dns.rdatatype.DS, want_dnssec=True)
     ds_query.flags |= dns.flags.AD
 
     ds_response = resolver.resolve(hostname, dns.rdatatype.DS, dns)
 
     if len(ds_response) == 0:
-        print(intent(f"No DS records found for {hostname}"))
+        print(indent(f"No DS records found for {hostname}"))
         return
 
     dnssec_validator = dns.dnssec.validate()
@@ -166,7 +180,8 @@ def dnssec_test(hostname: str, *args, **kwargs) -> None:
 def is_http(server_type: str): return server_type in ["http", "https"]
 def is_https(server_type: str): return server_type == "https"
 def is_smtp(server_type: str): return server_type == "smtp"
-def never(*args,**kwargs): return False
+def never(*args, **kwargs): return False
+
 
 modules = [
     ("DNS Resolution", dns_resolution),
@@ -193,23 +208,29 @@ if __name__ == "__main__":
     if not port and server_type == "https":
         port = 443
 
-    if debug: log.setLevel("DEBUG")
+    level = logging.INFO
 
-    log.debug(args)
+    if debug:
+        level = logging.DEBUG
+
+    # log.basicConfig(level=level, encoding='utf-8')
+    logger.setLevel(level)
+
+    logger.debug(args)
 
     for index, module in enumerate(modules):
-        log.debug(f"Running module: {module[0]}")
+        logger.debug(f"Running module: {module[0]}")
 
         if len(module) > 2 and not module[2](server_type=server_type):
-            log.debug(f"Skipping {module[0]}: Check failed")
+            logger.debug(f"Skipping {module[0]}: Check failed")
             continue
 
         try:
             print(module[0])
             module[1](hostname=hostname, port=port, server_type=server_type)
         except Exception as e:
-            log.error(f"Error while running module: {module[0]}")
-            log.error(e)
+            logger.error(f"Error while running module: {module[0]}")
+            logger.error(e)
 
         if index != len(modules):
             print()

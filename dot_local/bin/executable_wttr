@@ -5,15 +5,13 @@
 # shellcheck source=executable___common.sh
 source "$HOME/.local/bin/__common.sh"
 
-CITY="${1:-}"
+readonly city="${1:-}"
 
-# Options:
-#  - m = Metric (SI) units
-#  - M = Wind speed in m/s
-#  - 0 = Only current weather
-#  - F = Do not show "Follow" line
-
-url="https://v2.wttr.in/$CITY?mM0F&lang=en"
+# m = Metric (SI) units
+# M = Wind speed in m/s
+# 0 = Only current weather
+# F = Do not show "Follow" line
+url="https://v2.wttr.in/$city?mM0F&lang=en"
 
 echo "Opening $url"
 

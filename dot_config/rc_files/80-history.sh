@@ -9,8 +9,8 @@ source /dev/null # Effectively a noop, only here for shellcheck
 [[ -n "$BASH_VERSION" ]] && export HISTFILE="$XDG_DATA_HOME/.bash_history"
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=25000 # The  maximum  number  of  events  stored  in  the  internal  history  list.
-SAVEHIST=20000 # The maximum number of history events to save in the history file.
+HISTSIZE=60000 # The maximum number of events stored in the internal history list.
+SAVEHIST=50000 # The maximum number of history events to save in the history file.
 HISTFILESIZE=$SAVEHIST
 
 # don't put duplicate lines or lines starting with space in the history.

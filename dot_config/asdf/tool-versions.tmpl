@@ -1,11 +1,13 @@
 nodejs 18.14.0
 python system
 yarn 1.22.19
-golang 1.20
+golang 1.21.4
 rust 1.71.1
 mkcert 1.4.4
 lazygit latest
 java system
+ruby system
+
 {{ if (ne .chezmoi.arch "arm64") -}}
 {{/* Deno only works on x86_64 machines - https://deno.com/manual/getting_started/installation */ -}}
 deno 1.30.3

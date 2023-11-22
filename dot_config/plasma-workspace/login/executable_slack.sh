@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-/usr/bin/slack -u
+/usr/bin/slack -u >/dev/null

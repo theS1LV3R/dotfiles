@@ -5,19 +5,25 @@
 # shellcheck source=executable___common.sh
 source "$HOME/.local/bin/__common.sh"
 
-cachedir="${XDG_CACHE_DIR:-"$HOME/.cache"}/cheat.sh/"
-url="https://cheat.sh/$*"
+readonly cachedir="${XDG_CACHE_DIR:-"$HOME/.cache"}/cheat.sh/"
+readonly cache_file="$cachedir/$*"
+readonly url="https://cheat.sh/$*"
 
 mkdir -p "$cachedir"
 
+log_info "Opening $url"
+page=$(curl --max-time 2 --silent "$url")
+curl_exit=$?
+
 # -c = count
 # -w = final timeout
-if ! ping -c 1 -w 1 cheat.sh &>/dev/null; then
+if [[ "$curl_exit" -ne 0 ]]; then
     log_warn "Unable to connect to cheat.sh, please check your internet connection."
 
-    if [[ -f "$cachedir/$*" ]]; then
-        log_info "Using cached version. Last updated: $(stat -c %y "$cachedir/$*" || true)"
-        pager "$cachedir/$*"
+    # Check if file exists in cache
+    if [[ -f "$cache_file" ]]; then
+        log_info "Using cached version. Last updated: $(stat -c %y "$cache_file" || true)"
+        pager <"$cache_file"
         exit 0
     else
         log_error "Page requested not in cache."
@@ -25,14 +31,6 @@ if ! ping -c 1 -w 1 cheat.sh &>/dev/null; then
     fi
 fi
 
-log_info "Opening $url"
-page=$(curl -s "$url")
-
-if ! echo "$page" | grep -ivq "Unknown topic."; then
-    pager "$page"
-    exit 1
-fi
-
-echo "$page" >"$cachedir/$*"
+echo "$page" >"$cache_file"
 
 pager "$page"

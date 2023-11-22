@@ -5,34 +5,42 @@
 # shellcheck source=executable___common.sh
 source "$HOME/.local/bin/__common.sh"
 
-usage() {
-    cat <<HELP_USAGE
+readonly help_message="\
+Usage: docker-veth.sh [OPTIONS]
 
-    $0  Show the veth interface associated of containers
+Show virtual network interfaces associated with containers.
 
-HELP_USAGE
-}
+Options:
+    --help    Display this help message and exit.
 
-case "${1:-}" in
--h | --help)
-    usage
-    exit 0
-    ;;
-*) ;;
-esac
+Example:
+    $ docker-veth.sh
+    Interface   Container ID    Container name
+    eth0@if123  d7005eab838a    postgres_db
+    eth1@if456  abcdef012345    container_name
 
-veth=""
+    $ docker-veth.sh --help
+    Display this help message and exit.
+"
 
-containers=$(docker ps --format '{{.ID}} {{.Names}}' "$@")
+usage() { echo "$help_message"; }
 
 get_veth() {
+    local container_id
+    local veth
+    local networkmode
+    local pid
+    local ifindex
+
     # This function expects docker container ID as the first argument
+    container_id="$1"
     veth=""
-    networkmode=$(docker inspect -f "{{.HostConfig.NetworkMode}}" "$1")
+    networkmode=$(docker inspect -f "{{.HostConfig.NetworkMode}}" "$container_id")
+
     if [[ "$networkmode" == "host" ]]; then
         veth="host"
     else
-        pid=$(docker inspect --format '{{.State.Pid}}' "$1")
+        pid=$(docker inspect --format '{{.State.Pid}}' "$container_id")
         ifindex=$(sudo nsenter -t "$pid" -n ip link | sed -n -e 's/.*eth0@if\([0-9]*\):.*/\1/p')
         if [[ -z "$ifindex" ]]; then
             veth="not found"
@@ -40,10 +48,30 @@ get_veth() {
             veth=$(ip -o link | grep ^"$ifindex" | sed -n -e 's/.*\(veth[[:alnum:]]*@if[[:digit:]]*\).*/\1/p')
         fi
     fi
+
+    echo "$veth"
 }
 
-while IFS= read -r line; do
-    containerid=$(echo "$line" | awk '{ print $1 }')
-    get_veth "$containerid"
-    echo "$veth $line"
-done <<<"$containers"
+main() {
+    case "${1:-}" in
+    -h | --help)
+        usage
+        exit 0
+        ;;
+    *) ;;
+    esac
+
+    local containerid
+    local veth
+    local containers
+
+    echo -e "Interface\tContainer ID\tContainer name"
+    containers=$(docker ps --format '{{.ID}}'"\t"'{{.Names}}' "$@")
+    while IFS= read -r line; do
+        containerid=$(echo "$line" | awk '{ print $1 }')
+        veth=$(get_veth "$containerid")
+        echo -e "$veth\t$line"
+    done <<<"$containers"
+}
+
+main "$@"

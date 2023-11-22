@@ -5,19 +5,74 @@
 # shellcheck source=executable___common.sh
 source "$HOME/.local/bin/__common.sh"
 
-# Splits a jwt string, and returns the header and payload
+readonly help_message="\
+Usage: $0 [OPTIONS] [JWT_STRING]
+
+Decode a JWT string to its parameters in JSON format. It can take the JWT string as a
+command-line argument or read it from stdin.
+
+Options:
+    --help      Display this help message and exit.
+
+Arguments:
+    JWT_STRING  The JWT string to be decoded.
+
+Example:
+    $ JWT=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\"
+    $ jwt \"\$JWT\"
+    Header
+    {
+        \"alg\": \"HS256\",
+        \"typ\": \"JWT\"
+    }
+
+    Body
+    {
+        \"sub\": \"1234567890\",
+        \"name\": \"John Doe\",
+        \"iat\": 1516239022
+    }
+
+    Signature
+    SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+
+    $ echo \"\$JWT\" | jwt
+    <same as above>
+"
+
+usage() { echo "$help_message"; }
+
+case "${1:-}" in
+-h | --help)
+    usage
+    exit 0
+    ;;
+*) ;;
+esac
+
 if [[ $# -ne 0 ]]; then
     input="$1"
-elif [[ -p /dev/stdin ]]; then
-    input=$(read -r)
+    # -p = File exists and is a named pipe
+else
+    input=$(cat /dev/stdin)
 fi
 
 if [[ -z "${input:-}" ]]; then
     echo "Missing input"
-    exit
+    exit 1
 fi
 
-IFS='.' read -ra parts <<<"$input"
+echo "$input"
+
+orig_ifs=$IFS
+IFS=$'.' read -ra parts <<<"$input"
+IFS=$orig_ifs
+
+if [[ "${#parts[@]}" -ne 3 ]]; then
+    echo "Input does not seem to be a valid JWT (parts != 3; parts == ${#parts[@]})"
+    exit 2
+fi
+
 header="${parts[0]}"
 body="${parts[1]}"
 signature="${parts[2]}"
@@ -25,14 +80,14 @@ signature="${parts[2]}"
 echo -e "${BOLD}Header${NC}"
 
 echo "$header" | jq -R '. | @base64d | fromjson' 2>/dev/null || {
-    echo "Header seems to not be valid json, outputting raw"
+    echo -e "${RED}Warning:${NC} Header does not seem to be valid json, outputting raw"
     echo "$header"
 }
 
 echo -e "\n${BOLD}Body${NC}"
 
 echo "$body" | jq -R '. | @base64d | fromjson' 2>/dev/null || {
-    echo "Body seems to not be valid json, outputting raw"
+    echo -e "${RED}Warning:${NC} Body does not seem to be valid json, outputting raw"
     echo "$body"
 }
 

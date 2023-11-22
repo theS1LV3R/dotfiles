@@ -5,14 +5,46 @@
 # shellcheck source=executable___common.sh
 source "$HOME/.local/bin/__common.sh"
 
-XDG_DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
-
+readonly XDG_DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
+readonly logfile="$XDG_DATA_HOME/wg-quick-log.txt"
 readonly NOTIFICATION_TIME="${NOTIFICATION_TIME:-3}"
+readonly action=$1
+readonly interface=$2
 
-action=$1
-interface=$2
+readonly help_message="\
+Usage: docker-veth.sh [OPTIONS]
 
-echo "$(timestamp) - $action - $interface - pre-pkexec - $(tty)" >>"$XDG_DATA_HOME/wg-quick-log.txt"
+Show virtual network interfaces associated with containers.
+
+Options:
+    --help    Display this help message and exit.
+
+Example:
+    $ docker-veth.sh
+    Interface   Container ID    Container name
+    eth0@if123  d7005eab838a    postgres_db
+    eth1@if456  abcdef012345    container_name
+
+    $ docker-veth.sh --help
+    Display this help message and exit.
+"
+
+log() {
+    local message=${1:-<no message>}
+    echo "$(timestamp) - $action - $interface - $(tty) - $message" >>"$logfile"
+}
+
+usage() { echo "$help_message"; }
+
+case "${1:-}" in
+-h | --help)
+    usage
+    exit 0
+    ;;
+*) ;;
+esac
+
+log "pre-pkexec"
 
 set +e
 pkexec_output=$(pkexec wg-quick "$action" "$interface" 2>&1)
@@ -28,7 +60,7 @@ if [[ $pkexec_exitcode -gt 0 ]]; then
     exit "$pkexec_exitcode"
 fi
 
-echo "$(timestamp) - $action - $interface" >>"$XDG_DATA_HOME/wg-quick-log.txt"
+log "post-pkexec"
 
 if [[ $NOTIFICATION_TIME -gt 0 ]]; then
     if [[ $(tty) != "not a tty" ]]; then

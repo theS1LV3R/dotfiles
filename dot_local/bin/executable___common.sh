@@ -17,10 +17,10 @@ BOLD='\033[1m'
 
 
 pager() {
-    if [[ $(echo "$@" | wc -l) -gt $(tput lines) ]]; then
-        echo "$@" | less -R
+    if [[ $(echo "$*" | wc -l) -gt $(tput lines) ]]; then
+        echo "$*" | less -R
     fi
-    echo -e "$@"
+    echo -e "$*"
 }
 
 timestamp() { date +'%Y-%m-%d %H:%M:%S'; }

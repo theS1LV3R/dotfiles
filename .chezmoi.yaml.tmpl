@@ -17,7 +17,6 @@
 {{- $ostype := eq .chezmoi.os "linux" | and (.chezmoi.kernel.osrelease | lower | contains "microsoft") | ternary "wsl" .chezmoi.os -}}
 {{- $isdebian := stat "/etc/debian_version" | not | not -}}
 ---
-sourceDir: "{{ .chezmoi.sourceDir }}"
 
 data:
   name: {{ $gitusername }}

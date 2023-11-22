@@ -52,7 +52,8 @@ set -g @themepack 'powerline/block/gray'
 ###############
 set -g @plugin 'tmux-plugins/tpm'
 
-set -g @plugin 'jimeh/tmux-themepack'               # Pack with a lot of themes
+# set -g @plugin 'jimeh/tmux-themepack'               # Pack with a lot of themes
+# set -g @plugin 'niksingh710/minimal-tmux-status'
 set -g @plugin 'tmux-plugins/tmux-sensible'         # Sensible defaults
 set -g @plugin 'b0o/tmux-autoreload'                # Reload tmux on file changes
 set -g @plugin 'thewtex/tmux-mem-cpu-load'          # Memory and CPU load
@@ -61,11 +62,13 @@ set -g @plugin 'tmux-plugins/vim-tmux-focus-events' # Focus events
 set -g @plugin 'tmux-plugins/tmux-prefix-highlight' # Prefix highligh
 set -g @plugin 'tmux-plugins/tmux-continuum'        # Continuum (save and restore)
 
-################################
-# Environment and finalization #
-################################
+###################################
+# Environment, finalization, misc #
+###################################
 set-environment -g TMUX_PLUGIN_MANAGER_PATH '~/.local/share/tmux/plugins' # https://github.com/tmux-plugins/tpm/blob/master/docs/changing_plugins_install_dir.md
 set-environment -g ENTR_INOTIFY_WORKAROUND  true                          # Allow for entr (required by some plugins i believe) to work in WSL environments
+
+source-file $XDG_CONFIG_HOME/tmux/theme.conf
 
 # -E = close the popup when the command exits
 if "test ! -d ~/.local/share/tmux/plugins/tpm" \

@@ -1,20 +1,22 @@
-nodejs 18.14.0
-python system
-yarn 1.22.19
-golang 1.21.4
-rust 1.71.1
-mkcert 1.4.4
-lazygit latest
-java system
-ruby system
+nodejs      20.9.0  {{/* https://nodejs.org */}}
+yarn        1.22.19 {{/* https://npmjs.org/packages/yarn */}}
+golang      1.21.4  {{/* https://go.dev/dl/ */}}
+rust        1.74.0  {{/* https://www.rust-lang.org/ */}}
+mkcert      1.4.4   {{/* https://github.com/FiloSottile/mkcert/releases/latest */}}
 
-{{ if (ne .chezmoi.arch "arm64") -}}
+lazygit     latest  {{/* https://github.com/jesseduffield/lazygit/releases/latest */}}
+
+python      system
+java        system
+ruby        system
+
+{{ if (eq .chezmoi.arch "amd64") -}}
 {{/* Deno only works on x86_64 machines - https://deno.com/manual/getting_started/installation */ -}}
-deno 1.30.3
+deno        1.38.2  {{/* https://deno.com/ */}}
 {{ end -}}
 
 {{ if .isdebian -}}
-{{/* We only need neovim and lazydocker in debian-based systems, on arch its provided by the aur */}}
-neovim 0.9.1
-lazydocker 0.20.0 # https://github.com/comdotlinux/asdf-lazydocker
+{{/* We only need neovim and lazydocker in debian-based systems, on arch its provided by the aur */ -}}
+neovim      0.9.4   {{/* https://github.com/neovim/neovim/releases/latest */}}
+lazydocker  0.23.1 # https://github.com/comdotlinux/asdf-lazydocker {{/* https://github.com/jesseduffield/lazydocker/releases/latest */}}
 {{ end -}}

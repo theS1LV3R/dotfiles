@@ -1,28 +1,34 @@
 #!/usr/bin/env bash
 # vi: ft=bash:ts=4:sw=4
 
-baseurl="https://github.com/romkatv/powerlevel10k-media/raw/master/{}.ttf"
+readonly baseurl="https://github.com/romkatv/powerlevel10k-media/raw/master/"
+readonly font_dir="$HOME/.local/share/fonts"
 
-types=(
-  "MesloLGS NF Regular"
-  "MesloLGS NF Bold"
-  "MesloLGS NF Italic"
-  "MesloLGS NF Bold Italic"
+readonly font_names=(
+    "MesloLGS NF Regular"
+    "MesloLGS NF Bold"
+    "MesloLGS NF Italic"
+    "MesloLGS NF Bold Italic"
 )
-font_dir="$HOME/.local/share/fonts"
+
+process() {
+    local font_name="$1"
+
+    local urlencoded_name="${font_name// /\%20}"
+    local filename="${font_name// /_}"
+
+    local source_url="$baseurl/$urlencoded_name.ttf"
+    local output_file="$font_dir/$filename.ttf"
+
+    if [[ ! -f "$output_file" ]]; then
+        curl -L "$source_url" -o "$output_file"
+    fi
+}
 
 mkdir -p "$font_dir"
 
-for type in "${types[@]}"; do
-  font_url=${type// /\%20}
-  filename=${type// /_}
-
-  url=${baseurl//\{\}/$font_url}
-  file="$font_dir/$filename.ttf"
-
-  if [[ ! -f "$file" ]]; then
-    curl -L "$url" -o "$file"
-  fi
+for font_name in "${font_names[@]}"; do
+    process "$font_name"
 done
 
 fc-cache -f -v

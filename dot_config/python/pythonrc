@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# vi: ft=python:ts=4:sw=4
 
 # The MIT License (MIT)
 #
@@ -23,28 +24,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from types import SimpleNamespace
-from tempfile import NamedTemporaryFile
-from operator import attrgetter
-from itertools import chain
-from functools import partial, lru_cache, cached_property
-from code import InteractiveConsole
-import webbrowser
-import subprocess
-import signal
-import shlex
-import rlcompleter
-import readline
-import re
-import pprint
-import pkgutil
-import os
-import keyword
-import inspect
-import importlib
-import glob
 import atexit
-
+import glob
+import importlib
+import inspect
+import keyword
+import os
+import pkgutil
+import pprint
+import re
+import readline
+import rlcompleter
+import shlex
+import signal
+import subprocess
+import webbrowser
+from code import InteractiveConsole
+from functools import cached_property, lru_cache, partial
+from itertools import chain
+from operator import attrgetter
+from tempfile import NamedTemporaryFile
+from types import SimpleNamespace
 
 # Keep a copy of the initial namespace, we'll need it later
 CLEAN_NS = globals().copy()

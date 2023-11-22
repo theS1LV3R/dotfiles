@@ -51,6 +51,8 @@ colorauto_commands=(
 for command in "${colorauto_commands[@]}"; do
     alias "$command"="$command --color=auto"
 done
+unset colorauto_commands
+unset command
 
 # Systemctl aliases
 systemctl_aliases=(
@@ -65,6 +67,8 @@ systemctl_aliases=(
 for alias in "${systemctl_aliases[@]}"; do
     alias "$alias"="sudo systemctl $alias"
 done
+unset systemctl_aliases
+unset alias
 
 alias c="clear -x" # Do not clear scrollback
 alias define="dict"

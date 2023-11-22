@@ -18,6 +18,8 @@ export NODE_REPL_HISTORY="$XDG_DATA_HOME/node_repl_history"
 export ANSIBLE_HOME="$XDG_DATA_HOME/ansible"
 export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
 export SQLITE_HISTORY="$XDG_CACHE_HOME/sqlite_history"
+export MANPATH="$XDG_DATA_HOME/man:$MANPATH"
+
 
 #! XDG_CONFIG_HOME
 export WGETRC="$XDG_CONFIG_HOME/wgetrc"
@@ -79,18 +81,19 @@ export ASDF_GEM_DEFAULT_PACKAGES_FILE="$XDG_CONFIG_HOME/asdf/default-gems"
 export ASDF_GOLANG_DEFAULT_PACKAGES_FILE="$XDG_CONFIG_HOME/asdf/default-go-packages"
 
 #! Misc
-# shellcheck disable=SC2016 # Expressions don't expand in single quotes, use double quotes for that.
+# SC2016 - Expressions don't expand in single quotes, use double quotes for that.
+# shellcheck disable=SC2016
 export VIMINIT='let $MYVIMRC = !has("nvim") ? "$XDG_CONFIG_HOME/vim/vimrc" : "$XDG_CONFIG_HOME/nvim/init.lua" | so $MYVIMRC'
 
-# shellcheck disable=SC2155 # Declare and assign separately to avoid masking return values.
-# When making commits during SSH, so GPG uses the TTY and doesnt break
+# SC2155 - Declare and assign separately to avoid masking return values.
+# shellcheck disable=SC2155
+# When making commits over SSH, fall back to the current TTY. If $DISPLAY is set it uses that regardless
 export GPG_TTY=$(tty)
-
-export MANPATH="$XDG_DATA_HOME/man:$MANPATH"
 
 # https://github.com/alacritty/alacritty/issues/3465
 export WINIT_X11_SCALE_FACTOR=1
 
+# Use xdg-desktop-portal to use native file pickers and such
 # https://old.reddit.com/r/kde/comments/kzjo9d
 export GTK_USE_PORTAL=1
 
@@ -102,12 +105,5 @@ fi
 export EDITOR="nvim"
 export VISUAL="nvim"
 export PAGER="less"
-
-#  -I: ignore case when searching
-#  -F: quit immediately when the entire file fits in one screen (in effect, mimic cat’s behavior)
-#  -R: enable colored output (for example, when piping to less from diff --color=always)
-#  -S: truncate long lines instead of wrapping them to the next line
-#  -X: don’t clear screen on exit
-export LESS="IFRSX"
 
 export PROMPT_EOL_MARK=""

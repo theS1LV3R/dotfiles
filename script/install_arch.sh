@@ -5,6 +5,21 @@ source common.sh
 IFS=' ' read -r -a packages <<<"$common_packages"
 IFS=' ' read -r -a pypacks <<<"$python_packages"
 
+aur_install() {
+    local orig_dir="$PWD"
+    local package=$1
+    local temp_dir=$(mktemp -d)
+
+    log_info "Installing $package from AUR"
+
+    git clone "https://aur.archlinux.org/$package.git" "$temp_dir"
+    cd "$temp_dir"
+
+    makepkg -sicC --noconfirm
+
+    cd "$orig_dir"
+}
+
 packages+=(
     base-devel
     archlinux-keyring
@@ -21,20 +36,6 @@ for package in "${pypacks[@]}"; do
 done
 unset package
 
-aur_install() {
-    orig_dir="$PWD"
-    package=$1
-
-    log_info "Installing $package from AUR"
-
-    dir=$(mktemp -d)
-    git clone "https://aur.archlinux.org/$package.git" "$dir"
-    cd "$dir"
-
-    makepkg -sicC --noconfirm
-
-    cd "$orig_dir"
-}
 
 log_info "Installing paru"
 aur_install paru

@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
-TMPDIR=$(mktemp -d)
-REPO="https://github.com/alacritty/alacritty-theme"
-XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
+readonly XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
+readonly repo="https://github.com/alacritty/alacritty-theme"
+
+tmpdir=$(mktemp -d)
 
 mkdir -p "$XDG_CONFIG_HOME/alacritty/themes"
-git clone --depth 1 "$REPO" "$TMPDIR"
 
-cp -v "$TMPDIR/themes/"* "$XDG_CONFIG_HOME/alacritty/themes"
+git clone --depth 1 "$repo" "$tmpdir"
+
+cp -v "$tmpdir/themes/"* "$XDG_CONFIG_HOME/alacritty/themes"

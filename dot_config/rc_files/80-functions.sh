@@ -12,7 +12,7 @@ ssh() {
 }
 
 dict() {
-    page=$(command dict "$@")
+    local page=$(command dict "$@")
 
     if [[ $(echo "$page" | wc -l) -gt $(tput lines) ]]; then
         echo "$page" | less -R
@@ -23,7 +23,7 @@ dict() {
 }
 
 secret() {
-    bytes="${1:-48}"
+    local bytes="${1:-48}"
 
     openssl rand -rand /dev/urandom -base64 "$bytes" | tr --delete '\n'
 }
@@ -37,16 +37,16 @@ update() {
     fi
 
     if command -v pacman &>/dev/null; then
-        pm="sudo pacman"
+        local package_manager="sudo pacman"
 
         if command -v paru &>/dev/null; then
-            pm=paru
+            package_manager=paru
         elif command -v yay &>/dev/null; then
-            pm=yay
+            package_manager=yay
         fi
 
-        $pm -Syu
-        $pm -Qdtq | $pm -Rsun || true
+        $package_manager -Syu
+        $package_manager -Qdtq | $package_manager -Rsun || true
 
         return
     fi
@@ -77,6 +77,10 @@ drmfgrep() {
 }
 
 dnetworks() {
+    local inspect
+    local name
+    local subnet
+
     docker network ls -q --filter driver=bridge | while IFS= read -r netId; do
         inspect=$(docker network inspect "$netId")
 
@@ -86,8 +90,10 @@ dnetworks() {
         [[ -z $name || $name == "null" ]] && name=$(echo "$inspect" | jq -r '.[].name')
         [[ -z $subnet || $subnet == "null" ]] && subnet=$(echo "$inspect" | jq -r '.[].subnets[].subnet')
 
-        echo -e "\033[1;37;40m$name\033[0m"
-        echo "$subnet"
+        echo -e "\
+\033[1;37;40m$name\033[0m
+$subnet
+"
     done
 }
 
@@ -95,8 +101,10 @@ ipinfo() {
     export GUM_SPIN_SPINNER="minidot"
     export GUM_SPIN_SHOW_OUTPUT="true"
 
-    ip=${1:-''}
-    ip6=''
+    local ip=${1:-''}
+    local ip6=''
+
+    local usage
 
     if [[ -z "$ip" ]]; then
         ip=$(gum spin --title="Getting own public IP (v4)..." \
@@ -141,13 +149,4 @@ optdeps() {
 urldecode() {
     : "${*//+/ }"
     echo -e "${_//%/\\x}"
-}
-
-torrent() {
-    aria2c \
-        --follow-torrent=mem \
-        --file-allocation=none \
-        --force-sequential=false \
-        --seed-time=0 \
-        "$1"
 }

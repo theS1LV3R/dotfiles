@@ -3,7 +3,7 @@
 prefix=${XDG_DATA_HOME}/npm
 cache=${XDG_CACHE_HOME}/npm
 init-module=${XDG_CONFIG_HOME}/npm/config/npm-init.js
-fund=false # https://docs.npmjs.com/cli/v9/using-npm/config#fund
+fund=false  # https://docs.npmjs.com/cli/v9/using-npm/config#fund
 audit=false # https://docs.npmjs.com/cli/v9/using-npm/config#audit
 
 # npm WARN config tmp This setting is no longer used.  npm stores temporary files in a special

@@ -12,7 +12,7 @@ os_release=""
 [[ -e /etc/debian_version ]] && os_release="debian"
 
 _install() {
-  filename="install_$1.sh"
+  local filename="install_$1.sh"
 
   # Neovim not included - Debian uses asdf
   export common_packages="entr bridge-utils unzip zsh tmux gcc neofetch curl wget net-tools vim python"

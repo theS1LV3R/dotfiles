@@ -3,8 +3,8 @@
 
 set -euo pipefail
 
-repo=https://github.com/rcaloras/bash-preexec.git
-dir="$HOME/.local/share/bash-preexec"
+readonly repo=https://github.com/rcaloras/bash-preexec.git
+readonly dir="$HOME/.local/share/bash-preexec"
 
 rm -rfv "$dir" || true
 mkdir -vp "$dir"

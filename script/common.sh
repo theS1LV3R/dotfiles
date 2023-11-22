@@ -3,11 +3,11 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-RED='\033[0;31m'
-YELLOW='\033[0;33m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+readonly RED='\033[0;31m'
+readonly YELLOW='\033[0;33m'
+readonly GREEN='\033[0;32m'
+readonly BLUE='\033[0;34m'
+readonly NC='\033[0m' # No Color
 
 timestamp() { date +'%Y-%m-%d %H:%M:%S'; }
 installed() { command -v "$1" &>/dev/null; }

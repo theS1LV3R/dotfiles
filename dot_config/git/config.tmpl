@@ -36,11 +36,8 @@
 [feature]
     manyFiles = true
 
-[includeIf "gitdir:~/kode/machina/"]
-    path = ~/kode/machina/.gitconfig
-
-[includeIf "gitdir:~/kode/personal"]
-    path = ~/kode/personal/.gitconfig
+[include]
+    path = "$XDG_CONFIG_HOME/git/config.local"
 
 [alias]
     lg1 = log --color --graph --pretty=format:'%Cred%h%Creset %Cgreen(%cr) %C(bold blue)<%an>%Creset -%C(yellow)%d%Creset %s' --abbrev-commit

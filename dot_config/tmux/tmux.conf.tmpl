@@ -33,7 +33,7 @@ bind -T copy-mode    MouseDragEnd1Pane  send-keys -X copy-pipe-no-clear
 bind -T copy-mode-vi MouseDown1Pane     send-keys -X clear-selection \; select-pane   # Clear selectrion and select the clicked pane
 bind -T copy-mode    MouseDown1Pane     send-keys -X clear-selection \; select-pane
 
-bind s set synchronize-panes
+bind s set synchronize-panes \; display-message 'Toggled syncronize-panes'
 
 ######################################
 # tmux-plugins/tmux-prefix-highlight #
@@ -55,7 +55,6 @@ set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'jimeh/tmux-themepack'               # Pack with a lot of themes
 set -g @plugin 'tmux-plugins/tmux-sensible'         # Sensible defaults
 set -g @plugin 'b0o/tmux-autoreload'                # Reload tmux on file changes
-set -g @plugin 'thewtex/tmux-mem-cpu-load'          # Memory and CPU load
 set -g @plugin 'MunifTanjim/tmux-mode-indicator'    # Mode indicator
 set -g @plugin 'tmux-plugins/vim-tmux-focus-events' # Focus events
 set -g @plugin 'tmux-plugins/tmux-prefix-highlight' # Prefix highligh

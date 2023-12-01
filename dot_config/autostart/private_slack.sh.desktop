@@ -1,0 +1,7 @@
+[Desktop Entry]
+# Exec=/home/s1lv3r/.config/plasma-workspace/login/slack.sh
+Exec=/usr/bin/slack
+Icon=dialog-scripts
+Name=slack.sh
+Type=Application
+X-KDE-AutostartScript=true

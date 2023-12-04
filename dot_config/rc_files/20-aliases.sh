@@ -26,10 +26,13 @@ for alias in "${enhanced_aliases[@]}"; do
     alias "b$orig"="$(command -v "$orig")"
     alias "$orig"="$new"
 done
+unset enhanced_aliases
+unset alias
+unset orig
+unset new
+unset checkexists
 
 alias pcat='bat --paging=never -p'
-
-unset checkexists
 
 # ls aliases
 alias ll='ls -l'

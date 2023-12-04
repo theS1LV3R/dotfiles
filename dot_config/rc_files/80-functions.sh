@@ -56,8 +56,10 @@ path() {
     # echo: Replace : with newline
     # sed =: Add line numbers after each line
     # last sed:
-    #  - n N    Read/append the next line of input into the pattern space.
-    #  - then replace newlines with tabs, this affects every other newline
+    #  - N = Read/append the next line of input into the pattern space.
+    #  - ; = Next command
+    #  - s|\n|\t| = Replace newlines with tabs, this affects every other newline, since the next
+    #               line was already added into the pattern space, and this is not a global replace.
     echo "${PATH//:/\\n}" | sed '=' | sed 'N;s|\n|\t|'
 }
 [[ -n "$ZSH_VERSION" ]] && fpath() {

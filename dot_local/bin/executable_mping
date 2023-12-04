@@ -16,7 +16,7 @@ tmux new-session -d -s "$session_name"
 index=1
 for ip in "${ips[@]}"; do
     tmux split-window -t "$session_name:1.$index"
-    tmux send-keys -t "$session_name:1.$index" "ping $ip"
+    tmux send-keys -t "$session_name:1.$index" " ping $ip ; exit"
     tmux send-keys -t "$session_name:1.$index" $'\n'
     index=$((index + 1))
 done
@@ -25,6 +25,7 @@ tmux kill-pane -t "$session_name:1.$index"
 
 tmux select-layout -t "$session_name" even-vertical
 tmux set-hook -t "$session_name" client-detached kill-session
+tmux set-window-option -t "$session_name" synchronize-panes
 
 tmux attach
 

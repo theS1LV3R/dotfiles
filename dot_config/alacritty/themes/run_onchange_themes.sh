@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-readonly XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
+readonly XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 readonly repo="https://github.com/alacritty/alacritty-theme"
 
 tmpdir=$(mktemp -d)

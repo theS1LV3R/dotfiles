@@ -20,7 +20,6 @@ export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
 export SQLITE_HISTORY="$XDG_CACHE_HOME/sqlite_history"
 export MANPATH="$XDG_DATA_HOME/man:$MANPATH"
 
-
 #! XDG_CONFIG_HOME
 export WGETRC="$XDG_CONFIG_HOME/wgetrc"
 export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
@@ -102,8 +101,12 @@ if [[ -n "$SSH_CONNECTION" ]]; then
     export PINENTRY_USER_DATA="USE_CURSES=1"
 fi
 
+# https://wiki.archlinux.org/title/Firefox#Wayland
+if [[ "$XDG_SESSION_TYPE" == "wayland" ]]; then
+    export MOZ_ENABLE_WAYLAND=1
+fi
+
 export EDITOR="nvim"
 export VISUAL="nvim"
-export PAGER="less"
 
 export PROMPT_EOL_MARK=""

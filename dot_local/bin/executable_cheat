@@ -15,8 +15,6 @@ log_info "Opening $url"
 page=$(curl --max-time 2 --silent "$url")
 curl_exit=$?
 
-# -c = count
-# -w = final timeout
 if [[ "$curl_exit" -ne 0 ]]; then
     log_warn "Unable to connect to cheat.sh, please check your internet connection."
 

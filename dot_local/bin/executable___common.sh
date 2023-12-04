@@ -15,7 +15,6 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 BOLD='\033[1m'
 
-
 pager() {
     if [[ $(echo "$*" | wc -l) -gt $(tput lines) ]]; then
         echo "$*" | less -R
@@ -35,19 +34,19 @@ log_ask() { base_log "$BLUE" "ASK" "$*"; }
 alias log=log_info
 
 notify() {
-    _icon=$1
-    _time=$2
-    _name=$3
-    _message=$4
+    local icon=$1
+    local time=$2
+    local name=$3
+    local message=$4
 
     notify-send \
-        --icon="$_icon" \
+        --icon="$icon" \
         --urgency="critical" \
         --wait \
-        --app-name="$_name" \
-        "$_message" 2>/dev/null &
-    notification_id=$!
+        --app-name="$name" \
+        "$message" 2>/dev/null &
+    local notification_id=$!
 
-    sleep "$_time"
+    sleep "$time"
     kill -INT "$notification_id"
 }

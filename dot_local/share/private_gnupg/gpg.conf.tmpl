@@ -12,4 +12,4 @@ list-options show-uid-validity
 verify-options show-uid-validity
 
 utf8-strings
-log-file socket://{{ env "XDG_STATE_HOME" }}/log-socket
+log-file {{ env "XDG_DATA_HOME" }}/gnupg/log

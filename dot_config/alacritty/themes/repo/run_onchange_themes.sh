@@ -2,11 +2,12 @@
 
 readonly XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 readonly repo="https://github.com/alacritty/alacritty-theme"
+readonly out_dir="$XDG_CONFIG_HOME/alacritty/themes/repo"
 
 tmpdir=$(mktemp -d)
 
-mkdir -p "$XDG_CONFIG_HOME/alacritty/themes"
-
 git clone --depth 1 "$repo" "$tmpdir"
 
-cp -v "$tmpdir/themes/"* "$XDG_CONFIG_HOME/alacritty/themes"
+mkdir -vp "$out_dir"
+cp -v "$tmpdir/themes/"* "$out_dir"
+rm -rfv "$tmpdir"

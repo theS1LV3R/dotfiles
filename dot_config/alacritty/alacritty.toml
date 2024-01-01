@@ -1,0 +1,78 @@
+# vi: filetype=toml:tabstop=2:shiftwidth=2
+# https://alacritty.org/config-alacritty.html
+
+# import = ["<string>",]
+#     Import additional configuration files.
+#     Imports are loaded in order, skipping all missing files, with the importing file being loaded last.
+#     If a field is already present in a previous import, it will be replaced.
+#     All imports must either be absolute paths starting with /,
+#     or paths relative to the user's home directory starting with ~/.
+#
+#     Example:
+#         import = [
+#         "~/.config/alacritty/base16-dark.toml",
+#         "~/.config/alacritty/keybindings.toml",
+#         ]
+import = ["~/.config/alacritty/themes/repo/gruvbox_dark.toml"]
+
+# live_config_reload = true | false
+#    Live config reload (changes require restart)
+#
+#    Default: true
+live_config_reload = true
+
+[cursor.style]
+# shape = "Block" | "Underline" | "Beam"
+#
+#     Default: "Block"
+shape = "Beam"
+
+# blinking = "Never" | "Off" | "On" | "Always"
+#     Never  - Prevent the cursor from ever blinking
+#     Off    - Disable blinking by default
+#     On     - Enable blinking by default
+#     Always - Force the cursor to always blink
+#
+#     Default: "Off"
+blinking = "On"
+
+
+[env]
+# All key-value pairs in the [env] section will be added as environment variables for any process
+# spawned by Alacritty, including its shell. Some entries may override variables set by alacritty itself.
+TERM = "xterm-256color"
+
+[font]
+# size = <float>
+#     Font size in points.
+#
+#     Default: 11.25
+size = 10.0
+
+[font.normal]
+# normal = { family = "<string>", style = "<string>" }
+#
+#     Default:
+#         Linux/BSD: { family = "monospace", style = "Regular" }
+#         Windows: { family = "Consolas", style = "Regular" }
+#         macOS: { family = "Menlo", style = "Regular" }
+family = "SourceCodePro"
+
+[window]
+# decorations_theme_variant = "Dark" | "Light" | "None"
+#     Override the variant of the System theme/GTK theme/Wayland client side decorations.
+#     Set this to "None" to use the system's default theme variant.
+#
+#     Default: "None"
+decorations_theme_variant = "Dark"
+
+[window.dimensions]
+# dimensions = { columns = <integer>, lines = <integer> }
+#     Window dimensions (changes require restart).
+#     Number of lines/columns (not pixels) in the terminal. Both lines and columns must be non-zero
+#     for this to take effect. The number of columns must be at least 2, while using a value of 0
+#     for columns and lines will fall back to the window manager's recommended size
+#
+#     Default: { column = 0, lines = 0 }
+columns = 120
+lines = 32

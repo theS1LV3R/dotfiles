@@ -2,6 +2,7 @@
 {{- $gitemail := promptString "Email" "me@s1lv3r.codes" | quote -}}
 {{- $gitgpgsign := promptBool "Enable git gpg signing" false -}}
 {{- $machinetype := promptChoice "Type of machine" (list "personal" "work") }}
+{{- $slackLaunchMode := promptChoice "Autolaunch slack" (list "on" "background" "off")}}
 
 {{- $gitsignkey := "" -}}
 {{- if eq $gitgpgsign true -}}
@@ -28,3 +29,4 @@ data:
   hasGui: {{ $hasGui }}
   ostype: {{ $ostype }}
   isdebian: {{ $isdebian }}
+  slackLaunchMode: {{ $slackLaunchMode }}

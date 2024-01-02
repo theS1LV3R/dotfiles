@@ -5,6 +5,17 @@
 # shellcheck source=executable___common.sh
 source "$HOME/.local/bin/__common.sh"
 
+readonly requirements=(
+    docker
+    grep
+    sed
+    ip
+    nsenter
+    awk
+)
+
+check_dependencies "${requirements[@]}"
+
 readonly help_message="\
 Usage: docker-veth.sh [OPTIONS]
 

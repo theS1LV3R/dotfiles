@@ -1,0 +1,14 @@
+# vi: ft=desktop
+[Desktop Entry]
+{{ if (eq .slackLaunchMode "on" ) -}}
+Exec="/usr/bin/slack"
+{{ else if (eq .slackLaunchMode "background" ) -}}
+Exec="/usr/bin/slack" "-u"
+{{ end -}}
+
+Icon=slack
+Name=Slack
+Type=Application
+
+# Specify whether to behave as a deleted .desktop file (aka don't autostart)
+Hidden={{ eq .slackLaunchMode "off" }}

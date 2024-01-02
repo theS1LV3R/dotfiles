@@ -14,8 +14,8 @@ copy_use_osc52_fallback=$(tmux show-option -gvq "@copy_use_osc52_fallback" 2>/de
 copy_backend=""
 if [[ -n "${DISPLAY-}" ]]; then
     # If we have DISPLAY, use either xclip or xsel
-    installed xsel && copy_backend="xsel -i --clipboard"
-    installed xclip && copy_backend="xclip -i -f -selection primary | xclip -i -selection clipboard"
+    exists xsel && copy_backend="xsel -i --clipboard"
+    exists xclip && copy_backend="xclip -i -f -selection primary | xclip -i -selection clipboard"
 
 elif [[ -n "${copy_backend_remote_tunnel_port-}" ]]; then
     # If we dont have DISPLAY we are probably remoted and/or using tmux

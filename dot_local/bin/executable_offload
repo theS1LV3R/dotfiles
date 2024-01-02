@@ -5,7 +5,7 @@
 # shellcheck source=executable___common.sh
 source "$HOME/.local/bin/__common.sh"
 
-if ! installed optimus-manager; then
+if ! exists optimus-manager; then
     log_error "optimus-manager not installed"
     exit 1
 fi

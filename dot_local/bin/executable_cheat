@@ -9,6 +9,10 @@ readonly cachedir="${XDG_CACHE_DIR:-"$HOME/.cache"}/cheat.sh/"
 readonly cache_file="$cachedir/$*"
 readonly url="https://cheat.sh/$*"
 
+readonly dependencies=(
+    curl:Getting information from the website
+)
+
 mkdir -p "$cachedir"
 
 log_info "Opening $url"

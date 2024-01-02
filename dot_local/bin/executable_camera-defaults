@@ -5,6 +5,16 @@
 # shellcheck source=executable___common.sh
 source "$HOME/.local/bin/__common.sh"
 
+readonly dependencies=(
+    "v4l2-ctl:Setting options"
+    "grep:Matching device"
+    "tail:Matching device"
+    "awk:Getting device path"
+    "notify-send:Sending notification when done"
+)
+
+check_dependencies "${dependencies[@]}"
+
 if [[ -z "${DEVICE:-}" ]]; then
     DEVICE=$(v4l2-ctl --list-devices | grep "Logi 4K Stream Edition" -A1 | tail -n1 | awk '{ print $1 }')
 fi
@@ -32,6 +42,8 @@ readonly args=(
     --set-ctrl focus_automatic_continuous=1     # Bool
     --set-ctrl zoom_absolute=130
 )
+
+log_info "Set default options"
 
 v4l2-ctl "${args[@]}"
 notify-send \

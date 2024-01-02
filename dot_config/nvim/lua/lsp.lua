@@ -31,11 +31,12 @@ local common_opts = {
     capabilities = lsp_capabilities
 }
 
-local function merge_common(tbl)
-    for k, v in pairs(common_opts) do
-        tbl[k] = v
+local function merge(tbl1, tbl2)
+    newtbl = tbl1
+    for k, v in pairs(tbl2) do
+        newtbl[k] = v
     end
-    return tbl
+    return newtbl
 end
 
 local coq = require("coq")
@@ -47,7 +48,7 @@ require("mason-lspconfig").setup_handlers {
     end,
 
     ["jsonls"] = function()
-        require("lspconfig")["jsonls"].setup(coq.lsp_ensure_capabilities(merge_common {
+        require("lspconfig")["jsonls"].setup(coq.lsp_ensure_capabilities(merge(common_opts, {
             settings = {
                 json = {
                     schemas = json_schemas,
@@ -56,17 +57,17 @@ require("mason-lspconfig").setup_handlers {
                     }
                 }
             }
-        }))
+        })))
     end,
 
     ["yamlls"] = function()
-        require("lspconfig")["yamlls"].setup(coq.lsp_ensure_capabilities(merge_common {
+        require("lspconfig")["yamlls"].setup(coq.lsp_ensure_capabilities(merge(common_opts, {
             settings = {
                 yaml = {
                     schemas = yaml_schemas,
                     validate = true
                 }
             }
-        }))
+        })))
     end
 }

@@ -6,7 +6,6 @@
 # SC2312 - Consider invoking this command separately to avoid masking its return value (or use '|| true' to ignore).
 
 set -euo pipefail
-IFS=$'\n\t'
 
 RED='\033[0;31m'
 YELLOW='\033[0;33m'

@@ -1,10 +1,10 @@
-nodejs      20.10.0  {{/* https://nodejs.org */}}
-yarn        1.22.19 {{/* https://npmjs.org/packages/yarn */}}
-golang      1.21.4  {{/* https://go.dev/dl/ */}}
-rust        1.74.0  {{/* https://www.rust-lang.org/ */}}
-mkcert      1.4.4   {{/* https://github.com/FiloSottile/mkcert/releases/latest */}}
+nodejs      20.10.0 {{- /* https://nodejs.org */}}
+yarn        1.22.19 {{- /* https://npmjs.org/packages/yarn */}}
+golang      1.21.4  {{- /* https://go.dev/dl/ */}}
+rust        1.74.0  {{- /* https://www.rust-lang.org/ */}}
+mkcert      1.4.4   {{- /* https://github.com/FiloSottile/mkcert/releases/latest */}}
 
-lazygit     latest  {{/* https://github.com/jesseduffield/lazygit/releases/latest */}}
+lazygit     0.40.2  {{- /* https://github.com/jesseduffield/lazygit/releases/latest */}}
 
 python      system
 java        system
@@ -12,11 +12,11 @@ ruby        system
 
 {{ if (eq .chezmoi.arch "amd64") -}}
 {{/* Deno only works on x86_64 machines - https://deno.com/manual/getting_started/installation */ -}}
-deno        1.38.2  {{/* https://deno.com/ */}}
+deno        1.38.2  {{- /* https://deno.com/ */}}
 {{ end -}}
 
 {{ if .isdebian -}}
 {{/* We only need neovim and lazydocker in debian-based systems, on arch its provided by the aur */ -}}
-neovim      0.9.4   {{/* https://github.com/neovim/neovim/releases/latest */}}
-lazydocker  0.23.1 # https://github.com/comdotlinux/asdf-lazydocker {{/* https://github.com/jesseduffield/lazydocker/releases/latest */}}
+neovim      0.9.4                                                   {{- /* https://github.com/neovim/neovim/releases/latest */}}
+lazydocker  0.23.1 # https://github.com/comdotlinux/asdf-lazydocker {{- /* https://github.com/jesseduffield/lazydocker/releases/latest */}}
 {{ end -}}

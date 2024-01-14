@@ -56,7 +56,7 @@ size = 10.0
 #         Linux/BSD: { family = "monospace", style = "Regular" }
 #         Windows: { family = "Consolas", style = "Regular" }
 #         macOS: { family = "Menlo", style = "Regular" }
-family = "SourceCodePro"
+family = "SauceCodePro Nerd Font Mono"
 
 [window]
 # decorations_theme_variant = "Dark" | "Light" | "None"

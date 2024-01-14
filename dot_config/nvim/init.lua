@@ -4,7 +4,9 @@ require("plug-configs")
 require("lsp")
 
 vim.g.airline_powerline_fonts = 1
+vim.g.airline_theme = 'base16_gruvbox_dark_pale'
 
+vim.opt.background = 'dark'
 vim.cmd [[colorscheme gruvbox]]
 
 vim.opt.number = true

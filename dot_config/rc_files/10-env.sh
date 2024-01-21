@@ -17,7 +17,7 @@ elif [[ -f $HOME/.asdf/asdf.sh ]]; then
 fi
 
 if [[ "$ASDF" == true ]]; then
-    rust_dir=$(asdf where rust)
+    rust_dir=$(asdf where rust 2>/dev/null || true)
     if [[ -n "$rust_dir" ]]; then
         # shellcheck source=/dev/null
         source "$rust_dir/env"

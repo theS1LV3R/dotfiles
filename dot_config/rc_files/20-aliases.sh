@@ -32,7 +32,7 @@ unset orig
 unset new
 unset checkexists
 
-alias pcat='bat --paging=never -p'
+alias pcat='bat --pager=none --plain'
 
 # ls aliases
 alias ll='ls -l'

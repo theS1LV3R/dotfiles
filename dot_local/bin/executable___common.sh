@@ -34,18 +34,30 @@ alias log=log_info
 
 notify() {
     local icon="$1"
-    local time="$2"
-    local name="$3"
-    local message="$4"
+    local time="$2"              # Time in seconds
+    local name="$3"              # Name in "header" of notification
+    local message="$4"           # Main notification body
+    local urgency="${5:-normal}" # low, normal, critical
 
     local opts=(
         --icon="$icon"
-        --urgency="critical"
-        --wait
+        --urgency="$urgency"
         --app-name="$name"
     )
 
-    timeout "$time" notify-send "${opts[@]}" "$message" 2>/dev/null
+    if [[ $urgency == "critical" ]]; then
+        opts+=(--wait)
+
+        notify-send "${opts[@]}" "$message" &
+        local notification_id=$!
+
+        sleep "$time"
+        kill -INT "$notification_id"
+    else
+        opts+=(--expire-time="$((time * 1000))")
+
+        notify-send "${opts[@]}" "$message"
+    fi
 }
 
 # Reads dependencies in the format of executable:description

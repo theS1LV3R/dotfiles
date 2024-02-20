@@ -31,6 +31,7 @@ export PARALLEL_HOME="$XDG_CONFIG_HOME/parallel"
 export STREAMDECK_UI_CONFIG="$XDG_CONFIG_HOME/streamdeck-ui.json"
 export AWS_SHARED_CREDENTIALS_FILE="$XDG_CONFIG_HOME/aws/credentials"
 export AWS_CONFIG_FILE="$XDG_CONFIG_HOME/aws/config"
+export MC_CONFIG_DIR="$XDG_CONFIG_HOME/minio_cli"
 
 #! XDG_CACHE_HOME
 export CUDA_CACHE_PATH="$XDG_CACHE_HOME/nv"

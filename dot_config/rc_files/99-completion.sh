@@ -18,3 +18,5 @@ _pip_completion() {
 }
 complete -o default -F _pip_completion pip
 # pip bash completion end
+
+complete -C /usr/bin/mcli mcli

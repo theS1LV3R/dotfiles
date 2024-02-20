@@ -6,6 +6,11 @@ Exec="/usr/bin/slack"
 Exec="/usr/bin/slack" "-u"
 {{ end -}}
 
+# Controls where file descriptor 1 (stdout) of the executed processes is connected to. Takes one of inherit,
+# null, tty, journal, kmsg, journal+console, kmsg+console, file:path, append:path, truncate:path, socket or
+# fd:name.
+# null connects standard output to /dev/null, i.e. everything written to it will be lost.
+StandardOutput=null
 Icon=slack
 Name=Slack
 Type=Application

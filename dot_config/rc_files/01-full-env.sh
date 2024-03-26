@@ -66,6 +66,7 @@ export PSQL_HISTORY="$XDG_DATA_HOME/psql_history"
 export PSQLRC="$XDG_CONFIG_HOME/psql/psqlrc"
 export PGHOST="localhost"
 export PG_COLOR="auto"
+export PGPASSFILE="$XDG_DATA_HOME/psql/pgpass"
 
 #! Disable telemetry
 export DOTNET_CLI_TELEMETRY_OPTOUT="true"

@@ -152,3 +152,20 @@ urldecode() {
     : "${*//+/ }"
     echo -e "${_//%/\\x}"
 }
+
+gentestfiles() {
+    local filesizes=(
+        5
+        10
+        15
+        25
+        50
+        100
+        150
+        200
+    )
+
+    for size in "${filesizes[@]}"; do
+        dd if=/dev/zero of="${size}MB" bs=1000 count="$(( size * 1000 ))"
+    done
+}

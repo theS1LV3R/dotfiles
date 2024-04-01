@@ -9,8 +9,10 @@
     email = {{ .email }}
 {{- if .gitgpgsign  }}
     signingkey = {{ .gitsignkey }}
+{{- end }}
 
 [commit]
+{{- if .gitgpgsign  }}
     gpgsign = true
 {{- end }}
 
@@ -43,11 +45,12 @@
     lg1 = log --color --graph --pretty=format:'%Cred%h%Creset %Cgreen(%cr) %C(bold blue)<%an>%Creset -%C(yellow)%d%Creset %s' --abbrev-commit
     lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(red)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''           %C(dim white)<%an> -%C(reset) %C(white)%s%C(reset)' --all
     lg = lg2
+    merge-to = !gitmergeto() { git push `git rev-parse --show-toplevel` `git rev-parse --abbrev-ref HEAD`:$1; } && gitmergeto
 
 [filter "lfs"]
-    clean = git-lfs clean -- %f
-    smudge = git-lfs smudge -- %f
-    process = git-lfs filter-process
+    clean = git lfs clean -- %f
+    smudge = git lfs smudge -- %f
+    process = git lfs filter-process
     required = true
 
 [merge]

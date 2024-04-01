@@ -6,8 +6,9 @@ set -euo pipefail
 readonly repo=https://github.com/rcaloras/bash-preexec.git
 readonly dir="$HOME/.local/share/bash-preexec"
 
-rm -rfv "$dir" || true
-mkdir -vp "$dir"
+rm --recursive --force --verbose "$dir" || true
+# --parents = Create all parent dirs up to the specified directory
+mkdir --verbose --parents "$dir"
 
 (
     # Ensures proper working directory

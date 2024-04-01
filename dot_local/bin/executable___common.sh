@@ -24,7 +24,15 @@ pager() {
 timestamp() { date +'%Y-%m-%d %H:%M:%S'; }
 exists() { command -v "$1" &>/dev/null; }
 
-base_log() { echo -e "$1[$(timestamp) $2]$NC $3"; }
+base_log() {
+    local color=$1
+    local level="$2       "
+    local message=$3
+
+    local padded_level=${level:0:7} # Cut to max width of 7
+
+    echo -e "${color}[$(timestamp)]$padded_level$NC $message"
+}
 
 log_error() { base_log "$RED" "ERROR" "$*" &>/dev/stderr; }
 log_warn() { base_log "$YELLOW" "WARN" "$*"; }
@@ -97,4 +105,13 @@ check_dependencies() {
     unset _dependency
 
     return 1
+}
+
+human_time() {
+    local time=$1 # Seconds
+    local hours=$((time / 60 / 60 % 24))
+    local minutes=$((time / 60 % 60))
+    local seconds=$((time % 60))
+
+    printf '%02d:%02d:%02d' "$hours" "$minutes" "$seconds"
 }

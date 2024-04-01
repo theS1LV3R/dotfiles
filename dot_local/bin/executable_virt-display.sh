@@ -3,13 +3,13 @@
 # vi: ft=bash:ts=4:sw=4
 
 # shellcheck source=executable___common.sh
-source "$home/.local/bin/__common.sh"
+source "$HOME/.local/bin/__common.sh"
 
-readonly DIS_NAME="DP-1-3"       # Don't change it unless you know what it is
-mode_name="mode_tablet" # Set whatever name you like, you may need to change
-width=2000                       # 1368 for iPad Pro
-height=1200                      # 1024 for iPad Pro
-randr_pos="--right-of"           # Default position setting for xrandr command
+readonly DIS_NAME="DP-1-3"  # Don't change it unless you know what it is
+mode_name="mode_tablet"     # Set whatever name you like, you may need to change
+width=2000                  # Size of a Galaxy Tab A7; 1368 for iPad Pro
+height=1200                 # Size of a Galaxy Tab A7; 1024 for iPad Pro
+randr_pos="--right-of"      # Default position setting for xrandr command
 show_help=0
 
 while [[ "$#" -gt 0 ]]; do
@@ -93,7 +93,7 @@ finish() {
 
 trap finish EXIT
 
-CLIP_POS=$(xrandr | grep "$DIS_NAME" | awk '{ print $3 }')
+clip_pos=$(xrandr | grep "$DIS_NAME" | awk '{ print $3 }')
 log_info "Display position: $clip_pos"
 
 log_warn "Display active. CTRL+C to exit"

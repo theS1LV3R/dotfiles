@@ -7,9 +7,12 @@ source "$HOME/.local/bin/__common.sh"
 
 # get data either from stdin or from file
 buf=$(cat "$@")
+readonly buf
 
 copy_backend_remote_tunnel_port=$(tmux show-option -gvq "@copy_backend_remote_tunnel_port" 2>/dev/null || true)
 copy_use_osc52_fallback=$(tmux show-option -gvq "@copy_use_osc52_fallback" 2>/dev/null || true)
+readonly copy_backend_remote_tunnel_port
+readonly copy_use_osc52_fallback
 
 copy_backend=""
 if [[ -n "${DISPLAY-}" ]]; then

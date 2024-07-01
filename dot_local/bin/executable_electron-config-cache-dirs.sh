@@ -10,7 +10,7 @@ readonly search_dirs=(
     "$HOME/.vscode"
 )
 
-readonly find_dirs=(
+readonly dirs=(
     "Crash Reports"
     "Media Cache"
     "Code Cache"
@@ -19,33 +19,43 @@ readonly find_dirs=(
     GPUCache
     Cache
     blob_storage
-    logs
     workspaceStorage
     CachedExtensionVSIXs
     ShaderCache
 )
 
-for sdir in "${search_dirs[@]}"; do
-    for dir in "${find_dirs[@]}"; do
-        sanitized=${dir// /_}
-        sanitized=${sanitized,,}
+for search_dir in "${search_dirs[@]}"; do
+    echo ">>> Searching in $search_dir"
+    for dir in "${dirs[@]}"; do
+        sanitized=${dir// /_} # Replace spaces with _
+        sanitized=${sanitized,,}    # Convert to lowercase
 
-        checked_dirs=$(find "$sdir" -type d -iname "$dir")
+        # Find every directory "$dir" in "$search_dir"
+        checked_dirs=$(find "$search_dir" -type d -iname "$dir")
 
-        echo "Cleaning '$dir'"
+        echo "--- Cleaning '$dir'"
         while IFS= read -r source; do
+            # Skip over empty sources
             [[ -z $source ]] && continue
-            mini_source=${source//"$sdir/"/}
+
+            # Remove search_dir from the resolved path, only leaving the path inside
+            mini_source=${source//"$search_dir/"/}
+
+            # Specify where the symlink sould be created
             target="${XDG_CACHE_HOME:-"$HOME/.cache"}/$mini_source"
 
+            # Ensure the folder exists before adding the symlink
             mkdir -p "$(dirname "$target")"
 
             echo "$source -> $target"
 
+            # If we can't move the source directory to the target, move the contents and remove the source
             if ! mv -v "$source" "$target"; then
-                mv -v "$source" "$target-2"
+                mv -v "$source/"* "$target" || true
+                rm -rf "$source"
             fi
 
+            # Create the symlink
             # ln [TARGET] [LINK NAME]
             ln -s "$target" "$source"
         done <<<"$checked_dirs"

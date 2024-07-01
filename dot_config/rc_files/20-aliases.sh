@@ -97,3 +97,6 @@ alias deactivateLinux="systemctl --user start activate-linux.service"
 alias activateLinux="systemctl --user stop activate-linux.service"
 
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+# Imagemagick deprecated using the `convert` or `magick convert` commands, prints a warning to stderr now
+alias convert="magick"

@@ -1,4 +1,6 @@
 # vi: ft=yaml:ts=2:sw=2
+version: "1"
+
 # What protocol to use when performing git operations. Supported values: ssh, https
 git_protocol: ssh
 
@@ -14,3 +16,4 @@ pager:
 # Aliases allow you to create nicknames for gh commands
 aliases:
   co: pr checkout
+  web: view --web

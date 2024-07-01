@@ -1,5 +1,6 @@
 # vi: ft=toml
 
 [default]
-output = "json"
-region = "eu-central-1"
+output = json
+region = eu-central-1
+

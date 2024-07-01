@@ -1,4 +1,4 @@
-complete -C '/usr/bin/aws_completer' aws
+complete -C "$HOME/.local/bin/aws_completer" aws
 
 for program (
     netlify

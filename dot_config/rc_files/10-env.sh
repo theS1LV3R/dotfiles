@@ -17,8 +17,8 @@ elif [[ -f $HOME/.asdf/asdf.sh ]]; then
 fi
 
 if [[ "$ASDF" == true ]]; then
-    rust_dir=$(asdf where rust 2>/dev/null || true)
-    if [[ -n "$rust_dir" ]]; then
+    rust_dir=$(asdf where rust 2>/dev/null)
+    if [[ -n "$rust_dir" ]] && [[ "$rust_dir" != "System version is selected" ]]; then
         # shellcheck source=/dev/null
         source "$rust_dir/env"
         export CARGO_HOME="$rust_dir"

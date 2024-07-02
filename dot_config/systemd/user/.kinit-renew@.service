@@ -1,0 +1,19 @@
+# vi: ft=systemd-unit-file
+
+[Unit]
+Description=Renew a Kerberos ticket
+
+[Service]
+Type=oneshot
+# Remain as `active` even after main process exits
+RemainAfterExit=yes
+# -R = renew
+# -f = forwardable
+# -p = proxiable
+# -r = renewable lifetime (how long after ticket creation it can be renewed)
+
+# %u =  This is the name of the user running the service manager instance. In case of the system manager this resolves to "root".
+#       - Note that this setting is not influenced by the User= setting configurable in the [Service] section of the service unit.
+# %i = For instantiated units this is the string between the first "@" character and the type suffix. Empty for non-instantiated units.
+# 518400 = 6 days as seconds
+ExecStart=/usr/bin/kinit -R -r 518400 -f -p %u@%i

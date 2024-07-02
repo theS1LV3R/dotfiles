@@ -1,0 +1,11 @@
+[Unit]
+Description=Renew a Kerberos ticket
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+# Run at specified calendar with +/- 1 minute randomness
+RandomizedDelaySec=1min
+
+[Install]
+WantedBy=timers.target

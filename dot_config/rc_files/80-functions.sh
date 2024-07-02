@@ -169,3 +169,11 @@ gentestfiles() {
         dd if=/dev/zero of="${size}MB" bs=1000 count="$(( size * 1000 ))"
     done
 }
+
+s_client() {
+    local host="$1"
+    local port="${2:-443}"
+
+    openssl s_client -showcerts -servername "$host" -connect "$host:$port" </dev/null \
+        | openssl x509 -text -noout
+}

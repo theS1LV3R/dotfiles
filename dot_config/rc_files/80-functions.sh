@@ -149,8 +149,9 @@ optdeps() {
 }
 
 urldecode() {
+    url="$1"
     : "${*//+/ }"
-    echo -e "${_//%/\\x}"
+    echo -e ${url//\%/\\x}
 }
 
 gentestfiles() {

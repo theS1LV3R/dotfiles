@@ -1,11 +1,13 @@
 # vi: ft=desktop
 [Desktop Entry]
 {{ if (eq .slackLaunchMode "on" ) -}}
-Exec="/usr/bin/slack"
+Exec=/usr/bin/slack
 {{ else if (eq .slackLaunchMode "background" ) -}}
-Exec="/usr/bin/slack" "-u"
+Exec=/usr/bin/slack -u
 {{ end -}}
 
+# From systemd.exec(5):
+# StandardOutput=
 # Controls where file descriptor 1 (stdout) of the executed processes is connected to. Takes one of inherit,
 # null, tty, journal, kmsg, journal+console, kmsg+console, file:path, append:path, truncate:path, socket or
 # fd:name.

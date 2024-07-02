@@ -70,9 +70,10 @@ export PGPASSFILE="$XDG_DATA_HOME/psql/pgpass"
 
 #! Disable telemetry
 export DOTNET_CLI_TELEMETRY_OPTOUT="true"
-export STORYBOOK_DISABLE_TELEMETRY=1
-export NEXT_TELEMETRY_DISABLED=1
+export STORYBOOK_DISABLE_TELEMETRY=1 # https://storybook.js.org/docs/configure/telemetry#how-to-opt-out
 export BENTOML_DO_NOT_TRACK=True
+export NEXT_TELEMETRY_DISABLED=1  # https://nextjs.org/telemetry
+export ASTRO_TELEMETRY_DISABLED=1 # https://astro.build/telemetry/
 
 #! ASDF
 export ASDF_CONFIG_FILE="$XDG_CONFIG_HOME/asdf/asdfrc"

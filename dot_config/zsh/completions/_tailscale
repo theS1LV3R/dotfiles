@@ -1,620 +1,198 @@
 #compdef tailscale
-# vi: ft=zsh:ts=4:sw=4
-# shellcheck disable=all
+compdef _tailscale tailscale
 
-__tailscale_debug() { echo "$@" >>"$HOME/.cache/tailscale-autocomp-debug"; }
+# Copyright 2013-2023 The Cobra Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-_tailscale_up() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '--accept-dns=-[accept DNS configuration from the admin panel (default true)]:accept_dns:(true false)'
-        '--accept-risk=-[accept risk and skip confirmation for risk types: lose-ssh,all]:accept_risk:(lose-ssh all)'
-        '--accept-routes=-[accept routes advertised by other Tailscale nodes (default false)]:accept_routes:(true false)'
-        '--advertise-exit-node=-[offer to be an exit node for internet traffic for the tailnet (default false)]:advertise_exit_node:(true false)'
-        '--advertise-routes[routes to advertise to other nodes (comma-separated, e.g. "10.0.0.0/8,192.168.0.0/24") or empty string to not advertise routes]:advertise_routes:'
-        '--advertise-tags[comma-separated ACL tags to request; each must start with "tag:" (e.g. "tag:eng,tag:montreal,tag:ssh")]:advertise_tags:'
-        '--auth-key[node authorization key; if it begins with "file:", then it'\''s a path to a file containing the authkey]:auth_key:'
-        '--exit-node[Tailscale exit node (IP or base name) for internet traffic, or empty string to not use an exit node]:exit_node:'
-        '--exit-node-allow-lan-access=-[Allow direct access to the local network when routing traffic via an exit node (default false)]:exit_node_allow_lan_access:(true false)'
-        '--force-reauth=-[force reauthentication (default false)]:force_reauth:(true false)'
-        '--hostname[hostname to use instead of the one provided by the OS]:hostname:'
-        '--json=-[output in JSON format (WARNING: format subject to change) (default false)]:json:(true false)'
-        '--login-server[base URL of control server (default https://controlplane.tailscale.com)]:login_server:'
-        '--netfilter-mode[netfilter mode (one of on, nodivert, off) (default on)]:netfilter_mode:(on nodivert off)'
-        '--operator[Unix username to allow to operate on tailscaled without sudo]:operator:_users'
-        '--qr=-[show QR code for login URLs (default false)]:qr:(true false)'
-        '--reset=-[reset unspecified settings to their default values (default false)]:reset:(true false)'
-        '--shields-up=-[don'\''t allow incoming connections (default false)]:shields_up:(true false)'
-        '--snat-subnet-routes=-[source NAT traffic to local routes advertised with --advertise-routes (default true)]:snat_subnet_routes:(true false)'
-        '--ssh=-[run an SSH server, permitting access per tailnet admin'\''s declared policy (default false)]:ssh:(true false)'
-        '--timeout[maximum amount of time to wait for tailscaled to enter a Running state; default (0s) blocks forever (default 0s)]:timeout:'
-    )
-    _arguments -C -s $arguments
+# zsh completion for tailscale                            -*- shell-script -*-
+
+__tailscale_debug()
+{
+    local file="$BASH_COMP_DEBUG_FILE"
+    if [[ -n ${file} ]]; then
+        echo "$*" >> "${file}"
+    fi
 }
 
-_tailscale_down() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '--accept-risk=-[accept risk and skip confirmation for risk types: lose-ssh,all]:accept_risk:(lose-ssh all)'
-    )
-    _arguments -C -s $arguments
+_tailscale()
+{
+    local shellCompDirectiveError=1
+    local shellCompDirectiveNoSpace=2
+    local shellCompDirectiveNoFileComp=4
+    local shellCompDirectiveFilterFileExt=8
+    local shellCompDirectiveFilterDirs=16
+    local shellCompDirectiveKeepOrder=32
+
+    local lastParam lastChar flagPrefix requestComp out directive comp lastComp noSpace keepOrder
+    local -a completions
+
+    __tailscale_debug "\n========= starting completion logic =========="
+    __tailscale_debug "CURRENT: ${CURRENT}, words[*]: ${words[*]}"
+
+    # The user could have moved the cursor backwards on the command-line.
+    # We need to trigger completion from the $CURRENT location, so we need
+    # to truncate the command-line ($words) up to the $CURRENT location.
+    # (We cannot use $CURSOR as its value does not work when a command is an alias.)
+    words=("${=words[1,CURRENT]}")
+    __tailscale_debug "Truncated words[*]: ${words[*]},"
+
+    lastParam=${words[-1]}
+    lastChar=${lastParam[-1]}
+    __tailscale_debug "lastParam: ${lastParam}, lastChar: ${lastChar}"
+
+    # For zsh, when completing a flag with an = (e.g., tailscale -n=<TAB>)
+    # completions must be prefixed with the flag
+    setopt local_options BASH_REMATCH
+    if [[ "${lastParam}" =~ '-.*=' ]]; then
+        # We are dealing with a flag with an =
+        flagPrefix="-P ${BASH_REMATCH}"
+    fi
+
+    # Prepare the command to obtain completions
+    requestComp="${words[1]} completion __complete --descs=true --flags=true -- ${words[2,-1]}"
+    if [ "${lastChar}" = "" ]; then
+        # If the last parameter is complete (there is a space following it)
+        # We add an extra empty parameter so we can indicate this to the go completion code.
+        __tailscale_debug "Adding extra empty parameter"
+        requestComp="${requestComp} \"\""
+    fi
+
+    __tailscale_debug "About to call: eval ${requestComp}"
+
+    # Use eval to handle any environment variables and such
+    out=$(eval ${requestComp} 2>/dev/null)
+    __tailscale_debug "completion output: ${out}"
+
+    # Extract the directive integer following a : from the last line
+    local lastLine
+    while IFS='\n' read -r line; do
+        lastLine=${line}
+    done < <(printf "%s\n" "${out[@]}")
+    __tailscale_debug "last line: ${lastLine}"
+
+    if [ "${lastLine[1]}" = : ]; then
+        directive=${lastLine[2,-1]}
+        # Remove the directive including the : and the newline
+        local suffix
+        (( suffix=${#lastLine}+2))
+        out=${out[1,-$suffix]}
+    else
+        # There is no directive specified.  Leave $out as is.
+        __tailscale_debug "No directive found.  Setting do default"
+        directive=0
+    fi
+
+    __tailscale_debug "directive: ${directive}"
+    __tailscale_debug "completions: ${out}"
+    __tailscale_debug "flagPrefix: ${flagPrefix}"
+
+    if [ $((directive & shellCompDirectiveError)) -ne 0 ]; then
+        __tailscale_debug "Completion received error. Ignoring completions."
+        return
+    fi
+
+    while IFS='\n' read -r comp; do
+        if [ -n "$comp" ]; then
+            # If requested, completions are returned with a description.
+            # The description is preceded by a TAB character.
+            # For zsh's _describe, we need to use a : instead of a TAB.
+            # We first need to escape any : as part of the completion itself.
+            comp=${comp//:/\\:}
+
+            local tab="$(printf '\t')"
+            comp=${comp//$tab/:}
+
+            __tailscale_debug "Adding completion: ${comp}"
+            completions+=${comp}
+            lastComp=$comp
+        fi
+    done < <(printf "%s\n" "${out[@]}")
+
+    if [ $((directive & shellCompDirectiveNoSpace)) -ne 0 ]; then
+        __tailscale_debug "Activating nospace."
+        noSpace="-S ''"
+    fi
+
+    if [ $((directive & shellCompDirectiveKeepOrder)) -ne 0 ]; then
+        __tailscale_debug "Activating keep order."
+        keepOrder="-V"
+    fi
+
+    if [ $((directive & shellCompDirectiveFilterFileExt)) -ne 0 ]; then
+        # File extension filtering
+        local filteringCmd
+        filteringCmd='_files'
+        for filter in ${completions[@]}; do
+            if [ ${filter[1]} != '*' ]; then
+                # zsh requires a glob pattern to do file filtering
+                filter="\*.$filter"
+            fi
+            filteringCmd+=" -g $filter"
+        done
+        filteringCmd+=" ${flagPrefix}"
+
+        __tailscale_debug "File filtering command: $filteringCmd"
+        _arguments '*:filename:'"$filteringCmd"
+    elif [ $((directive & shellCompDirectiveFilterDirs)) -ne 0 ]; then
+        # File completion for directories only
+        local subdir
+        subdir="${completions[1]}"
+        if [ -n "$subdir" ]; then
+            __tailscale_debug "Listing directories in $subdir"
+            pushd "${subdir}" >/dev/null 2>&1
+        else
+            __tailscale_debug "Listing directories in ."
+        fi
+
+        local result
+        _arguments '*:dirname:_files -/'" ${flagPrefix}"
+        result=$?
+        if [ -n "$subdir" ]; then
+            popd >/dev/null 2>&1
+        fi
+        return $result
+    else
+        __tailscale_debug "Calling _describe"
+        if eval _describe $keepOrder "completions" completions $flagPrefix $noSpace; then
+            __tailscale_debug "_describe found some completions"
+
+            # Return the success of having called _describe
+            return 0
+        else
+            __tailscale_debug "_describe did not find completions."
+            __tailscale_debug "Checking if we should do file completion."
+            if [ $((directive & shellCompDirectiveNoFileComp)) -ne 0 ]; then
+                __tailscale_debug "deactivating file completion"
+
+                # We must return an error code here to let zsh know that there were no
+                # completions found by _describe; this is what will trigger other
+                # matching algorithms to attempt to find completions.
+                # For example zsh can match letters in the middle of words.
+                return 1
+            else
+                # Perform file completion
+                __tailscale_debug "Activating file completion"
+
+                # We must return the result of this command, so it must be the
+                # last command, or else we must store its result to return it.
+                _arguments '*:filename:_files'" ${flagPrefix}"
+            fi
+        fi
+    fi
 }
 
-_tailscale_set() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '--accept-dns=-[accept DNS configuration from the admin panel]:accept_dns:(true false)'
-        '--accept-risk=-[accept risk and skip confirmation for risk types: lose-ssh,all]:accept_risk:(lose-ssh all)'
-        '--accept-routes=-[accept routes advertised by other Tailscale nodes (default false)]:accept_routes:(true false)'
-        '--advertise-exit-node=-[offer to be an exit node for internet traffic for the tailnet (default false)]:advertise_exit_node:(true false)'
-        '--advertise-routes[routes to advertise to other nodes (comma-separated, e.g. "10.0.0.0/8,192.168.0.0/24") or empty string to not advertise routes]:advertise_routes:'
-        '--exit-node[Tailscale exit node (IP or base name) for internet traffic, or empty string to not use an exit node]:exit_node:'
-        '--exit-node-allow-lan-access=-[Allow direct access to the local network when routing traffic via an exit node (default false)]:exit_node_allow_lan_access:(true false)'
-        '--hostname[hostname to use instead of the one provided by the OS]:hostname:'
-        '--nickname[nickname for the current account]:nickname:'
-        '--operator[Unix username to allow to operate on tailscaled without sudo]:operator:_users'
-        '--shields-up=-[don'\''t allow incoming connections (default false)]:shields_up:(true false)'
-        '--ssh=-[run an SSH server, permitting access per tailnet admin'\''s declared policy (default false)]:ssh:(true false)'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_login() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '--accept-dns=-[accept DNS configuration from the admin panel]:accept_dns:(true false)'
-        '--accept-routes=-[accept routes advertised by other Tailscale nodes (default false)]:accept_routes:(true false)'
-        '--advertise-tags[comma-separated ACL tags to request; each must start with "tag:" (e.g. "tag:eng,tag:montreal,tag:ssh")]:advertise_tags:'
-        '--auth-key[node authorization key; if it begins with "file:", then it'\''s a path to a file containing the authkey]:auth_key:'
-        '--exit-node[Tailscale exit node (IP or base name) for internet traffic, or empty string to not use an exit node]:exit_node:'
-        '--exit-node-allow-lan-access=-[Allow direct access to the local network when routing traffic via an exit node (default false)]:exit_node_allow_lan_access:(true false)'
-        '--hostname[hostname to use instead of the one provided by the OS]:hostname:'
-        '--nickname[nickname for the current account]:nickname:'
-        '--operator[Unix username to allow to operate on tailscaled without sudo]:operator:_users'
-        '--qr=-[show QR code for login URLs (default false)]:qr:(true false)'
-        '--shields-up=-[don'\''t allow incoming connections (default false)]:shields_up:(true false)'
-        '--snat-subnet-routes=-[source NAT traffic to local routes advertised with --advertise-routes (default true)]:snat_subnet_routes:(true false)'
-        '--ssh=-[run an SSH server, permitting access per tailnet admin'\''s declared policy (default false)]:ssh:(true false)'
-        '--timeout[maximum amount of time to wait for tailscaled to enter a Running state; default (0s) blocks forever (default 0s)]:timeout:'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_logout() {
-    # Has no additional options or commands
-    local arguments=('(-h --help)'{-h,--help}'[Show help information]')
-    _arguments -C -s $arguments
-}
-
-_tailscale_switch() {
-    local list=(
-        $(tailscale switch --list | awk '{ print $1 }')
-    )
-
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '--list[list accounts to switch between]'
-        "1: :($list)"
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_configure() {
-    local -a commands
-
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '1: :->command'
-        '*::arg:->args'
-    )
-    _arguments -C -s $arguments
-
-    case "$state" in
-    command)
-        local commands=(
-            'kubeconfig:[ALPHA] Connect to a Kubernetes cluster using a Tailscale Auth Proxy'
-        )
-        _describe "commands" commands
-        ;;
-    esac
-
-    case "${words[1]}" in
-    kubeconfig)
-        _tailscale_configure_kubeconfig
-        ;;
-    esac
-}
-
-_tailscale_configure_kubeconfig() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '1: :_hosts'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_netcheck() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '--every[if non-zero, do an incremental report with the given frequency (default 0s)]:every:'
-        '--format[output format; empty (for human-readable), "json" or "json-line"]:format:((""\:"human readable" json json-line))'
-        '--verbose=-[vebose logs (default false)]:verbose:(true false)'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_ip() {
-    local status_output=$(tailscale status)
-    local clients=$(echo "$status_output" | awk '{ print $2 }')
-    local ips=$(echo "$status_output" | awk '{ print $1 }')
-
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '--1=-[only print one IP address (default false)]: :(true false)'
-        + '(4 6)'
-        '--4=-[only print IPv4 address (default false)]: :(true false)'
-        '--6=-[only print IPv6 address (default false)]: :(true false)'
-        "1:: :($clients $ips)"
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_status() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '--active=-[filter output to only peers with active sessions (not applicable to web mode) (default false)]:active:(true false)'
-        '--browser=-[Open a browser in web mode (default true)]:browser:(true false)'
-        '--json=-[output in JSON format (WARNING: format subject to change) (default false)]:json:(true false)'
-        '--listen[listen address for web mode; use port 0 for automatic (default 127.0.0.1:8384)]:listen:'
-        '--peers=-[show status of peers (default true)]:peers:(true false)'
-        '--self=-[show status of local machine (default true)]:peers:(true false)'
-        '--web=-[run webserver with HTML showing status (default false)]:peers:(true false)'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_ping() {
-    local status_output=$(tailscale status)
-    local clients=$(echo "$status_output" | awk '{ print $2 }')
-    local ips=$(echo "$status_output" | awk '{ print $1 }')
-
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '--c[max number of pings to send. 0 for infinity. (default 10)]:int:'
-        '--icmp=-[do a ICMP-level ping (through WireGuard, but not the local host OS stack) (default false)]:icmp:(true false)'
-        '--peerapi=-[try hitting the peer'\''s peerapi HTTP server (default false)]:peerapi:(true false)'
-        '--timeout[timeout before giving up on a ping (default 5s)]:duration:'
-        '--tsmp=-[do a TSMP-level ping (through WireGuard, but not either host OS stack) (default false)]:tsmp:(true false)'
-        '--until-direct=-[stop once a direct path is established (default true)]:until_direct:(true false)'
-        '--verbose=-[verbose output (default false)]:verbose:(true false)'
-        "1: :($clients $ips)"
-        "*::args:->args"
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_nc() {
-    local status_output=$(tailscale status)
-    local clients=$(echo "$status_output" | awk '{ print $2 }')
-    local ips=$(echo "$status_output" | awk '{ print $1 }')
-
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        "1: :($clients $ips)"
-        "*::arg:->args"
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_ssh() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_funnel() {
-    local -a commands
-
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '1: :->command'
-    )
-    _arguments -C -s $arguments
-
-    case "$state" in
-    command)
-        local commands=(
-            'status:show current serve/funnel status'
-        )
-        _describe "commands" commands
-        ;;
-    esac
-
-    case "${words[1]}" in
-    status)
-        local arguments=(
-            '(-h --help)'{-h,--help}'[Show help information]'
-            '--json=-[output JSON (default false)]:json:(true false)'
-        )
-        _arguments -C -s $arguments
-        ;;
-    esac
-}
-
-_tailscale_serve() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_version() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '--daemon=-[also print local node'\''s daemon version (default false)]:daemon:(true false)'
-        '--json=-[output in JSON format (default false)]:json:(true false)'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_web() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '--cgi=-[run as CGI script (default false)]:cgi:(true false)'
-        '--listen[listen address; use port 0 for automatic (default localhost:8088)]:string:'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_file() {
-    local -a commands
-
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '1: :->command'
-        '*::arg:->args'
-    )
-    _arguments -C -s $arguments
-
-    case "$state" in
-    command)
-        local commands=(
-            'cp:Copy file(s) to a host'
-            'get:Move files out of the Tailscale file inbox'
-        )
-        _describe "command" commands
-        ;;
-    esac
-
-    case "${words[1]}" in
-    cp)
-        _tailscale_file_cp
-        ;;
-    get)
-        _tailscale_file_get
-        ;;
-    esac
-}
-
-_tailscale_file_cp() {
-    _ssh_users() {
-        _combination -s '[:@]' my-accounts users-hosts users "$@"
-    }
-
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '--name[alternate filename to use, especially useful when <file> is "-" (stdin)]:name:'
-        '--targets=-[list possible file cp targets]:targets:(true false)'
-        '--verbose=-[verbose output]:verbose:(true false)'
-        '*: :'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_file_get() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '--conflict[behavior when a conflicting (same-named) file already exists in the target directory.]:action:->conflict'
-        '--loop=-[run get in a loop, receiving files as they come in]:loop:(true false)'
-        '--verbose=-[verbose output]:verbose:(true false)'
-        '--wait=-[wait for a file to recieve if inbox is empty]:wait:(true false)'
-        '1: :_directories'
-    )
-    _arguments -C -s $arguments
-
-    __tailscale_debug "file get state = $state"
-
-    case "$state" in
-    conflict)
-        local actions=(
-            "skip:skip conflicting files: leave them in the taildrop inbox and print an error. get any non-conflicting files"
-            "overwrite:overwrite existing file"
-            "rename:write to a new number-suffixed filename"
-        )
-        _describe "action" actions
-        ;;
-    esac
-}
-
-_tailscale_bugreport() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '--diagnose=-[run additional in-depth checks (default false)]:diagnose:(true false)'
-        '--record=-[if true, pause and then write another bugreport (default false)]:record:(true false)'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_cert() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '--cert-file[]:string:'
-        '--key-file[]:string:'
-        '--serve-demo=-[]:serve_demo:(true false)'
-        '1: :_domains'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_lock() {
-    local -a commands
-
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '1: :->commands'
-        '1::arg:->args'
-    )
-    _arguments -C -s $arguments
-
-    case "$state" in
-    commands)
-        local commands=(
-            'init:Initialize tailnet lock'
-            'status:Outputs the state of tailnet lock'
-            'add:Adds one or more trusted signing keys to tailnet lock'
-            'remove:Removes one or more trusted signing keys from tailnet lock'
-            'sign:Signs a node or pre-approved auth key'
-            'disable:Consumes a disablement secret to shut down tailnet lock for the tailnet'
-            'disablement-kdf:Computes a disablement value from a disablement secret (advanced users only)'
-            'log:List changes applied to tailnet lock'
-            'local-disable:Disables tailnet lock for this node only'
-        )
-        _describe "command" commands
-        ;;
-    esac
-
-    case "${words[1]}" in
-    init)
-        _tailscale_lock_init
-        ;;
-    status)
-        _tailscale_lock_status
-        ;;
-    add)
-        _tailscale_lock_add
-        ;;
-    remove)
-        _tailscale_lock_remove
-        ;;
-    sign)
-        _tailscale_lock_sign
-        ;;
-    disable)
-        _tailscale_lock_disable
-        ;;
-    disablement-kdf)
-        _tailscale_lock_disablement-kdf
-        ;;
-    log)
-        _tailscale_lock_log
-        ;;
-    local-disable)
-        _tailscale_lock_local-disable
-        ;;
-    esac
-}
-
-_tailscale_lock_init() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '--confirm=-[do not prompt for confirmation]:confirm:(true false)'
-        '--gen-disablement-for-support=-[generates and transmits a disablement secret for Tailscale support]:gen_disablement_for_support:(true false)'
-        '--gen-disablements[number of disablement secrets to generate]:number:'
-        '1: :'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_lock_status() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '--json=-[output in JSON format (WARNING: format subject to change)]:json:(true false)'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_lock_add() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '1: :'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_lock_remove() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '--re-sign=-[resign signatures which would be invalidated by removal of trusted signing keys]:re_sign:(true false)'
-        '1: :'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_lock_sign() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '*: :'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_lock_disable() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '1: :'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_lock_disablement-kdf() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '1: :'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_lock_log() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '--json=-[output in JSON format (WARNING: format subject to change)]:json:(true false)'
-        '--limit[max number of updates to list]:limit:'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_lock_local-disable() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale_licenses() {
-    local arguments=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-    )
-    _arguments -C -s $arguments
-}
-
-_tailscale() {
-    __tailscale_debug "=== Tailscale debug at $(date) ==="
-
-    local context state state_descr line
-    local -a _options
-
-    local _options=(
-        '(-h --help)'{-h,--help}'[Show help information]'
-        '1: :->command'
-        '*::arg:->args'
-    )
-
-    local _commands=(
-        "up:Connect to Tailscale, logging in if needed"
-        "down:Disconnect from Tailscale"
-        "set:Change specified preferences"
-        "login:Log in to a Tailscale account"
-        "logout:Disconnect from Tailscale and expire current node key"
-        "switch:Switches to a different Tailscale account"
-        "configure:[ALPHA] Configure the host to enable more Tailscale features"
-        "netcheck:Print an analysis of local network conditions"
-        "ip:Show Tailscale IP addresses"
-        "status:Show state of tailscaled and its connections"
-        "ping:Ping a host at the Tailscale layer, see how it routed"
-        "nc:Connect to a port on a host, connected to stdin/stdout"
-        "ssh:SSH to a Tailscale machine"
-        "funnel:Turn on/off Funnel service"
-        "serve:Serve content and local servers"
-        "version:Print Tailscale version"
-        "web:Run a web server for controlling Tailscale"
-        "file:Send or receive files"
-        "bugreport:Print a shareable identifier to help diagnose issues"
-        "cert:Get TLS certs"
-        "lock:Manage tailnet lock"
-        "licenses:Get open source license information"
-    )
-
-    _arguments -C -s \
-        $_options
-
-    __tailscale_debug "state = $state"
-    __tailscale_debug "words = $words"
-
-    case "$state" in
-    command)
-        _describe "commands" _commands
-        ;;
-    esac
-
-    case "${words[1]}" in
-    up)
-        _tailscale_up
-        ;;
-    down)
-        _tailscale_down
-        ;;
-    set)
-        _tailscale_set
-        ;;
-    login)
-        _tailscale_login
-        ;;
-    logout)
-        _tailscale_logout
-        ;;
-    switch)
-        _tailscale_switch
-        ;;
-    configure)
-        _tailscale_configure
-        ;;
-    netcheck)
-        _tailscale_netcheck
-        ;;
-    ip)
-        _tailscale_ip
-        ;;
-    status)
-        _tailscale_status
-        ;;
-    ping)
-        _tailscale_ping
-        ;;
-    nc)
-        _tailscale_nc
-        ;;
-    ssh)
-        _tailscale_ssh
-        ;;
-    funnel)
-        _tailscale_funnel
-        ;;
-    serve)
-        _tailscale_serve
-        ;;
-    version)
-        _tailscale_version
-        ;;
-    web)
-        _tailscale_web
-        ;;
-    file)
-        _tailscale_file
-        ;;
-    bugreport)
-        _tailscale_bugreport
-        ;;
-    cert)
-        _tailscale_cert
-        ;;
-    lock)
-        _tailscale_lock
-        ;;
-    licenses)
-        _tailscale_licenses
-        ;;
-    esac
-}
-
-_tailscale
+# don't run the completion function when being source-ed or eval-ed
+if [ "$funcstack[1]" = "_tailscale" ]; then
+    _tailscale
+fi

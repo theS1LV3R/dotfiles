@@ -5,16 +5,35 @@
 # shellcheck source=executable___common.sh
 source "$HOME/.local/bin/__common.sh"
 
-
 set -o errexit                  # exit on error
-set -o pipefail                 # fail early in piped commands
 set -o nounset                  # do not use unset variables
+set -o pipefail                 # fail early in piped commands
 [[ -n "${TRACE:-}" ]] && set -x # debug
 
-readonly dependencies=(
+#############
+# Constants #
+#############
+
+readonly EXIT_OK=0
+readonly EXIT_GENERAL_ERR=1
+readonly EXIT_GETOPT_ERR=2
+readonly EXIT_OPTIONS_ERROR=3
+
+# Dependencies in the format of "executable:"
+readonly DEPENDENCIES=(
     getopt
     
 )
+
+#############
+# Variables #
+#############
+
+#? general variables
+
+#####################
+# Utility functions #
+#####################
 
 usage() {
     cat <<EOF
@@ -48,18 +67,18 @@ get_options() {
     if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
         # e.g. return value is 1
         #  then getopt has complained about wrong arguments to stdout
-        exit 2
+        exit "$EXIT_GETOPT_ERR"
     fi
 
     # read getopt’s output this way to handle the quoting right:
     eval set -- "$parsed"
 
-    while true; do
+    while [[ "$#" -gt 0 ]]; do
         case "$1" in
         -h | --help)
             usage
             shift
-            exit 0
+            exit "$EXIT_OK"
             ;;
         --)
             shift
@@ -67,15 +86,20 @@ get_options() {
             ;;
         *)
             echo "Programming error" >&2
-            exit 3
+            exit "$EXIT_OPTIONS_ERROR"
             ;;
         esac
+        shift
     done
 }
 
+##################
+# Main functions #
+##################
+
 main() {
+    check_dependencies "${DEPENDENCIES[@]}"
     get_options "$@"
-    check_dependencies "${dependencies[@]}"
 
     # DO STUFF HERE
 }

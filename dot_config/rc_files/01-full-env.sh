@@ -112,5 +112,7 @@ fi
 
 export EDITOR="nvim"
 export VISUAL="nvim"
+BROWSER="$(xdg-settings get default-web-browser | sed -e 's|\.desktop$||' || true)"
+export BROWSER
 
 export PROMPT_EOL_MARK=""

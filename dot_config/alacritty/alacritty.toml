@@ -13,6 +13,7 @@
 #         "~/.config/alacritty/base16-dark.toml",
 #         "~/.config/alacritty/keybindings.toml",
 #         ]
+[general]
 import = ["~/.config/alacritty/themes/repo/gruvbox_dark.toml"]
 
 # live_config_reload = true | false

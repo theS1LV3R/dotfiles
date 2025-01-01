@@ -18,21 +18,20 @@ printf "\033[0;37mWHITE   \033[1;30mBLACK\n"
 
 printf "\033[0m\n\n"
 
+readonly text_styles=(
+    "Normal"
+    "Bold"
+    "Dim"
+    "Italic"
+    "Underlined"
+    "Blinking (non-standard)"
+    "Inverted (non-standard)"
+    "Hidden (non-standard)"
+    "Strikethrough (non-standard)"
+)
 echo -n "TEXT STYLE"
 for style_index in {0..8}; do
-    case $style_index in
-    0) style="Normal" ;;
-    1) style="Bold" ;;
-    2) style="Dim" ;;
-    3) style="Italic" ;;
-    4) style="Underlined" ;;
-    5) style="Blinking (non-standard)" ;;
-    6) style="Inverted (non-standard)" ;;
-    7) style="Hidden (non-standard)" ;;
-    8) style="Strikethrough (non-standard)" ;;
-    *) return ;; # How did we get here
-    esac
-    echo -e "\n$style_index - $style:"
+    echo -e "\n$style_index - ${text_styles[$style_index]}:"
     for fg in {30..37}; do
         for bg in {40..47}; do
             # Print a colored block with the current style and colors

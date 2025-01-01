@@ -75,8 +75,8 @@ def ssl_certificate(hostname: str, port: int, *args, **kwargs) -> None:
     logger.debug("Extracting parameters")
     subject = cert.subject.rfc4514_string().replace("=", " = ")
     issuer = ", ".join(reversed(cert.issuer.rfc4514_string().split(",")))
-    valid_from = cert.not_valid_before
-    valid_after = cert.not_valid_after
+    valid_from = cert.not_valid_before_utc
+    valid_after = cert.not_valid_after_utc
     sans = cert.extensions.get_extension_for_class(
         x509.SubjectAlternativeName).value.get_values_for_type(x509.DNSName)
 

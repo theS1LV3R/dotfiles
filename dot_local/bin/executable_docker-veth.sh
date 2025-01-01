@@ -27,8 +27,8 @@ Options:
 Example:
     $ docker-veth.sh
     Interface   Container ID    Container name
-    eth0@if123  d7005eab838a    postgres_db
-    eth1@if456  abcdef012345    container_name
+    veth0@if123  d7005eab838a    postgres_db
+    veth1@if456  abcdef012345    container_name
 
     $ docker-veth.sh --help
     Display this help message and exit.
@@ -45,7 +45,7 @@ get_veth() {
 
     # This function expects docker container ID as the first argument
     container_id="$1"
-    veth=""
+    veth="not found"
     networkmode=$(docker inspect -f "{{.HostConfig.NetworkMode}}" "$container_id")
 
     if [[ "$networkmode" == "host" ]]; then
@@ -53,9 +53,7 @@ get_veth() {
     else
         pid=$(docker inspect --format '{{.State.Pid}}' "$container_id")
         ifindex=$(sudo nsenter -t "$pid" -n ip link | sed -n -e 's/.*eth0@if\([0-9]*\):.*/\1/p')
-        if [[ -z "$ifindex" ]]; then
-            veth="not found"
-        else
+        if [[ -n "$ifindex" ]]; then
             veth=$(ip -o link | grep ^"$ifindex" | sed -n -e 's/.*\(veth[[:alnum:]]*@if[[:digit:]]*\).*/\1/p')
         fi
     fi

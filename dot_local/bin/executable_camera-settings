@@ -34,6 +34,8 @@ source "$HOME/.local/bin/__common.sh"
 
 ####
 
+ctrls=""
+
 readonly DEFAULT_NAME="Logi 4K Stream Edition"
 device=""
 
@@ -161,7 +163,7 @@ get_options() {
             ;;
         --preset)
             case "$2" in
-            default)
+            custom)
                 brightness=100
                 contrast=135
                 saturation=125
@@ -178,6 +180,24 @@ get_options() {
                 tilt_absolute=0
                 focus_automatic_continuous=$TRUE
                 zoom_absolute=130
+                ;;
+            default)
+                brightness=128
+                contrast=128
+                saturation=128
+                white_balance_automatic=$TRUE
+                gain=0
+                power_line_frequency=2
+                #white_balance_temperature=400 # x10 due to step # Disabled due to white_balance_automatic 1 (True)
+                sharpness=128
+                backlight_compensation=$TRUE
+                auto_exposure=3
+                #exposure_time_absolute=250 # Disabled due to auto_exposure 3 (Aperture Priority Mode)
+                exposure_dynamic_framerate=$FALSE
+                pan_absolute=0
+                tilt_absolute=0
+                focus_automatic_continuous=$TRUE
+                zoom_absolute=100
                 ;;
             *)
                 log_error "Unknown preset '$2'"
@@ -210,13 +230,10 @@ get_ctl_limit() {
     local limit_key="$2"
 
     local line
-    local ctrls
     local kvpairs
     local kv
     local key
     local value
-
-    ctrls=$(v4l2 --list-ctrls)
 
     line=$(grep "$option_key" <<<"$ctrls")
     line="${line#*: }" # Remove everything before ': '
@@ -236,38 +253,36 @@ get_menu_options() {
 
     local start_line end_line
     # Find line that contains the menu key
-    start_line=$(v4l2 --list-ctrls-menus | grep -n "$menu_key" | cut -d: -f1)
+    start_line=$(grep -n "$menu_key" <<<"$ctrls" | cut -d: -f1)
     # Find the next key after the menus
-    end_line=$(v4l2 --list-ctrls-menus | tail -n +$((start_line + 1)) | grep -E -n -m 1 '^\s+[a-z]' | cut -d: -f1)
+    end_line=$(tail -n +$((start_line + 1)) <<<"$ctrls" | grep -E -n -m 1 '^\s+[a-z]' | cut -d: -f1)
 
     if [[ -z "$end_line" ]]; then
         # If there is no end of the block, use the rest of the output
-        end_line=$(wc -l < <(v4l2 --list-ctrls-menus))
+        end_line=$(wc -l <<<"$ctrls")
     else
         end_line=$((start_line + end_line - 1))
     fi
 
     # Only display the line after the menu key, and before the following key
-    v4l2 --list-ctrls-menus | sed -n "$((start_line + 1)),$end_line"p | awk '{$1=$1;print}' | cut -d: -f1
+    sed -n "$((start_line + 1)),$end_line"p <<<"$ctrls" | awk '{$1=$1;print}' | cut -d: -f1
 }
 
 int() {
     local setting="$1"
-    local suffix="${2:-}"
-    local adjustment="${setting}${suffix}"
-    local -n adjustment_ref="$adjustment"
+    local -n adjustment_ref="$setting"
 
     if ! [[ "$adjustment_ref" =~ ^[+-]?[0-9]+$ ]]; then
         log_error "Invalid $setting option format '$adjustment_ref'. Should be (+|-)?number, e.g. +5."
-        adjustment_ref=0
+        adjustment_ref=""
         return
     fi
 
     local current min max new
-    current="$(v4l2 --get-ctrl "$adjustment" | cut -d' ' -f2)"
-    min="$(get_ctl_limit "$adjustment" min)"
-    max="$(get_ctl_limit "$adjustment" max)"
-    step="$(get_ctl_limit "$adjustment" step)"
+    current="$(v4l2 --get-ctrl "$setting" | cut -d' ' -f2)"
+    min="$(get_ctl_limit "$setting" min)"
+    max="$(get_ctl_limit "$setting" max)"
+    step="$(get_ctl_limit "$setting" step)"
     if [[ "$adjustment_ref" =~ ^[+-] ]]; then
         new=$((current + (adjustment_ref * step)))
     else
@@ -276,8 +291,7 @@ int() {
     [[ $new -gt $max ]] && new=$max
     [[ $new -lt $min ]] && new=$min
 
-    v4l2 --set-ctrl "$adjustment=$new"
-    log_info "Updated $setting. Old: $current. New: $new."
+    echo "$setting=$new"
 }
 
 bool() {
@@ -290,10 +304,7 @@ bool() {
         return
     fi
 
-    current="$(v4l2 --get-ctrl "$setting" | cut -d' ' -f2)"
-
-    v4l2 --set-ctrl "$setting=$adjustment_ref"
-    log_info "Updated $setting. Old: $current. New: $adjustment_ref."
+    echo "$setting=$adjustment_ref"
 }
 
 menu() {
@@ -309,10 +320,7 @@ menu() {
         return
     fi
 
-    current="$(v4l2 --get-ctrl "$setting" | cut -d' ' -f2)"
-
-    v4l2 --set-ctrl "$setting=$adjustment_ref"
-    log_info "Updated $setting. Old: $current. New: $adjustment_ref."
+    echo "$setting=$adjustment_ref"
 }
 
 main() {
@@ -332,41 +340,39 @@ main() {
         exit "$EXIT_INCORRECT_DEVICE"
     fi
 
+    ctrls=$(v4l2 --list-ctrls-menus)
+
+    local menu_options=()
+    local bool_options=()
+    local int_options=()
+
+    ## Menu
+    for option in power_line_frequency auto_exposure; do
+        [[ -z "${!option}" ]] && continue
+        menu_options+=(--set-ctrl "$(menu "$option")")
+    done
+
+    ## Bool
+    for option in white_balance_automatic focus_automatic_continuous exposure_dynamic_framerate; do
+        [[ -z "${!option}" ]] && continue
+        bool_options+=(--set-ctrl "$(bool "$option")")
+    done
+
+    ## Int
     # User controls
-    ## Menu
-    for option in power_line_frequency; do
+    for option in brightness contrast saturation gain white_balance_temperature sharpness backlight_compensation exposure_time_absolute pan_absolute tilt_absolute focus_absolute zoom_absolute; do
         [[ -z "${!option}" ]] && continue
-        menu "$option"
-    done
-    ## Bool
-    for option in white_balance_automatic; do
-        [[ -z "${!option}" ]] && continue
-        bool "$option"
-    done
-    ## Int
-    for option in brightness contrast saturation gain white_balance_temperature sharpness backlight_compensation; do
-        [[ -z "${!option}" ]] && continue
-        int "$option"
+        int_options+=(--set-ctrl "$(int "$option")")
     done
 
-    # Camera controls
-    ## Menu
-    for option in auto_exposure; do
-        [[ -z "${!option}" ]] && continue
-        menu "$option"
+    for type in menu bool int; do
+        local -n options="${type}_options"
+        if [[ ${#options[@]} -gt 0 ]]; then
+            log_info "Updated $type settings:"
+            v4l2 "${options[@]}"
+            printf -- '- %s\n' "${options[@]}" | grep -v 'set-ctrl'
+        fi
     done
-    ## Bool
-    for option in focus_automatic_continuous exposure_dynamic_framerate; do
-        [[ -z "${!option}" ]] && continue
-        bool "$option"
-    done
-    ## Int
-    for option in exposure_time pan tilt focus zoom; do
-        varname="${option}_absolute"
-        [[ -z "${!varname}" ]] && continue
-        int "$option" "_absolute"
-    done
-
 }
 
 main "$@"

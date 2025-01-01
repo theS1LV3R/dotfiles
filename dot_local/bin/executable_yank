@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck shell=bash
 # vi: ft=bash:ts=4:sw=4
+# based on https://github.com/samoshkin/tmux-config/blob/master/tmux/yank.sh
 
 # shellcheck source=executable___common.sh
 source "$HOME/.local/bin/__common.sh"
@@ -20,11 +21,11 @@ if [[ -n "${DISPLAY-}" ]]; then
     exists xsel && copy_backend="xsel -i --clipboard"
     exists xclip && copy_backend="xclip -i -f -selection primary | xclip -i -selection clipboard"
 
-elif [[ -n "${copy_backend_remote_tunnel_port-}" ]]; then
+elif [[ -n "${copy_backend_remote_tunnel_port:-}" ]]; then
     # If we dont have DISPLAY we are probably remoted and/or using tmux
     # -l = listening sockets only
     # -n = numeric, don't resolve IPs to hosts or ports to services
-    # -f = show RFCOMM sockets (bluetooth) (not enabled on arch?)
+    # -f = show RFCOMM sockets (bluetooth) (not enabled on arch? "netstat: feature `AF BLUETOOTH' not supported.")
 
     # I am guessing we are checking if we are listening on the remote tunnel port provided?
     # And using netcat if we are

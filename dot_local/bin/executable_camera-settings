@@ -1,0 +1,372 @@
+#!/usr/bin/env bash
+# shellcheck shell=bash
+# vi: ft=bash:ts=4:sw=4
+
+# shellcheck source=executable___common.sh
+source "$HOME/.local/bin/__common.sh"
+
+# User Controls
+#
+#                      brightness 0x00980900 (int)    : min=0     max=255   step=1   default=128   value=100
+#                        contrast 0x00980901 (int)    : min=0     max=255   step=1   default=128   value=135
+#                      saturation 0x00980902 (int)    : min=0     max=255   step=1   default=128   value=125
+#                            gain 0x00980913 (int)    : min=0     max=255   step=1   default=0     value=80
+#                       sharpness 0x0098091b (int)    : min=0     max=255   step=1   default=128   value=90
+#          backlight_compensation 0x0098091c (int)    : min=0     max=1     step=1   default=1     value=1
+#       white_balance_temperature 0x0098091a (int)    : min=2000  max=7500  step=10  default=4000  value=3300
+#
+#            power_line_frequency 0x00980918 (menu)   : min=0     max=2              default=2     value=1 (50 Hz)
+#
+#         white_balance_automatic 0x0098090c (bool)   :                              default=1     value=0
+#
+# Camera Controls
+#
+#          exposure_time_absolute 0x009a0902 (int)    : min=3       max=2047   step=1     default=250  value=330
+#                    pan_absolute 0x009a0908 (int)    : min=-36000  max=36000  step=3600  default=0    value=0
+#                   tilt_absolute 0x009a0909 (int)    : min=-36000  max=36000  step=3600  default=0    value=0
+#                  focus_absolute 0x009a090a (int)    : min=0       max=255    step=5     default=0    value=30 flags=inactive
+#                   zoom_absolute 0x009a090d (int)    : min=100     max=500    step=1     default=100  value=130
+#
+#                   auto_exposure 0x009a0901 (menu)   : min=0       max=3                 default=3    value=1 (Manual Mode)
+#
+#      focus_automatic_continuous 0x009a090c (bool)   :                                   default=1 value=1
+#      exposure_dynamic_framerate 0x009a0903 (bool)   :                                   default=0 value=0
+
+####
+
+readonly DEFAULT_NAME="Logi 4K Stream Edition"
+device=""
+
+brightness=""
+contrast=""
+saturation=""
+white_balance_automatic=""
+gain=""
+power_line_frequency=""
+white_balance_temperature=""
+sharpness=""
+backlight_compensation=""
+
+auto_exposure=""
+exposure_time_absolute=""
+exposure_dynamic_framerate=""
+pan_absolute=""
+tilt_absolute=""
+focus_absolute=""
+focus_automatic_continuous=""
+zoom_absolute=""
+
+readonly focus_far=0
+readonly focus_close=40 # x5, due to step
+
+readonly EXIT_GETOPT_ERR=1
+readonly EXIT_OPTION=2
+readonly EXIT_INCORRECT_DEVICE=3
+
+readonly dependencies=(
+    getopt
+    "v4l2-ctl:Setting options"
+    "grep:Matching device"
+    "tail:Matching device"
+    "awk:Getting device path"
+)
+
+readonly TRUE=1
+readonly FALSE=0
+
+set -o errexit                  # exit on error
+set -o pipefail                 # fail early in piped commands
+set -o nounset                  # do not use unset variables
+[[ -n "${TRACE:-}" ]] && set -x # debug
+
+usage() {
+    cat <<EOF
+NAME
+    $0
+
+SYNOPSIS
+    $0 [OPTION...]
+
+DESCRIPTION
+    INSERT DESCRIPTION HERE
+
+OPTIONS
+    -h,          --help                 Show this message
+    -v,          --verbose              Log verbose messages to console.
+EOF
+}
+
+v4l2() { v4l2-ctl --device "$device" "$@"; }
+
+now() { date "+%Y-%m-%d %H:%M:%S"; }
+
+get_options() {
+    local parsed
+
+    # Define short options
+    local options=hvd:z:f:p:t:
+    # Define long options
+    local longopts=help,verbose,device:,zoom:,focus:,pan:,tilt:,preset:
+
+    parsed="$(getopt --options="$options" --longoptions="$longopts" --name="$0" -- "$@")"
+
+    if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
+        # e.g. return value is 1
+        #  then getopt has complained about wrong arguments to stdout
+        exit "$EXIT_GETOPT_ERR"
+    fi
+
+    # read getopt’s output this way to handle the quoting right:
+    eval set -- "$parsed"
+
+    while true; do
+        case "$1" in
+        -d | --device)
+            device="$2"
+            shift
+            ;;
+        -z | --zoom)
+            zoom_absolute="$2"
+            shift
+            ;;
+        -f | --focus)
+            focus_automatic_continuous=$FALSE
+            case "$2" in
+            far)
+                focus_absolute=$focus_far
+                ;;
+            close)
+                focus_absolute=$focus_close
+                ;;
+            auto)
+                focus_absolute=""
+                focus_automatic_continuous=$TRUE
+                ;;
+            manual)
+                focus_automatic_continuous=$FALSE
+                ;;
+            *)
+                focus_absolute="$2"
+                ;;
+            esac
+            shift
+            ;;
+        -p | --pan)
+            pan_absolute="$2"
+            shift
+            ;;
+        -t | --tilt)
+            tilt_absolute="$2"
+            shift
+            ;;
+        --preset)
+            case "$2" in
+            default)
+                brightness=100
+                contrast=135
+                saturation=125
+                gain=80
+                power_line_frequency=1
+                white_balance_automatic=$FALSE
+                white_balance_temperature=330 # x10 due to step
+                sharpness=90
+                backlight_compensation=$TRUE
+                auto_exposure=1
+                exposure_dynamic_framerate=$FALSE
+                exposure_time_absolute=330
+                pan_absolute=0
+                tilt_absolute=0
+                focus_automatic_continuous=$TRUE
+                zoom_absolute=130
+                ;;
+            *)
+                log_error "Unknown preset '$2'"
+                exit "$EXIT_OPTION"
+                ;;
+            esac
+            shift
+            ;;
+        -h | --help)
+            usage
+            shift
+            exit 0
+            ;;
+        --)
+            shift
+            break
+            ;;
+        *)
+            echo "$1"
+            echo "Programming error" >&2
+            exit "$EXIT_OPTION"
+            ;;
+        esac
+        shift
+    done
+}
+
+get_ctl_limit() {
+    local option_key="$1"
+    local limit_key="$2"
+
+    local line
+    local ctrls
+    local kvpairs
+    local kv
+    local key
+    local value
+
+    ctrls=$(v4l2 --list-ctrls)
+
+    line=$(grep "$option_key" <<<"$ctrls")
+    line="${line#*: }" # Remove everything before ': '
+    IFS=' ' read -r -a kvpairs <<<"$line"
+
+    for kv in "${kvpairs[@]}"; do
+        IFS='=' read -r key value <<<"$kv"
+        if [[ "$key" == "$limit_key" ]]; then
+            echo "$value"
+            return 0
+        fi
+    done
+}
+
+get_menu_options() {
+    local menu_key="$1"
+
+    local start_line end_line
+    # Find line that contains the menu key
+    start_line=$(v4l2 --list-ctrls-menus | grep -n "$menu_key" | cut -d: -f1)
+    # Find the next key after the menus
+    end_line=$(v4l2 --list-ctrls-menus | tail -n +$((start_line + 1)) | grep -E -n -m 1 '^\s+[a-z]' | cut -d: -f1)
+
+    if [[ -z "$end_line" ]]; then
+        # If there is no end of the block, use the rest of the output
+        end_line=$(wc -l < <(v4l2 --list-ctrls-menus))
+    else
+        end_line=$((start_line + end_line - 1))
+    fi
+
+    # Only display the line after the menu key, and before the following key
+    v4l2 --list-ctrls-menus | sed -n "$((start_line + 1)),$end_line"p | awk '{$1=$1;print}' | cut -d: -f1
+}
+
+int() {
+    local setting="$1"
+    local suffix="${2:-}"
+    local adjustment="${setting}${suffix}"
+    local -n adjustment_ref="$adjustment"
+
+    if ! [[ "$adjustment_ref" =~ ^[+-]?[0-9]+$ ]]; then
+        log_error "Invalid $setting option format '$adjustment_ref'. Should be (+|-)?number, e.g. +5."
+        adjustment_ref=0
+        return
+    fi
+
+    local current min max new
+    current="$(v4l2 --get-ctrl "$adjustment" | cut -d' ' -f2)"
+    min="$(get_ctl_limit "$adjustment" min)"
+    max="$(get_ctl_limit "$adjustment" max)"
+    step="$(get_ctl_limit "$adjustment" step)"
+    if [[ "$adjustment_ref" =~ ^[+-] ]]; then
+        new=$((current + (adjustment_ref * step)))
+    else
+        new=$((adjustment_ref * step))
+    fi
+    [[ $new -gt $max ]] && new=$max
+    [[ $new -lt $min ]] && new=$min
+
+    v4l2 --set-ctrl "$adjustment=$new"
+    log_info "Updated $setting. Old: $current. New: $new."
+}
+
+bool() {
+    local setting="$1"
+    local -n adjustment_ref="$setting"
+
+    if ! [[ $adjustment_ref =~ ^1|0$ ]]; then
+        log_error "Invalid $setting. Must be 1/true or 0/false"
+        adjustment_ref=""
+        return
+    fi
+
+    current="$(v4l2 --get-ctrl "$setting" | cut -d' ' -f2)"
+
+    v4l2 --set-ctrl "$setting=$adjustment_ref"
+    log_info "Updated $setting. Old: $current. New: $adjustment_ref."
+}
+
+menu() {
+    local setting="$1"
+    local -n adjustment_ref="$setting"
+
+    local valid_opts
+    valid_opts=$(get_menu_options "$setting")
+
+    if ! grep -qE "^$adjustment_ref$" <<<"$valid_opts"; then
+        log_error "Invalid menu option $adjustment_ref. Must be one of: ${valid_opts[*]}"
+        adjustment_ref=""
+        return
+    fi
+
+    current="$(v4l2 --get-ctrl "$setting" | cut -d' ' -f2)"
+
+    v4l2 --set-ctrl "$setting=$adjustment_ref"
+    log_info "Updated $setting. Old: $current. New: $adjustment_ref."
+}
+
+main() {
+    check_dependencies "${dependencies[@]}"
+    get_options "$@"
+
+    if [[ -z "$device" ]]; then
+        if ! device=$(v4l2-ctl --list-devices | grep "$DEFAULT_NAME" -A1 | tail -n1 | awk '{ print $1 }'); then
+            log_error "Failed to find device with name '$DEFAULT_NAME'"
+            exit "$EXIT_INCORRECT_DEVICE"
+        fi
+    fi
+
+    # -c = FILE exists and is character special
+    if [[ ! -c "$device" ]]; then
+        log_error "Unknown device: $device"
+        exit "$EXIT_INCORRECT_DEVICE"
+    fi
+
+    # User controls
+    ## Menu
+    for option in power_line_frequency; do
+        [[ -z "${!option}" ]] && continue
+        menu "$option"
+    done
+    ## Bool
+    for option in white_balance_automatic; do
+        [[ -z "${!option}" ]] && continue
+        bool "$option"
+    done
+    ## Int
+    for option in brightness contrast saturation gain white_balance_temperature sharpness backlight_compensation; do
+        [[ -z "${!option}" ]] && continue
+        int "$option"
+    done
+
+    # Camera controls
+    ## Menu
+    for option in auto_exposure; do
+        [[ -z "${!option}" ]] && continue
+        menu "$option"
+    done
+    ## Bool
+    for option in focus_automatic_continuous exposure_dynamic_framerate; do
+        [[ -z "${!option}" ]] && continue
+        bool "$option"
+    done
+    ## Int
+    for option in exposure_time pan tilt focus zoom; do
+        varname="${option}_absolute"
+        [[ -z "${!varname}" ]] && continue
+        int "$option" "_absolute"
+    done
+
+}
+
+main "$@"

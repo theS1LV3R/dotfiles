@@ -14,6 +14,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 BOLD='\033[1m'
 
+# Uses "less" to show text if stdin is longer than the amount of lines on the terminal
 pager() {
     if [[ $(echo "$*" | wc -l) -gt $(tput lines) ]]; then
         echo "$*" | less -R
@@ -24,22 +25,30 @@ pager() {
 timestamp() { date +'%Y-%m-%d %H:%M:%S'; }
 exists() { command -v "$1" &>/dev/null; }
 
+# Format a log message based on provided data
+# Usage:
+#   base_log "Color escape code" "Level string (max 5 chars)" "Message"
 base_log() {
-    local color=$1
-    local level="$2       "
-    local message=$3
+    local color="$1"
+    local level="$2  "
+    local message="$3"
 
-    local padded_level=${level:0:7} # Cut to max width of 7
+    local padded_level=${level:0:5} # Cut to max width of 5
 
-    echo -e "${color}[$(timestamp)]$padded_level$NC $message"
+    echo -e "[$(timestamp)] $color$padded_level$NC $message"
 }
 
-log_error() { base_log "$RED" "ERROR" "$*" &>/dev/stderr; }
-log_warn() { base_log "$YELLOW" "WARN" "$*"; }
-log_info() { base_log "$GREEN" "INFO" "$*"; }
-log_ask() { base_log "$BLUE" "ASK" "$*"; }
+# Logs to stdout/stderr with the provided level (based on name)
+# Usage:
+#   log_* "Some message"
+log_error() { base_log "$RED" "ERR" "$*" &>/dev/stderr; }
+log_warn() { base_log "$YELLOW" "WRN" "$*"; }
+log_info() { base_log "$GREEN" "INF" "$*"; }
 alias log=log_info
 
+# Sends a notification to the desktop environment
+# Usage:
+#   notify <icon> <time> <name> <message> [urgency]
 notify() {
     local icon="$1"
     local time="$2"              # Time in seconds
@@ -107,6 +116,9 @@ check_dependencies() {
     return 1
 }
 
+# Turn X seconds into "HH:MM:SS"
+# Usage:
+#   human_time <seconds>
 human_time() {
     local time=$1 # Seconds
     local hours=$((time / 60 / 60 % 24))

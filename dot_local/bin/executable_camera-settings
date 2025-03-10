@@ -106,11 +106,28 @@ get_options() {
     local parsed
 
     # Define short options
-    local options=hvd:z:f:p:t:
-    # Define long options
-    local longopts=help,verbose,device:,zoom:,focus:,pan:,tilt:,preset:
+    local options=hvd:p: # help, verbose, device:, preset:
 
-    parsed="$(getopt --options="$options" --longoptions="$longopts" --name="$0" -- "$@")"
+    # Define long options
+    local longopts=(
+        help
+        verbose
+        device:
+        preset:
+        brightness:
+        contrast:
+        saturation:
+        white-balance-auto:
+        gain:
+        power-line-frequency:
+        color-temperature:
+        sharpness:
+        zoom:
+        focus:
+        pan:
+        tilt:
+    )
+    parsed="$(getopt --options="$options" --longoptions="$(IFS=","; echo "${longopts[*]}")" --name="$0" -- "$@")"
 
     if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
         # e.g. return value is 1
@@ -123,15 +140,11 @@ get_options() {
 
     while true; do
         case "$1" in
-        -d | --device)
-            device="$2"
-            shift
-            ;;
-        -z | --zoom)
+        --zoom)
             zoom_absolute="$2"
             shift
             ;;
-        -f | --focus)
+        --focus)
             focus_automatic_continuous=$FALSE
             case "$2" in
             far)
@@ -153,15 +166,19 @@ get_options() {
             esac
             shift
             ;;
-        -p | --pan)
+        --pan)
             pan_absolute="$2"
             shift
             ;;
-        -t | --tilt)
+        --tilt)
             tilt_absolute="$2"
             shift
             ;;
-        --preset)
+        -d | --device)
+            device="$2"
+            shift
+            ;;
+        -p | --preset)
             case "$2" in
             custom)
                 brightness=100
@@ -196,7 +213,8 @@ get_options() {
                 exposure_dynamic_framerate=$FALSE
                 pan_absolute=0
                 tilt_absolute=0
-                focus_automatic_continuous=$TRUE
+                focus_automatic_continuous=$FALSE
+                focus_absolute=$focus_far
                 zoom_absolute=100
                 ;;
             *)

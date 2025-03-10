@@ -5,42 +5,54 @@
 # shellcheck source=executable___common.sh
 source "$HOME/.local/bin/__common.sh"
 
-readonly help_message="\
-Usage: $0 [OPTIONS] [JWT_STRING]
-
+usage() {
+    cat <<EOF
 Decode a JWT string to its parameters in JSON format. It can take the JWT string as a
 command-line argument or read it from stdin.
 
-Options:
+USAGE
+    $0 [OPTIONS] [JWT_STRING]
+
+OPTIONS
     --help      Display this help message and exit.
 
-Arguments:
+ARGUMENTS
     JWT_STRING  The JWT string to be decoded.
 
-Example:
-    $ JWT=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\"
-    $ jwt \"\$JWT\"
+EXAMPLES
+    $ JWT="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+    $ echo "\$JWT" | jwt # Can also be called as \`jwt "\$JWT"\` or \`jwt <<<"\$JWT\`
     Header
     {
-        \"alg\": \"HS256\",
-        \"typ\": \"JWT\"
+        "alg": "HS256",
+        "typ": "JWT"
     }
 
     Body
     {
-        \"sub\": \"1234567890\",
-        \"name\": \"John Doe\",
-        \"iat\": 1516239022
+        "sub": "1234567890",
+        "name": "John Doe",
+        "iat": 1516239022
     }
 
     Signature
     SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
 
-    $ echo \"\$JWT\" | jwt
-    <same as above>
-"
+    $ JWT="eyJhbGciOiJIUzI1NiJ9.U29tZSB0ZXh0IGNvbnRlbnQ.GINjdaDvhf8lOuSztBUFUxvMd72HBxCAY-gbqbki2nY"
+    $ jwt <<<"\$JWT"
+    Header
+    {
+    "alg": "HS256"
+    }
 
-usage() { echo "$help_message"; }
+    Body
+    Warning: Body does not seem to be valid json, outputting raw
+    U29tZSB0ZXh0IGNvbnRlbnQ
+
+    Signature
+    GINjdaDvhf8lOuSztBUFUxvMd72HBxCAY-gbqbki2nY
+EOF
+}
 
 case "${1:-}" in
 -h | --help)
@@ -52,7 +64,6 @@ esac
 
 if [[ $# -ne 0 ]]; then
     input="$1"
-    # -p = File exists and is a named pipe
 else
     input=$(cat /dev/stdin)
 fi

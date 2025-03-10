@@ -15,7 +15,22 @@ _install() {
   local filename="install_$1.sh"
 
   # Neovim not included - Debian uses asdf
-  export common_packages="entr bridge-utils unzip zsh tmux gcc neofetch curl wget net-tools vim python"
+  _common_packages=(
+    entr # Required for tmux plugins
+    bridge-utils # Unsure usage
+    unzip # Used for basically everything
+    zsh
+    tmux
+    gcc
+    neofetch
+    curl
+    wget
+    net-tools
+    vim
+    python
+    mkcert
+  )
+  export common_packages="${_common_packages[*]}"
   export python_packages="httpx h2 dnspython cryptography"
 
   log_info "Running ./$filename"

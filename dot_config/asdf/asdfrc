@@ -3,3 +3,4 @@ legacy_version_file = no
 use_release_candidates = no
 always_keep_download = no
 plugin_repository_last_check_duration = 60
+asdf_nodejs_auto_enable_corepack = true

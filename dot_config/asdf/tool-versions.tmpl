@@ -1,7 +1,5 @@
-nodejs      20.10.0 {{- /* https://nodejs.org */}}
-yarn        1.22.19 {{- /* https://npmjs.org/packages/yarn */}}
+nodejs      23.6.0 {{- /* https://nodejs.org */}}
 golang      1.21.4  {{- /* https://go.dev/dl/ */}}
-mkcert      1.4.4   {{- /* https://github.com/FiloSottile/mkcert/releases/latest */}}
 opentofu    1.7.1   {{- /* https://github.com/opentofu/opentofu */}}
 lazygit     0.40.2  {{- /* https://github.com/jesseduffield/lazygit/releases/latest */}}
 
@@ -11,7 +9,12 @@ java        system
 ruby        system
 
 {{ if (eq .chezmoi.arch "amd64") -}}
-{{/* Deno only works on x86_64 machines - https://deno.com/manual/getting_started/installation */ -}}
+{{/*
+> Deno works on macOS, Linux, and Windows. Deno is a single binary executable. It has no external dependencies.
+> On macOS, both M1 (arm64) and Intel (x64) executables are provided.
+> **On Linux and Windows, only x64 is supported.**
+https://deno.com/manual/getting_started/installation
+*/ -}}
 deno        1.38.2  {{- /* https://deno.com/ */}}
 {{ end -}}
 

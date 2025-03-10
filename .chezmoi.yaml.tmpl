@@ -1,32 +1,35 @@
-{{- $gitusername := promptString "Git username" "theS1LV3R" | quote -}}
-{{- $gitemail := promptString "Email" "me@s1lv3r.codes" | quote -}}
-{{- $gitgpgsign := promptBool "Enable git gpg signing" false -}}
+{{- $gitUsername := promptString "Git username" "theS1LV3R" | quote -}}
+{{- $gitEmail := promptString "Email" "me@s1lv3r.codes" | quote -}}
+{{- $gpgSigningEnabled := promptBool "Enable git gpg signing" false -}}
 {{- $machinetype := promptChoice "Type of machine" (list "personal" "work") }}
 {{- $slackLaunchMode := promptChoice "Autolaunch slack" (list "on" "background" "off")}}
 
-{{- $gitsignkey := "" -}}
-{{- if eq $gitgpgsign true -}}
+{{- $gpgSigningKey := "" -}}
+{{- if eq $gpgSigningEnabled true -}}
 {{-   if eq $machinetype "personal" -}}
-{{-     $gitsignkey = "85FA2FC2D8035859AE77FF6E636660BB3A5C2F87" -}}
+{{-     $gpgSigningKey = "85FA2FC2D8035859AE77FF6E636660BB3A5C2F87" -}}
 {{-   else if eq $machinetype "work" -}}
-{{-     $gitsignkey = "F3500DFD0DC37A1964FEA7EBD2A4BA423E5ABDB0" -}}
+{{-     $gpgSigningKey = "F3500DFD0DC37A1964FEA7EBD2A4BA423E5ABDB0" -}}
 {{-   end -}}
 {{- end -}}
 
 {{- $hasGui := promptBool "Does the machine have a GUI" false -}}
 
-{{- $ostype := eq .chezmoi.os "linux" | and (.chezmoi.kernel.osrelease | lower | contains "microsoft") | ternary "wsl" .chezmoi.os -}}
-{{- $isdebian := stat "/etc/debian_version" | not | not -}}
+{{- $osType := eq .chezmoi.os "linux" | and (.chezmoi.kernel.osrelease | lower | contains "microsoft") | ternary "wsl" .chezmoi.os -}}
+{{- $isDebian := stat "/etc/debian_version" | not | not -}}
 ---
 
+progress: true
+
 data:
-  name: {{ $gitusername }}
-  email: {{ $gitemail }}
-  gitgpgsign: {{ $gitgpgsign }}
-  gitsignkey: {{ $gitsignkey }}
+  git:
+    name: {{ $gitUsername }}
+    email: {{ $gitEmail }}
+    gpgSigningEnabled: {{ $gpgSigningEnabled }}
+    gpgSigningKey: {{ $gpgSigningKey }}
   codespaces: {{ env "CODESPACES" | not | not }}
   tmuxCopyBackendPort: 30594
   hasGui: {{ $hasGui }}
-  ostype: {{ $ostype }}
-  isdebian: {{ $isdebian }}
+  osType: {{ $osType }}
+  isDebian: {{ $isDebian }}
   slackLaunchMode: {{ $slackLaunchMode }}

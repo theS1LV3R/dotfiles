@@ -5,14 +5,14 @@
     editor = nvim
 
 [user]
-    name = {{ .name }}
-    email = {{ .email }}
-{{- if .gitgpgsign  }}
-    signingkey = {{ .gitsignkey }}
+    name = {{ .git.name }}
+    email = {{ .git.email }}
+{{- if .git.gpgSigningEnabled  }}
+    signingkey = {{ .git.gpgSigningKey }}
 {{- end }}
 
 [commit]
-{{- if .gitgpgsign  }}
+{{- if .git.gpgSigningEnabled  }}
     gpgsign = true
 {{- end }}
 
@@ -48,9 +48,9 @@
     merge-to = !gitmergeto() { git push `git rev-parse --show-toplevel` `git rev-parse --abbrev-ref HEAD`:$1; } && gitmergeto
 
 [filter "lfs"]
-    clean = git lfs clean -- %f
-    smudge = git lfs smudge -- %f
-    process = git lfs filter-process
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
     required = true
 
 [merge]

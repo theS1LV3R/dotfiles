@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # vi: ft=bash
 
-eval '{{- if eq .isdebian true -}}
+eval '{{- if eq .isDebian true -}}
 echo "Idk how to install marketplace on debian properly"; exit
 {{- else -}}
 echo

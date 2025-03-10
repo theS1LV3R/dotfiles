@@ -8,7 +8,7 @@ source /dev/null # Effectively a noop, only here for shellcheck
 # If this file is empty, you are likely not using WSL.
 # Otherwise it would contain WSL specific environment variables.
 
-{{- if eq "wsl" .ostype -}}
+{{- if eq "wsl" .osType -}}
 alias open="start"
 
 export GDK_SCALE=2                                                                          #GWSL

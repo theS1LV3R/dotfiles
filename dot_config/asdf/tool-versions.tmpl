@@ -15,7 +15,7 @@ ruby        system
 deno        1.38.2  {{- /* https://deno.com/ */}}
 {{ end -}}
 
-{{ if .isdebian -}}
+{{ if .isDebian -}}
 {{/* We only need neovim and lazydocker in debian-based systems, on arch its provided by the aur */ -}}
 neovim      0.9.4                                                   {{- /* https://github.com/neovim/neovim/releases/latest */}}
 lazydocker  0.23.1 # https://github.com/comdotlinux/asdf-lazydocker {{- /* https://github.com/jesseduffield/lazydocker/releases/latest */}}

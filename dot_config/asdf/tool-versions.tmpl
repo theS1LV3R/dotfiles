@@ -1,5 +1,4 @@
 nodejs      23.6.0 {{- /* https://nodejs.org */}}
-golang      1.21.4  {{- /* https://go.dev/dl/ */}}
 opentofu    1.7.1   {{- /* https://github.com/opentofu/opentofu */}}
 lazygit     0.40.2  {{- /* https://github.com/jesseduffield/lazygit/releases/latest */}}
 
@@ -7,6 +6,7 @@ rust        system
 python      system
 java        system
 ruby        system
+golang      system
 
 {{ if (eq .chezmoi.arch "amd64") -}}
 {{/*

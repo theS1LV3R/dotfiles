@@ -55,11 +55,14 @@ export MINIKUBE_DRIVER=docker
 export MINIKUBE_ROOTLESS=false
 
 #! Java stuff
-export _JAVA_OPTIONS="\
--Djava.util.prefs.userRoot=$XDG_CONFIG_HOME/java \
--Dawt.useSystemAAFontSettings=on \
--Dswing.aatext=true \
--Djava.io.tmpdir=$XDG_CACHE_HOME/java"
+java_opts_arr=(
+    "-Djava.util.prefs.userRoot=$XDG_CONFIG_HOME/java"
+    "-Dawt.useSystemAAFontSettings=on"
+    "-Dswing.aatext=true"
+    "-Djava.io.tmpdir=$XDG_CACHE_HOME/java"
+)
+export _JAVA_OPTIONS="${java_opts_arr[*]}"
+unset java_opts_arr
 
 #! Postgres stuff
 export PSQL_HISTORY="$XDG_DATA_HOME/psql_history"
@@ -82,6 +85,7 @@ export ASDF_PYTHON_DEFAULT_PACKAGES_FILE="$XDG_CONFIG_HOME/asdf/default-python-p
 export ASDF_NPM_DEFAULT_PACKAGES_FILE="$XDG_CONFIG_HOME/asdf/default-npm-packages"
 export ASDF_GEM_DEFAULT_PACKAGES_FILE="$XDG_CONFIG_HOME/asdf/default-gems"
 export ASDF_GOLANG_DEFAULT_PACKAGES_FILE="$XDG_CONFIG_HOME/asdf/default-go-packages"
+export PATH="$ASDF_DATA_DIR/shims:$PATH"
 
 #! Misc
 # SC2016 - Expressions don't expand in single quotes, use double quotes for that.
@@ -100,13 +104,13 @@ export WINIT_X11_SCALE_FACTOR=1
 # https://old.reddit.com/r/kde/comments/kzjo9d
 export GTK_USE_PORTAL=1
 
-if [[ -n "$SSH_CONNECTION" ]]; then
+if [[ -n "${SSH_CONNECTION:-}" ]]; then
     # Use a terminal for GPG passwords if going over SSH
     export PINENTRY_USER_DATA="USE_CURSES=1"
 fi
 
 # https://wiki.archlinux.org/title/Firefox#Wayland
-if [[ "$XDG_SESSION_TYPE" == "wayland" ]]; then
+if [[ "${XDG_SESSION_TYPE:-}" == "wayland" ]]; then
     export MOZ_ENABLE_WAYLAND=1
 fi
 

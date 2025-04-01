@@ -1,0 +1,10 @@
+[global]
+username_cmd = "jq -r .username $XDG_CACHE_HOME/spotifyd/credentials.json"
+
+use_mpris = true
+dbus_type = "session"
+device_name = "Spotifyd@{{ .chezmoi.hostname }}"
+bitrate = 320
+cache_path = "/home/zoe/.cache/spotifyd/"
+volume_normalisation = false
+device_type = "computer"

@@ -4,13 +4,20 @@
 
 #zmodload zsh/zprof
 
+# Load the zsh/complist zsh module, which is described as "Completion listing extensions."
 zmodload zsh/complist
+# Autoload awaits loading the function into memory until the time which it is first referenced, at
+# which point the $fpath variable will be searched to find the relevant function.
+# -U = "With the -U flag, alias expansion is suppressed when the function is loaded."
+# Using autoload and -U here in this case ensures aliases are never used when calling the respective functions
 autoload -U compinit && compinit -d ~/.cache/zcompdump
 autoload -U bashcompinit && bashcompinit -d ~/.cache/zbashcompdump
 autoload -U add-zsh-hook
 
+# As the xdg-env file is already loaded by the time we get here, use a no-op source to make shellcheck
+# load the relevant env vars into context.
 # shellcheck source=../rc_files/00-xdg-env.sh
-source /dev/null # Effectively a noop, only here for shellcheck. It gets sourced from .zshenv
+source /dev/null
 
 SCRIPTS_DIR="$HOME/.config/zsh"
 ZSH_SCRIPTS=$SCRIPTS_DIR/zshrc
@@ -18,8 +25,9 @@ RC_FILES="$XDG_CONFIG_HOME/rc_files"
 
 # shellcheck disable=SC2206
 # We cant quote the $fpath, it breaks zsh _hard_
-export fpath=("$SCRIPTS_DIR/completions" $fpath)
+export fpath+=("$SCRIPTS_DIR/completions")
 
+# Load the basic prompt if we are currently in a tty, otherwise load p10k
 if [[ "$TERM" == "linux" ]]; then
     # shellcheck source=zshrc/basic-prompt.zsh
     source "$SCRIPTS_DIR/zshrc/basic-prompt.zsh"
@@ -41,7 +49,13 @@ done
 
 unset SCRIPTS_DIR ZSH_SCRIPTS RC_FILES
 
+# Ensure $ZI is defined in shellcheck scope. See similar comment above.
+# shellcheck source=../rc_files/11-zi-env.sh
+source /dev/null
+
 source "${ZI[HOME_DIR]}/bin/zi.zsh"
+# -U = suppress alias expansion
+# -z = load the function using zsh style
 autoload -Uz _zi
 (( ${+_comps} )) && _comps["zi"]=_zi
 

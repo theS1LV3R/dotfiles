@@ -78,10 +78,12 @@ export ASTRO_TELEMETRY_DISABLED=1 # https://astro.build/telemetry/
 #! ASDF
 export ASDF_CONFIG_FILE="$XDG_CONFIG_HOME/asdf/asdfrc"
 export ASDF_DATA_DIR="$XDG_DATA_HOME/asdf"
+export PATH="$ASDF_DATA_DIR/shims:$PATH"
 export ASDF_PYTHON_DEFAULT_PACKAGES_FILE="$XDG_CONFIG_HOME/asdf/default-python-packages"
 export ASDF_NPM_DEFAULT_PACKAGES_FILE="$XDG_CONFIG_HOME/asdf/default-npm-packages"
 export ASDF_GEM_DEFAULT_PACKAGES_FILE="$XDG_CONFIG_HOME/asdf/default-gems"
 export ASDF_GOLANG_DEFAULT_PACKAGES_FILE="$XDG_CONFIG_HOME/asdf/default-go-packages"
+export ASDF_NODEJS_AUTO_ENABLE_COREPACK=true
 
 #! Misc
 # SC2016 - Expressions don't expand in single quotes, use double quotes for that.

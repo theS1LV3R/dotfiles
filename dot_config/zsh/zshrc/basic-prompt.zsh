@@ -13,7 +13,7 @@ nc="%{$reset_color%}"
 
 # Echoes a username/host string when connected over SSH (empty otherwise)
 ssh_info() {
-  [[ "$SSH_CONNECTION" != '' ]] && echo '%(!.${red}.${yellow})%n$nc@${green}%m$nc:' || echo ''
+  [[ "${SSH_CONNECTION:-}" != '' ]] && echo '%(!.${red}.${yellow})%n$nc@${green}%m$nc:' || echo ''
 }
 
 # Echoes information about Git repository status when inside a Git repository

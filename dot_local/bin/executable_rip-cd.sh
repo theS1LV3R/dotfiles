@@ -157,8 +157,10 @@ process_file() {
         --bps=16                  # Bits per sample. Icedax outputs in 16 @ 44100Hz
         --best                    # Best compression without losing quality
         --exhaustive-model-search # Higher CPU time; Try to find better compression
-        --verify                  # Verify correct encoding by decoding in paralell and comparing to original
+        --verify                  # Verify correct encoding by decoding in parallel and comparing to original
+
         # Add tags for programs like lidarr to use to identify the track
+        # Definitions: https://xiph.org/vorbis/doc/v-comment.html
         --tag="CDINDEX=$cdindex_discid"
         --tag="CDDB=$cddb_discid"
         --tag="ARTIST=$album_artist"
@@ -169,6 +171,7 @@ process_file() {
         --tag="DATE=$date"
         --tag="GENRE=$genre"
         --tag="ENCODER=$USER"
+
         --output-name="$track_number - $track_title.flac" # Output filename
         "$raw_trackname.raw"                              # Input filename
     )

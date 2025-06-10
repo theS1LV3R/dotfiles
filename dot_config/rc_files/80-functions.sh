@@ -106,12 +106,21 @@ ipinfo() {
     local ip=${1:-''}
     local ip6=''
 
+    dummy() {
+        while [[ "$1" != "--" && "$#" -gt 0 ]]; do shift; done
+        shift # Remove --
+        "$@"
+    }
+
+    local gum=dummy
+    command -v gum >/dev/null && gum=gum || true
+
     local usage
 
     if [[ -z "$ip" ]]; then
-        ip=$(gum spin --title="Getting own public IP (v4)..." \
+        ip=$($gum spin --title="Getting own public IP (v4)..." \
             -- curl -4s "https://ifconfig.co")
-        ip6=$(gum spin --title="Getting own public IP (v6)..." \
+        ip6=$($gum spin --title="Getting own public IP (v6)..." \
             -- curl -6s "https://ifconfig.co")
     fi
 
@@ -119,11 +128,11 @@ ipinfo() {
         echo "Missing IPinfo API token! Remember to add it to env vars - \$IPINFO_API_TOKEN"
     fi
 
-    gum spin --title="Getting IP information..." \
+    $gum spin --title="Getting IP information..." \
         -- curl -su "$IPINFO_API_TOKEN:" "https://ipinfo.io/$ip/json" | jq
 
     if [[ "$ip6" != "" ]]; then
-        gum spin --title="Getting IP information (v6)..." \
+        $gum spin --title="Getting IP information (v6)..." \
             -- curl -su "$IPINFO_API_TOKEN:" "https://ipinfo.io/$ip6/json" | jq
     fi
 
@@ -136,10 +145,11 @@ ipinfo() {
     # I hope that helps. Let us know if you have further questions.
     # Cheers,
     # Cornelius
-    usage=$(gum spin --title="Getting IPinfo usage..." \
+    usage=$($gum spin --title="Getting IPinfo usage..." \
         -- curl -su "$IPINFO_API_TOKEN:" "https://ipinfo.io/me" | jq '.requests|.month,.limit' | paste -s -d'/')
     echo "Usage this month: $usage"
 
+    unset -f dummy
     unset GUM_SPIN_SPINNER
     unset GUM_SPIN_SHOW_OUTPUT
 }

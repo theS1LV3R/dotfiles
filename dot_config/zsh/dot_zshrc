@@ -25,7 +25,7 @@ RC_FILES="$XDG_CONFIG_HOME/rc_files"
 
 # shellcheck disable=SC2206
 # We cant quote the $fpath, it breaks zsh _hard_
-export fpath+=("$SCRIPTS_DIR/completions")
+export fpath=("$SCRIPTS_DIR/completions" $fpath)
 
 # Load the basic prompt if we are currently in a tty, otherwise load p10k
 if [[ "$TERM" == "linux" ]]; then

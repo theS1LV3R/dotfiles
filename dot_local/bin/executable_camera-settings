@@ -213,8 +213,8 @@ get_options() {
                 exposure_dynamic_framerate=$FALSE
                 pan_absolute=0
                 tilt_absolute=0
-                focus_automatic_continuous=$FALSE
-                focus_absolute=$focus_far
+                focus_automatic_continuous=$TRUE
+                #focus_absolute=$focus_far # Disabled due to focus_automatic_continuous 1 (True)
                 zoom_absolute=100
                 ;;
             *)

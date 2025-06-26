@@ -17,7 +17,7 @@ _install() {
   # Neovim not included - Debian uses asdf
   _common_packages=(
     entr # Required for tmux plugins
-    bridge-utils # Unsure usage
+    bridge-utils # Used by docker-veth.sh
     unzip # Used for basically everything
     zsh
     tmux

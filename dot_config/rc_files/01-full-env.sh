@@ -19,6 +19,7 @@ export ANSIBLE_HOME="$XDG_DATA_HOME/ansible"
 export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
 export SQLITE_HISTORY="$XDG_CACHE_HOME/sqlite_history"
 export MANPATH="$XDG_DATA_HOME/man:$MANPATH"
+export CARGO_HOME="$XDG_DATA_HOME/cargo"
 
 #! XDG_CONFIG_HOME
 export WGETRC="$XDG_CONFIG_HOME/wgetrc"

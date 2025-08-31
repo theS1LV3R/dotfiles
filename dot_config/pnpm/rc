@@ -1,0 +1,10 @@
+prefix=${XDG_DATA_HOME}/pnpm
+cache=${XDG_CACHE_HOME}/pnpm
+
+store-dir=${XDG_DATA_HOME}/pnpm-store
+
+# https://pnpm.io/npmrc#auto-install-peers
+autoInstallPeers=true
+
+# https://pnpm.io/npmrc#strict-peer-dependencies
+strictPeerDependencies=false

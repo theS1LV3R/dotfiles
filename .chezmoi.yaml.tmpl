@@ -1,20 +1,8 @@
 {{- $gitUsername := promptString "Git username" "theS1LV3R" | quote -}}
 {{- $gitEmail := promptString "Email" "me@s1lv3r.codes" | quote -}}
 {{- $gpgSigningEnabled := promptBool "Enable git gpg signing" false -}}
-{{- $machinetype := promptChoice "Type of machine" (list "personal" "work") }}
-{{- $slackLaunchMode := promptChoice "Autolaunch slack" (list "on" "background" "off")}}
-
-{{- $gpgSigningKey := "" -}}
-{{- if eq $gpgSigningEnabled true -}}
-{{-   if eq $machinetype "personal" -}}
-{{-     $gpgSigningKey = "85FA2FC2D8035859AE77FF6E636660BB3A5C2F87" -}}
-{{-   else if eq $machinetype "work" -}}
-{{-     $gpgSigningKey = "F3500DFD0DC37A1964FEA7EBD2A4BA423E5ABDB0" -}}
-{{-   end -}}
-{{- end -}}
-
 {{- $hasGui := promptBool "Does the machine have a GUI" false -}}
-
+{{- $gpgSigningKey := "181042D8F5B6972A9D48D7A767E942EDE4D191A9" -}}
 {{- $osType := eq .chezmoi.os "linux" | and (.chezmoi.kernel.osrelease | lower | contains "microsoft") | ternary "wsl" .chezmoi.os -}}
 {{- $isDebian := stat "/etc/debian_version" | not | not -}}
 ---

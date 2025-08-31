@@ -27,8 +27,9 @@ packages+=(
     chezmoi                            # dotfile management
     lsd                                # Better ls command
     asdf-vm                            # Version management
-    firefox-profile-switcher-connector # Firefox extension allowing better profile switching
+    #firefox-profile-switcher-connector # Firefox extension allowing better profile switching
     pkgfile                            # For command-not-found
+    jq 
 )
 
 for package in "${pypacks[@]}"; do
@@ -37,8 +38,8 @@ done
 unset package
 
 
-log_info "Installing paru"
-aur_install paru
+#log_info "Installing paru"
+#aur_install paru
 
 log_ask "Install yay?"
 read -r -p "[y/N]" install_yay </dev/tty
@@ -49,7 +50,7 @@ fi
 paru -Sy --noconfirm --needed "${packages[@]}"
 
 log_info "Initializing chezmoi"
-chezmoi init --apply theS1LV3R
+#chezmoi init --apply theS1LV3R
 
 log_info "Enabling pkgfile-update.timer"
 sudo systemctl enable --now pkgfile-update.timer

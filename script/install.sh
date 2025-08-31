@@ -54,7 +54,7 @@ while IFS= read -r line; do
   asdf plugin add "$plugin" "$url" || true
 done <"$HOME/.tool-versions"
 
-asdf install
+asdf install || true
 
 [[ "$os_release" == "debian" ]] && {
   # These are in the AUR on arch, so we dont need to manually install them there
@@ -73,7 +73,7 @@ zi_install() {
   mkdir -p "${ZI[BIN_DIR]}"
   git clone https://github.com/z-shell/zi.git "${ZI[BIN_DIR]}"
 }
-zi_install
+zi_install || true
 
 log_info "Performing misc actions"
 

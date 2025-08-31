@@ -12,6 +12,7 @@ source /dev/null # Effectively a noop, only here for shellcheck
 #! XDG_DATA_HOME
 export WINEPREFIX="$XDG_DATA_HOME/wine"
 export ANDROID_HOME="$XDG_DATA_HOME/android"
+export ANDROID_USER_HOME="$ANDROID_HOME"
 export GNUPGHOME="$XDG_DATA_HOME/gnupg"
 export GRADLE_USER_HOME="$XDG_DATA_HOME/gradle"
 export NODE_REPL_HISTORY="$XDG_DATA_HOME/node_repl_history"

@@ -4,11 +4,11 @@ Include config.d/*.conf
 # DO NOT MODIFY - CHEZMOI MANAGED
 
 Host *.sslipio
-    StrictHostKeyChecking no
-    UserKnownHostsFile /dev/null
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
 
 Host *
-    AddKeysToAgent ask
-    ServerAliveInterval 60
-    IdentitiesOnly yes
-    EnableEscapeCommandline yes
+  AddKeysToAgent ask
+  ServerAliveInterval 60
+  IdentitiesOnly yes
+  EnableEscapeCommandline yes

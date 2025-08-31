@@ -91,9 +91,10 @@ export ASDF_GOLANG_DEFAULT_PACKAGES_FILE="$XDG_CONFIG_HOME/asdf/default-go-packa
 export ASDF_NODEJS_AUTO_ENABLE_COREPACK=true
 
 #! Misc
+# Disabled with replacing custom with lazyvim
 # SC2016 - Expressions don't expand in single quotes, use double quotes for that.
 # shellcheck disable=SC2016
-export VIMINIT='let $MYVIMRC = !has("nvim") ? "$XDG_CONFIG_HOME/vim/vimrc" : "$XDG_CONFIG_HOME/nvim/init.lua" | so $MYVIMRC'
+#export VIMINIT='let $MYVIMRC = !has("nvim") ? "$XDG_CONFIG_HOME/vim/vimrc" : "$XDG_CONFIG_HOME/nvim/init.lua" | so $MYVIMRC'
 
 # SC2155 - Declare and assign separately to avoid masking return values.
 # shellcheck disable=SC2155

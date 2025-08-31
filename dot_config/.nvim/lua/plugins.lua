@@ -37,9 +37,13 @@ require("lazy").setup{
     --    dependencies = {"kyazdani42/nvim-web-devicons" -- file icons
     --    }
     -- }
+    { "lervag/vimtex", lazy = false, init = function()
+        vim.g.vimtex_view_method = 'zathura_simple' -- Use simple version of zathura pdf viewer (see :help vimtex-view-zathura-simple)
+    end
+    },
 
     "williamboman/mason.nvim", -- language server installer
-    "williamboman/mason-lspconfig.nvim", -- integration between nvim-lspconfig and mason
+	{ "williamboman/mason-lspconfig.nvim", version = "1.32.0" }, -- integration between nvim-lspconfig and mason
     "neovim/nvim-lspconfig", -- make nvim use native lsp stuff
     "b0o/schemastore.nvim", -- https://github.com/b0o/SchemaStore.nvim -- json schemas
     "mfussenegger/nvim-dap", -- https://github.com/mfussenegger/nvim-dap --  Debug Adapter Protocol client implementation for Neovim

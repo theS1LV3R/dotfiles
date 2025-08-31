@@ -46,7 +46,7 @@ export PATH="$PATH:$HOME/.cargo/bin"
 export PATH="$PATH:$HOME/.yarn/bin"
 export PATH="$PATH:$HOME/.local/bin"
 export PATH="$PATH:$XDG_DATA_HOME/npm/bin"
-export PATH="./node_modules/.bin:$PATH"
+#export PATH="./node_modules/.bin:$PATH"
 
 #! Minikube
 export MINIKUBE_HOME="$XDG_DATA_HOME/minikube"

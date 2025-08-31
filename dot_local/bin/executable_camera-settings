@@ -187,7 +187,7 @@ get_options() {
                 gain=80
                 power_line_frequency=1
                 white_balance_automatic=$FALSE
-                white_balance_temperature=330 # x10 due to step
+                white_balance_temperature=382 # x10 due to step
                 sharpness=90
                 backlight_compensation=$TRUE
                 auto_exposure=1

@@ -12,7 +12,8 @@ list-options show-uid-validity
 verify-options show-uid-validity
 
 utf8-strings
-log-file {{ env "XDG_DATA_HOME" }}/gnupg/log
+# Disabled, prevents error messages from being logged to term
+# log-file {{ env "XDG_DATA_HOME" }}/gnupg/log
 
 keyserver hkps://keys.openpgp.org
 keyserver hkps://keys.mailvelope.com

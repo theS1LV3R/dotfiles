@@ -2,6 +2,7 @@
 # vi: ft=zsh:ts=4:sw=4
 # shellcheck shell=bash
 
-clear
+# Only clear if we're NOT on an SSH connection
+[[ -z $SSH_CONNECTION ]] && clear
 
 echo "$USER@$(hostname) logged out at $(date +'%Y-%m-%d %H:%M:%S')"

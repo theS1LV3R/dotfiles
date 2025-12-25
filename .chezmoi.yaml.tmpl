@@ -2,9 +2,8 @@
 {{- $gitEmail := promptString "Email" "me@s1lv3r.codes" | quote -}}
 {{- $gpgSigningEnabled := promptBool "Enable git gpg signing" false -}}
 {{- $hasGui := promptBool "Does the machine have a GUI" false -}}
+
 {{- $gpgSigningKey := "181042D8F5B6972A9D48D7A767E942EDE4D191A9" -}}
-{{- $osType := eq .chezmoi.os "linux" | and (.chezmoi.kernel.osrelease | lower | contains "microsoft") | ternary "wsl" .chezmoi.os -}}
-{{- $isDebian := stat "/etc/debian_version" | not | not -}}
 ---
 
 progress: true
@@ -15,9 +14,5 @@ data:
     email: {{ $gitEmail }}
     gpgSigningEnabled: {{ $gpgSigningEnabled }}
     gpgSigningKey: {{ $gpgSigningKey }}
-  codespaces: {{ env "CODESPACES" | not | not }}
   tmuxCopyBackendPort: 30594
   hasGui: {{ $hasGui }}
-  osType: {{ $osType }}
-  isDebian: {{ $isDebian }}
-  slackLaunchMode: {{ $slackLaunchMode }}

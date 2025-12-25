@@ -1,0 +1,140 @@
+
+@define-color alert-bg-color #4c0809;       /* nord11 - alert red */
+@define-color alert-fg-color #b3f7f6;       /* nord6 - alert text */
+
+@define-color bg-color #141414;
+@define-color fg-color #ebebeb;             /* nord4 - light text */
+@define-color bg2-color #202020;
+@define-color fg2-color #e5e5e5;
+@define-color theme-color #744eb4;
+
+* {
+	border: none;
+	border-radius: 7;
+	font-family: "SauceCodePro NFM";
+	font-size: 14px;
+	min-height: 16px;
+	opacity: 1.0;
+  /*margin-top: 2px;
+  margin-bottom: 2px;*/
+}
+
+#waybar {
+	background: transparent;
+  border-bottom: none;
+	color: @fg-color;
+  transition-property: background-color, font-weight;
+  transition-duration: 0.5s;
+  margin-top: 10px;
+  margin-bottom: 2px;
+}
+
+#waybar.hidden {
+  opacity: 0.4;
+}
+
+#workspaces button {
+	padding: 0 5px;
+	background-color: transparent;
+	color: @fg-color;
+	border-bottom: 3px solid transparent;
+  font-weight: normal;
+  margin-left: 2px;
+  margin-right: 2px;
+  padding-top: 3px;
+}
+
+#workspaces button:first-child {
+  margin-left: 0;
+}
+#workspaces button:last-child {
+  margin-right: 0;
+}
+
+#workspaces button:hover {
+  background: @bg2-color;
+  color: @fg2-color;
+  box-shadow: inherit;
+}
+
+#workspaces button.visible {
+  border: 1px solid @theme-color;
+  font-style: italic;
+}
+
+#workspaces button.active {
+	background: @bg-color;
+  border: 1px solid @bg-color;
+  font-weight: bold;
+  font-style: normal;
+  padding-top: 0;
+}
+
+#workspaces button.urgent {
+	background: @alert-fg-color;
+}
+
+#mode {
+	background: #af005f;
+	color: #1b1d1e;
+}
+
+#workspaces, #clock, #tray, #temperature, #network, #backlight, #pulseaudio, #battery, #idle_inhibitor, #custom-notification {
+	padding: 0px 10px; /* Inside box */
+  color: @fg-color;
+  background-color: @bg-color;
+}
+
+#workspaces {
+  background-color: transparent;
+}
+
+@keyframes blink {
+  to {
+    background-color: #af005f;
+  }
+}
+
+#battery.warning:not(.charging) {
+  background-color: @alert-bg-color;
+  color: @alert-fg-color;
+}
+#battery.critical:not(.charging) {
+  background-color: @alert-bg-color;
+  color: white;
+  animation-name: blink;
+  animation-duration: 0.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+#cpu {
+}
+
+#memory {
+}
+
+#network {
+}
+
+#network.disconnected {
+    background: #f53c3c;
+}
+
+#pulseaudio {
+}
+
+#pulseaudio.muted {
+}
+
+#custom-spotify {
+    color: rgb(102, 220, 105);
+}
+
+#tray {
+}
+
+#custom-spacer {
+  min-width: 12px;
+}

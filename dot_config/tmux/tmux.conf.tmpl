@@ -70,6 +70,6 @@ source-file $XDG_CONFIG_HOME/tmux/theme.conf
 
 # -E = close the popup when the command exits
 if "test ! -d ~/.local/share/tmux/plugins/tpm" \
-  "display-popup -E ~/.config/tmux/install_tpm.sh"
+  "run ~/.config/tmux/install_tpm.sh"
 
 run '~/.local/share/tmux/plugins/tpm/tpm'

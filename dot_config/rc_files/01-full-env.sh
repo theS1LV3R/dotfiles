@@ -101,21 +101,9 @@ export ASDF_NODEJS_AUTO_ENABLE_COREPACK=true
 # When making commits over SSH, fall back to the current TTY. If $DISPLAY is set it uses that regardless
 export GPG_TTY=$(tty)
 
-# https://github.com/alacritty/alacritty/issues/3465
-export WINIT_X11_SCALE_FACTOR=1
-
-# Use xdg-desktop-portal to use native file pickers and such
-# https://old.reddit.com/r/kde/comments/kzjo9d
-export GTK_USE_PORTAL=1
-
 if [[ -n "${SSH_CONNECTION:-}" ]]; then
     # Use a terminal for GPG passwords if going over SSH
     export PINENTRY_USER_DATA="USE_CURSES=1"
-fi
-
-# https://wiki.archlinux.org/title/Firefox#Wayland
-if [[ "${XDG_SESSION_TYPE:-}" == "wayland" ]]; then
-    export MOZ_ENABLE_WAYLAND=1
 fi
 
 export EDITOR="nvim"

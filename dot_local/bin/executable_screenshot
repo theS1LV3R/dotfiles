@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-save_filename=$HOME/images/Screenshots/$(date "+%Y/%m/Screenshot_%Y-%m-%dT%H:%M:%S%z").png
+save_filename=$HOME/images/screenshots/$(date "+%Y/%m/Screenshot_%Y-%m-%dT%H:%M:%S%z").png
 
 mkdir -p "$(dirname "$save_filename")"
 

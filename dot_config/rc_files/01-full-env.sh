@@ -45,6 +45,7 @@ export DVDCSS_CACHE="$XDG_CACHE_HOME/dvdcss"
 
 #! Path
 export PATH="$PATH:$HOME/.cargo/bin"
+export PATH="$PATH:$HOME/.local/share/cargo/bin"
 export PATH="$PATH:$HOME/.yarn/bin"
 export PATH="$PATH:$HOME/.local/bin"
 export PATH="$PATH:$XDG_DATA_HOME/npm/bin"

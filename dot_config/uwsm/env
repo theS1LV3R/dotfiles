@@ -1,0 +1,30 @@
+# Theming
+export QT_QPA_PLATFORMTHEME=qt6ct
+
+# Cursor
+export XCURSOR_SIZE=20
+export HYPRCURSOR_SIZE=20
+
+# Scaling and whatnot
+export GDK_SCALE=2 # Ensure X11 GTK applications are scaled correctly
+export QT_AUTO_SCREEN_SCALE_FACTOR=1
+export WINIT_X11_SCALE_FACTOR=1 # https://github.com/alacritty/alacritty/issues/3465
+
+# Wayland improvements
+export ELECTRON_OZONE_PLATFORM_HINT=auto
+export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+export QT_QPA_PLATFORM="wayland;xcb"
+export GDK_BACKEND="wayland,x11,*"
+export SDL_VIDEODRIVER="wayland"
+export MOZ_ENABLE_WAYLAND="1"
+export OZONE_PLATFORM="wayland"
+
+# Language stuff
+export LC_ADDRESS=nb_NO.UTF-8
+export LC_MEASUREMENT=nb_NO.UTF-8
+export LC_MONETARY=nb_NO.UTF-8
+export LC_NAME=nb_NO.UTF-8
+export LC_NUMERIC=nb_NO.UTF-8
+export LC_PAPER=nb_NO.UTF-8
+export LC_TELEPHONE=nb_NO.UTF-8
+export LC_TIME=nb_NO.UTF-8

@@ -22,7 +22,7 @@ _install() {
     zsh
     tmux
     gcc
-    neofetch
+    fastfetch
     curl
     wget
     net-tools

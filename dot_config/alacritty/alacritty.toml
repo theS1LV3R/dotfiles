@@ -14,7 +14,7 @@
 #         "~/.config/alacritty/keybindings.toml",
 #         ]
 [general]
-import = ["~/.config/alacritty/themes/repo/gruvbox_dark.toml"]
+import = ["~/.config/alacritty/themes/matte-black.toml"]
 
 # live_config_reload = true | false
 #    Live config reload (changes require restart)
@@ -66,6 +66,8 @@ family = "SauceCodePro Nerd Font Mono"
 #
 #     Default: "None"
 decorations_theme_variant = "Dark"
+padding.x = 6
+padding.y = 6
 
 [window.dimensions]
 # dimensions = { columns = <integer>, lines = <integer> }
@@ -77,3 +79,6 @@ decorations_theme_variant = "Dark"
 #     Default: { column = 0, lines = 0 }
 columns = 120
 lines = 32
+
+[terminal]
+shell = { program = "/usr/bin/tmux", args = [] }

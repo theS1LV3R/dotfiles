@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+save_filename=$HOME/images/screenshots/$(date "+%Y/%m/Screenshot_%Y-%m-%dT%H:%M:%S%z").png
+
+mkdir -p "$(dirname "$save_filename")"
+
+hyprshot_flags=(
+  --mode region
+  --raw
+  --
+  echo
+)
+
+satty_flags=(
+  --filename - # Input file
+  --output-filename "$save_filename"
+  --init-tool brush
+)
+
+hyprshot "${hyprshot_flags[@]}" | satty "${satty_flags[@]}"

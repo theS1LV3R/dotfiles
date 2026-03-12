@@ -1,0 +1,232 @@
+{
+  "layer": "top", // Waybar at top layer
+  "position": "top", // Waybar position (top|bottom|left|right)
+  "height": 24, // Waybar height (to be removed for auto height)
+  // "width": 1280, // Waybar width
+  "spacing": 8,
+  "margin-top": 6,
+
+  // Choose the order of the modules
+  "modules-left": [
+    "custom/spacer", // KEEP AT START!!
+    "hyprland/workspaces"
+  ],
+
+  "modules-center": ["clock"],
+
+  "modules-right": [
+    //"custom/arch_update",
+    //"custom/disk_home",
+    //"custom/disk_root",
+    "tray",
+    //"temperature",
+    //"cpu",
+    //"memory",
+    //"custom/mail",
+    "network",
+    "backlight",
+    "pulseaudio",
+    "pulseaudio#mic",
+    //"clock",
+    "battery",
+    "custom/notification",
+    "idle_inhibitor",
+    "custom/spacer" // KEEP AT END!!
+  ],
+
+  "hyprland/workspaces": {
+    "show-special": true
+  },
+
+  "custom/arch_update": {
+    "format": "<span color='#589df6'></span>{}",
+    "interval": 30,
+    "exec": "~/.config/i3blocks/bin/arch_update.py -b '#e4e4e4' -u '#e4e4e4' -q"
+  },
+
+  "custom/disk_home": {
+    "format": "🏠 {} ",
+    "interval": 30,
+    "exec": "df -h --output=avail $HOME | tail -1 | tr -d ' '"
+  },
+
+  "custom/disk_root": {
+    "format": "💽 {} ",
+    "interval": 30,
+    "exec": "df -h --output=avail / | tail -1 | tr -d ' '"
+  },
+
+  "temperature": {
+    "warning-threshold": 65,
+    "critical-threshold": 80,
+    "format": "<span color='#e88939'>{icon}</span> {temperatureC}°C",
+    "format-icons": ["", "", "", "", ""]
+  },
+
+  "cpu": {
+    "format": "🏭 {usage}%",
+    "tooltip": true,
+    "tooltip-format": "CPU Usage: {usage}%\nCores: {cores}"
+  },
+
+  "memory": {
+    "format": "💾 {used:0.1f}G",
+    "tooltip": true,
+    "tooltip-format": "RAM usage: {used} / {total} ({percentage}%)"
+  },
+
+  "custom/mail": {
+    "format": "📩{}",
+    "interval": 30,
+    "exec": "notmuch count tag:flagged OR tag:inbox AND NOT tag:killed"
+  },
+
+  "network": {
+    "tooltip": true,
+    "format-icons": ["󰢿", "󰢼", "󰢽", "󰢾"],
+    //"format-wifi": "<span color='#589df6'></span> <span color='gray'>{essid}</span> {frequency} <span color='#589df6'>{signaldBm} dB</span> <span color='#589df6'>⇵</span> {bandwidthUpBits}/{bandwidthDownBits}",
+    "format-wifi": "<span color='#589df6'>{icon}</span> {essid}",
+    "format-ethernet": "󰈀 {ifname}",
+    "format-linked": "{ifname} (No IP) ",
+    "format-disconnected": "⚠ Disconnected ",
+    "tooltip-format": "Interface: {ifname}\nIP address: {ipaddr}/{cidr}\nSignal strength: {signaldBm}dBm ({signalStrength}%)\nFrequency: {frequency}GHz",
+    "on-click": "nm-connection-editor",
+    "interval": 5
+  },
+
+  "backlight": {
+    //"device": "amdgpu_bl1",
+    "format": "<span color='#ebcb8b'>{icon}</span> {percent}%",
+    "format-icons": ["󰃞", "󰃟", "󰃠"],
+    "tooltip": false
+  },
+
+  "pulseaudio": {
+    // "scroll-step": 1, // %, can be a float
+    "format": "{icon} {volume:2}%",
+    "format-muted": "{icon} Muted",
+    "format-bluetooth": "{icon} {volume}%",
+
+    "format-icons": {
+      "default-muted": "󰖁",
+      "default": ["󰕿", "󰖀", "󰕾"]
+    },
+    "on-click": "uwsm app -- pavucontrol --tab 3",
+    "on-click-middle": "pactl set-sink-mute @DEFAULT_SINK@ toggle" // Command found in https://github.com/bakkeby/pulseaudio-shortcuts/blob/master/pulseaudio_toggle_mute.sh
+  },
+
+  "pulseaudio#mic": {
+    "format": "{format_source}", // format_source = "format-source" or any of the "format-source-*" related ones
+
+    "format-source": " {volume:2}%",
+    "format-source-muted": "󰍭 Muted",
+
+    "on-click": "uwsm app -- pavucontrol --tab 4",
+    "on-click-middle": "pactl set-source-mute @DEFAULT_SOURCE@ toggle"
+  },
+
+  "clock": {
+    "interval": 1,
+    "format": "{:%Y-%m-%d | %H:%M:%S}",
+    "tooltip-format": "{calendar}",
+    "calendar": {
+      "mode": "month",
+      "format": {
+        "today": "<b>{}</b>"
+      }
+    }
+    // "format-alt": "{:%Y-%m-%d}"
+  },
+
+  "battery": {
+    "states": {
+      "warning": 20,
+      "critical": 10
+    },
+    "events": {
+      "on-discharging-warning": "notify-send -u normal 'Low Battery'",
+      "on-discharging-critical": "notify-send -u critical 'Very Low Battery'",
+      "on-charging-100": "notify-send -u normal 'Battery Full!'"
+    },
+    "format": "<span color='#e88939'>{icon}</span> {capacity}%",
+    "format-charging": "<span color='#e88939'>{icon}󱐋</span> {capacity}%",
+    "format-plugged": "<span color='#e88939'>{icon}</span> {capacity}%",
+    "format-icons": ["󰂎", "󱊡", "󱊢", "󱊣"]
+  },
+
+  "idle_inhibitor": {
+    "format": "{icon}",
+    "format-icons": {
+      "activated": "<span color='#b48ead'></span>",
+      "deactivated": "<span color='#a3be8c'></span>"
+    }
+  },
+
+  "tray": {
+    "spacing": 8,
+    "show-passive-items": true
+  },
+
+  "custom/media": {
+    "format": "{icon} {}",
+    "return-type": "json",
+    "max-length": 40,
+    "format-icons": {
+      "spotify": "",
+      "default": "🎜"
+    },
+    "escape": true,
+    "exec": "$HOME/.config/waybar/mediaplayer.py 2> /dev/null" // Script in resources folder
+    // "exec": "$HOME/.config/waybar/mediaplayer.py --player spotify 2> /dev/null" // Filter player based on name
+  },
+
+  "mpd": {
+    "format": "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ",
+    "format-disconnected": "Disconnected ",
+    "format-stopped": "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped ",
+    "unknown-tag": "N/A",
+    "interval": 2,
+    "consume-icons": {
+      "on": " "
+    },
+    "random-icons": {
+      "off": "<span color=\"#f53c3c\"></span> ",
+      "on": " "
+    },
+    "repeat-icons": {
+      "on": " "
+    },
+    "single-icons": {
+      "on": "1 "
+    },
+    "state-icons": {
+      "paused": "",
+      "playing": ""
+    },
+    "tooltip-format": "MPD (connected)",
+    "tooltip-format-disconnected": "MPD (disconnected)"
+  },
+
+  "custom/notification": {
+    "tooltip": false,
+    "format": "{icon} {text}",
+    "format-icons": {
+      "none": "󰂜",
+      "notification": "󰅸",
+      "dnd-none": "",
+      "dnd-notification": "",
+      "inhibited-none": "󰪓",
+      "inhibited-notification": "󰂠"
+    },
+    "return-type": "json",
+    "exec-if": "which swaync-client",
+    "exec": "swaync-client -swb",
+    "on-click": "sleep 0.1 && swaync-client -t -sw",
+    "on-click-middle": "sleep 0.1 && swaync-client -d -sw",
+    "escape": true
+  },
+
+  "custom/spacer": {
+    "format": " "
+  }
+}

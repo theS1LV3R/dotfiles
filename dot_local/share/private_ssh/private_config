@@ -3,6 +3,12 @@ Include config.d/*.conf
 
 # DO NOT MODIFY - CHEZMOI MANAGED
 
+Ciphers aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes128-ctr,aes192-ctr,aes256-ctr
+
+ControlMaster auto
+ControlPersist yes
+ControlPath ~/.ssh/sockets/socket-%r@%h:%p
+
 Host *.sslipio
   StrictHostKeyChecking no
   UserKnownHostsFile /dev/null

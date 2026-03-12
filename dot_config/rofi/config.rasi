@@ -1,0 +1,15 @@
+@theme "nord.rasi"
+
+configuration {
+    show-icons: true;
+}
+
+listview {
+    lines: 15;
+    columns: 1;
+}
+
+window {
+    width: 30%;
+}
+

@@ -130,7 +130,10 @@
     "format": "{:%Y-%m-%d | %H:%M:%S}",
     "tooltip-format": "{calendar}",
     "calendar": {
-      "mode": "month"
+      "mode": "month",
+      "format": {
+        "today": "<b>{}</b>"
+      }
     }
     // "format-alt": "{:%Y-%m-%d}"
   },

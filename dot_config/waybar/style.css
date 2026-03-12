@@ -3,7 +3,7 @@
 @define-color alert-fg-color #b3f7f6;       /* nord6 - alert text */
 
 @define-color bg-color #141414;
-@define-color fg-color #ebebeb;             /* nord4 - light text */
+@define-color fg-color #ebebeb;
 @define-color bg2-color #202020;
 @define-color fg2-color #e5e5e5;
 @define-color theme-color #744eb4;

@@ -79,6 +79,7 @@ export STORYBOOK_DISABLE_TELEMETRY=1 # https://storybook.js.org/docs/configure/t
 export BENTOML_DO_NOT_TRACK=True
 export NEXT_TELEMETRY_DISABLED=1  # https://nextjs.org/telemetry
 export ASTRO_TELEMETRY_DISABLED=1 # https://astro.build/telemetry/
+export SENTRY_DISABLE="true"
 
 #! ASDF
 export ASDF_CONFIG_FILE="$XDG_CONFIG_HOME/asdf/asdfrc"
